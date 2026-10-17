@@ -1,16 +1,42 @@
-# Explorador de combinações — PRODES 2024 a 10 metros
+# Explorador PRODES — combinações a 10 metros
 
 Página única, autocontida, para explorar o desmatamento apontado pelo PRODES em
-2024 cruzado com CAR, base fundiária SIGEF/SNCI, categorias territoriais,
+**2023, 2024 e 2025** cruzado com CAR, base fundiária SIGEF/SNCI, categorias territoriais,
 categoria de unidade de conservação, tamanho do imóvel em módulos fiscais e uso
 do solo pelo MapBiomas — **na grade de 10 metros**, com recorte por estado.
 
-**Abrir:** https://gierrejunior.github.io/explorador-prodes-2024/
+**Abrir:** https://gierrejunior.github.io/explorador-prodes/
+
+O endereço antigo (`/explorador-prodes-2024/`) redireciona para este, com os
+filtros junto. Link sem o ano abre no PRODES 2024, que era o único ano da
+página antiga.
 
 Acrescente `?validar` ao endereço para a página conferir a si mesma: ela refaz
 em JavaScript as combinações calculadas em pandas e mostra o placar.
 
-## O que mudou em relação à versão anterior
+## Atualização de 16/10/2026: PRODES 2023, 2024 e 2025
+
+- **Três anos do PRODES.** O quadro Universo ganhou o seletor **Ano do
+  PRODES**: um ano, ou mais de um somados. Ele vale para o recorte "Só
+  desmatamento PRODES", para o filtro de desmatamento no Brasil inteiro e para o
+  % desmatado. Os anos não se sobrepõem: o PRODES marca cada pixel uma vez só
+  (46 pixels, 0,5 ha, caem em dois anos na rasterização).
+- **Uma versão só do INPE.** Os três anos vêm das camadas anuais publicadas
+  entre julho e outubro de 2026. Essa versão revisou o 2024 de 1.957.066 para
+  1.954.281 ha (−0,14%), quase tudo na Caatinga.
+- **Aderência e tamanho para todo o CAR.** Antes só existiam para os 267 mil
+  imóveis que cruzavam o desmatamento de 2024; agora valem para os 8,27 milhões
+  de imóveis do CAR filtrado. No Brasil inteiro, aderência e tamanho passam a
+  ter leitura própria, e o % desmatado funciona nesses dois eixos.
+- **PRODES 2026 fica de fora** até sair para os seis biomas. Hoje só há o
+  Cerrado completo e as áreas prioritárias da Amazônia (estimativa preliminar).
+- **Uso do solo:** o mesmo MapBiomas 2025 para os três anos — dois anos depois
+  do desmatamento de 2023, um depois do de 2024 e no mesmo ano do de 2025. O
+  mapa do mesmo ano nem sempre já mostra a supressão: aparece ainda como
+  vegetação nativa 15,8% do desmatamento de 2023, 22,4% do de 2024 e 25,8% do
+  de 2025.
+
+## O que mudou da versão de 30 m para a de 10 m
 
 | | antes (30 m) | agora (10 m) |
 |---|---|---|
@@ -27,20 +53,22 @@ sobreposição mede o imóvel inteiro.
 
 O filtro do CAR mantém 8.268.132 de 8.349.966 imóveis, 99,0% dos registros — mas remove assentamentos e territórios tradicionais, que concentram desmatamento. É por isso que a parcela do desmatamento "dentro do CAR" cai em relação à versão anterior.
 
-## Números principais
+## Números principais (hectares; % do desmatamento do ano)
 
-| | ha | % |
-|---|---|---|
-| **Desmatamento PRODES 2024** | **1.957.066** | 100% |
-| Dentro de imóvel do CAR | 1.499.559 | 76,6% |
-| Em alguma das doze categorias territoriais | 451.628 | 23,1% |
-| Imóvel adere ao SIGEF (≥90% nos dois sentidos) | 457.159 | 23,4% |
-| Imóvel adere ao SNCI | 89.237 | 4,6% |
-| Tem parcela sobreposta, mas abaixo de 90% | 288.948 | 14,8% |
-| Sem parcela fundiária | 796.301 | 40,7% |
-| Imóvel pequeno (até 4 módulos fiscais) | 525.493 | 26,9% |
-| Imóvel médio (mais de 4 e até 15) | 375.696 | 19,2% |
-| Imóvel grande (mais de 15) | 709.319 | 36,2% |
+| | 2023 | 2024 | 2025 |
+|---|---|---|---|
+| **Desmatamento PRODES** | **2.413.338** | **1.954.281** | **1.563.342** |
+| Dentro de imóvel do CAR | 1.863.879 (77,2%) | 1.496.789 (76,6%) | 1.191.056 (76,2%) |
+| Em alguma das doze categorias territoriais | 578.914 (24,0%) | 451.688 (23,1%) | 361.575 (23,1%) |
+| Imóvel adere ao SIGEF (≥90% nos dois sentidos) | 592.622 (24,6%) | 456.523 (23,4%) | 390.525 (25,0%) |
+| Imóvel adere ao SNCI | 128.475 (5,3%) | 87.728 (4,5%) | 69.210 (4,4%) |
+| Tem parcela sobreposta, mas abaixo de 90% | 394.321 (16,3%) | 288.739 (14,8%) | 259.725 (16,6%) |
+| Sem parcela fundiária | 911.952 (37,8%) | 796.229 (40,7%) | 627.620 (40,1%) |
+| Imóvel pequeno (até 4 módulos fiscais) | 592.745 (24,6%) | 525.665 (26,9%) | 355.666 (22,8%) |
+| Imóvel médio (mais de 4 e até 15) | 488.579 (20,2%) | 375.485 (19,2%) | 307.741 (19,7%) |
+| Imóvel grande (mais de 15) | 910.756 (37,7%) | 706.941 (36,2%) | 622.824 (39,8%) |
+| Reserva Legal declarada | 372.605 (15,4%) | 318.411 (16,3%) | 278.954 (17,8%) |
+| APP declarada | 35.608 (1,5%) | 26.704 (1,4%) | 20.097 (1,3%) |
 
 As categorias se sobrepõem de propósito: o raster não embute regra de
 atribuição, então somar linhas dá mais que o total.
@@ -53,30 +81,30 @@ e portanto não se somam entre si.
 
 Por categoria do SNUC:
 
-| categoria | ha |
-|---|---|
-| Área de Proteção Ambiental | 77.507 |
-| Reserva Extrativista | 10.331 |
-| Floresta | 7.180 |
-| Parque | 4.492 |
-| Estação Ecológica | 4.241 |
-| Reserva de Desenvolvimento Sustentável | 2.095 |
-| Reserva Biológica | 1.023 |
-| Refúgio de Vida Silvestre | 815 |
-| Reserva Particular do Patrimônio Natural | 173 |
-| Monumento Natural | 161 |
-| Área de Relevante Interesse Ecológico | 26 |
+| categoria | 2023 | 2024 | 2025 |
+|---|---|---|---|
+| Área de Proteção Ambiental | 111.930 | 77.541 | 57.372 |
+| Reserva Extrativista | 12.335 | 10.331 | 5.861 |
+| Floresta | 10.889 | 7.180 | 6.524 |
+| Parque | 7.175 | 4.492 | 2.356 |
+| Estação Ecológica | 10.483 | 4.241 | 1.630 |
+| Reserva de Desenvolvimento Sustentável | 990 | 2.095 | 1.886 |
+| Reserva Biológica | 670 | 1.023 | 1.900 |
+| Refúgio de Vida Silvestre | 637 | 815 | 385 |
+| Reserva Particular do Patrimônio Natural | 132 | 173 | 114 |
+| Monumento Natural | 397 | 161 | 126 |
+| Área de Relevante Interesse Ecológico | 145 | 26 | 54 |
 
 Por esfera e grupo de manejo (US = uso sustentável, PI = proteção integral):
 
-| esfera e grupo | ha |
-|---|---|
-| Estadual + US | 58.417 |
-| Federal + US | 36.467 |
-| Estadual + PI | 6.685 |
-| Federal + PI | 4.018 |
-| Municipal + US | 2.865 |
-| Municipal + PI | 30 |
+| esfera e grupo | 2023 | 2024 | 2025 |
+|---|---|---|---|
+| Estadual + US | 94.327 | 58.451 | 50.299 |
+| Federal + US | 36.034 | 36.467 | 20.508 |
+| Estadual + PI | 14.691 | 6.685 | 2.263 |
+| Federal + PI | 4.672 | 4.018 | 4.108 |
+| Municipal + US | 6.384 | 2.865 | 1.462 |
+| Municipal + PI | 30 | 30 | 27 |
 
 ## Por que a aderência caiu em relação à versão anterior
 
@@ -153,11 +181,9 @@ Além de treemap, sunburst, pizza e Sankey, há três gráficos:
   comparação 1 (as bolinhas dizem quais estão juntas no mesmo pixel; a barra,
   quantos hectares). À esquerda, o total de cada categoria, contando a
   sobreposição.
-- **% desmatado** — quanto de cada categoria da comparação 1 foi desmatado em
-  2024: área desmatada ÷ área total da categoria, sempre sobre o Brasil
-  inteiro, com os filtros escolhidos menos o de desmatamento. Aderência e
-  tamanho não entram: só existem dentro do desmatamento e dariam 100% por
-  construção.
+- **% desmatado** — quanto de cada categoria da comparação 1 foi desmatado nos
+  anos marcados: área desmatada ÷ área total da categoria, sempre sobre o
+  Brasil inteiro, com os filtros escolhidos menos o de desmatamento.
 
 A **calculadora de sobreposição** recebe categorias de qualquer grupo — inclusive
 o **uso do solo**, no nível escolhido em Agrupado/Detalhado (duas classes de uso
@@ -193,7 +219,7 @@ muda o PNG e some para quem pede "reduzir movimento" no sistema.
 
 **Destacar** segue a mesma regra de acumular: destacar "Sem parcela nenhuma" e
 "Pastagem" acende só a Pastagem que está em Sem parcela e dá a conta desse
-caminho (294.630 ha no desmatamento de 2024). No Sankey de três ou mais colunas
+caminho (294.593 ha no desmatamento de 2024). No Sankey de três ou mais colunas
 o destaque atravessa todas elas: o fluxo do Sankey só sabe o par de colunas
 vizinhas, então a parte de cada fluxo que pertence ao caminho é recalculada nas
 linhas e desenhada por cima, com a largura certa.
@@ -235,7 +261,7 @@ com o valor final; quem pede "reduzir movimento" no sistema não vê animação.
 **Cores.** Cada categoria tem cor fixa: a mesma em qualquer filtro, estado ou
 gráfico. O uso do solo usa sempre as cores do MapBiomas — o verde fica só para
 vegetação; o vermelho-alaranjado, só para o desmatamento; ausência ("Nenhum",
-"Não avaliado", "Fora de UC") é cinza claro. As demais categorias usam seis
+"Fora do CAR", "Fora de UC") é cinza claro. As demais categorias usam seis
 cores sem verde e sem vermelho, escolhidas para continuarem distintas entre si
 em qualquer par para quem tem daltonismo; onde há mais categorias que cores, a
 mesma cor em tons diferentes marca o que é do mesmo tipo (UC de proteção
@@ -260,11 +286,11 @@ O CAR é autodeclaratório e tem imóveis sobrepostos entre si — **86,5 milhõ
 hectares** de sobreposição no país. Somar área de imóvel conta esse chão mais de
 uma vez; o raster não, porque conta o pixel uma vez.
 
-Os bits de **aderência e tamanho só existem para imóvel que cruza o desmatamento
-de 2024**. Fora da mancha eles estão apagados por construção, não por ausência
-de aderência.
+**Aderência e tamanho** valem para todo imóvel do CAR filtrado (desde
+16/10/2026). Fora do CAR eles estão apagados — "Fora do CAR" no gráfico.
 
-O ano PRODES vai de agosto a julho, não coincide com o ano civil.
+O ano PRODES vai de agosto a julho, não coincide com o ano civil: o PRODES 2025
+cobre de agosto de 2024 a julho de 2025.
 
 A cobertura do solo vem da **Coleção 4** do MapBiomas, a única disponível a
 10 metros. A versão de 30 m usava a Coleção 11 — a legenda de códigos é a mesma,
@@ -272,5 +298,5 @@ mas são produtos diferentes e a classe de um pixel pode divergir entre elas.
 
 ---
 
-Análise do projeto NORAD. Dados: PRODES/INPE, SICAR, SIGEF e SNCI/INCRA,
+Análise do projeto NORAD. Dados: PRODES/INPE (camadas anuais de 2026), SICAR, SIGEF e SNCI/INCRA,
 MapBiomas Coleção 4, CNUC, FUNAI, IBGE.
