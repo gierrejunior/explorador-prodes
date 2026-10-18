@@ -333,6 +333,7 @@ vez, ao lado dos seis bits de esfera e grupo.</p></details>
     <button id="uRecorte" aria-pressed="false">Só desmatamento PRODES</button>
     <div class="gtit" style="margin:12px 0 6px">Ano do PRODES</div>
     <span class="seg mini" id="selAnos" role="group" aria-label="Anos do PRODES"></span>
+    <div id="anosNota" class="gnota" style="margin:7px 0 0"></div>
   </div>
   <div class="cx"><h3>2. Estado <span id="iUF"></span></h3>
     <select id="selUF" style="width:100%"></select>
@@ -924,7 +925,7 @@ function gruposDim(uni,dimn){
   return GRUPOS_LIN[k]={idx,rep,n:rep.length};
 }
 function calcula(){
-  animar=true;
+  animar=true; marcaAnos();
   let area=0,comb=0,tot=0,nac=0; const mapa=new Map();
   const d1=dim(0), d2=eixos.length>1?dim(1):'—';
   const m1=eixos[0].m, m2=eixos.length>1?eixos[1].m:'sep';
@@ -2869,15 +2870,27 @@ function montaAnos(){
     const b=document.createElement('button'); b.type='button'; b.textContent=a; b.dataset.ano=a;
     b.title='conta o desmatamento PRODES de '+a+'; marque mais de um ano para somá-los';
     b.onclick=()=>{
-      if(anosSel.has(a)){ if(anosSel.size===1) return; anosSel.delete(a); } else anosSel.add(a);
+      // No Brasil inteiro sem o filtro de desmatamento o ano nao entra na conta:
+      // clicar nele e pedir o desmatamento daquele ano, entao leva ao recorte
+      // so com ele. Era o que se esperava, e o clique parecia nao fazer nada.
+      if(!anoVale()){ anosSel=new Set([a]); universo='recorte'; marcaU(); classesSel.clear(); }
+      else if(anosSel.has(a)){ if(anosSel.size===1) return; anosSel.delete(a); }
+      else anosSel.add(a);
       marcaAnos(); mudaAnos(); montaEixos(); sincUF(); agenda(); };
     c.appendChild(b);
   }
   marcaAnos();
 }
+// O ano so entra na conta no recorte, com o filtro de desmatamento ligado ou no
+// % desmatado. Fora disso nenhum botao aparece marcado: marcado e o que vale.
+const anoVale=()=>universo!=='mestre'||estado[7]===1||vis==='taxa';
 function marcaAnos(){
+  const vale=anoVale();
   document.querySelectorAll('#selAnos button').forEach(b=>
-    b.setAttribute('aria-pressed',anosSel.has(+b.dataset.ano)));
+    b.setAttribute('aria-pressed',vale&&anosSel.has(+b.dataset.ano)));
+  document.getElementById('anosNota').innerHTML = vale ? '' :
+    'No Brasil inteiro o ano não entra na conta. Clique num ano para ver só o '+
+    'desmatamento dele, ou ligue o filtro <b>Desmatado nos anos marcados</b>.';
 }
 function sincU(){
   marcaU(); montaEixos(); classesSel.clear(); sincUF(); agenda();
