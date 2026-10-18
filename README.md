@@ -16,10 +16,10 @@ em JavaScript as combinações calculadas em pandas e mostra o placar.
 
 ## Atualização de 16/10/2026: PRODES 2023, 2024 e 2025
 
-- **Três anos do PRODES.** O quadro Universo ganhou o seletor **Ano do
-  PRODES**: um ano, ou mais de um somados. Ele vale para o recorte "Só
-  desmatamento PRODES", para o filtro de desmatamento no Brasil inteiro e para o
-  % desmatado. Os anos não se sobrepõem: o PRODES marca cada pixel uma vez só
+- **Três anos do PRODES.** Clicando em **Desmatamento PRODES**, no quadro
+  Universo, aparecem os anos: um, ou mais de um somados. No Brasil inteiro eles
+  aparecem quando o filtro de desmatamento está ligado ou no % desmatado — só
+  onde o ano entra na conta. Os anos não se sobrepõem: o PRODES marca cada pixel uma vez só
   (46 pixels, 0,5 ha, caem em dois anos na rasterização).
 - **Uma versão só do INPE.** Os três anos vêm das camadas anuais publicadas
   entre julho e outubro de 2026. Essa versão revisou o 2024 de 1.957.066 para
