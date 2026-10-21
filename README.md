@@ -76,6 +76,9 @@ em JavaScript as combinações calculadas em pandas e mostra o placar.
   vegetação herbácea passa a **Formações campestres, arbustivas e áreas úmidas**;
   **Afloramentos rochosos** ficam separados. O restante dos grupos conserva sua
   posição para manter os identificadores da calculadora.
+- O relatório da seleção começa recolhido. A área total e as ações de aplicar
+  ou limpar continuam visíveis; **Ver relatório da seleção** abre a tabela,
+  as condições e as explicações. A escolha de abrir é mantida durante a análise.
 - Marcas dos gráficos e linhas da tabela podem ser selecionadas pelo teclado.
   Enter/Espaço selecionam; Shift+Enter aplica como filtro no gráfico. Controles
   de ajuda têm alvos maiores. Todos os tipos de gráfico ficam visíveis no computador;
