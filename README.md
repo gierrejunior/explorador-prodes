@@ -1,6 +1,6 @@
-# Explorador PRODES — combinações a 10 metros
+# FGV Agro - Plataforma Análise Territorial
 
-Página única, autocontida, para explorar o desmatamento apontado pelo PRODES em
+Explorador PRODES: página única, autocontida, para explorar o desmatamento apontado pelo PRODES em
 **2023, 2024 e 2025** cruzado com CAR, base fundiária SIGEF/SNCI, categorias territoriais,
 categoria de unidade de conservação, tamanho do imóvel em módulos fiscais e uso
 do solo pelo MapBiomas — **na grade de 10 metros**, com recorte por estado.
@@ -13,6 +13,41 @@ página antiga.
 
 Acrescente `?validar` ao endereço para a página conferir a si mesma: ela refaz
 em JavaScript as combinações calculadas em pandas e mostra o placar.
+
+## Atualização de 21/10/2026: uma aplicação, duas leituras
+
+No topo da página, **Aplicação: Simplificada | Completa**. É um endereço só —
+o `/v2/`, onde a versão simplificada foi testada, saiu.
+
+- **Simplificada** (abre por padrão): para quem não acompanhou a construção dos
+  dados. Classes agrupadas — SIGEF e SNCI como **base do INCRA**, aderência em
+  **aderente (≥90%)** ou **não aderente**, UC só em **proteção integral** e
+  **uso sustentável** (federais, estaduais e municipais juntas), **assentamentos**
+  e **áreas não destinadas** sem separar federal e estadual, **RL e APP** numa
+  classe, e a **sobreposição entre CARs** pelo chão sobreposto: fora do CAR, CAR
+  sem sobreposição (os encostos mínimos entre vizinhos contam aqui), CAR
+  sobreposto a outro e CAR duplicado. Sem filtros por categoria nem calculadora:
+  filtra-se pelo próprio gráfico.
+- **Completa**: a página de antes, com todas as classes, os filtros por
+  categoria — agora em **gavetas** acima do gráfico, que fica com a largura
+  inteira — e a calculadora.
+- Os dados são os mesmos nas duas; muda só o agrupamento. Trocar de aplicação
+  recomeça filtros e destaque, porque as classes de uma não existem na outra.
+- **Copiar link** leva a aplicação (`modo=simples` ou `modo=det`). Link de antes,
+  sem ela, abre na Completa, com os mesmos filtros.
+- Para os números não serem lidos errado, nas duas: cada porcentagem diz de que
+  total é ("do Brasil inteiro", "do desmatamento de 2025"…, nunca "da
+  seleção"); o **Em foco** é uma tabela (cada categoria, o resultado e o peso de
+  uma na outra); e **Filtrar por isto** pergunta, com a área de cada escolha, se
+  as combinações entram ("Terra Indígena" sozinha ou também "CAR + Terra
+  Indígena").
+- **Nomes únicos entre comparações.** O Em foco acha a categoria pelo nome, e
+  "Floresta" era categoria de UC e grupo do uso do solo: clicar na Floresta do
+  uso do solo (334.793 ha no desmatamento de 2025) mostrava a das UCs
+  (6.524 ha). A categoria de UC passou a se chamar **Floresta (Nacional,
+  Estadual ou Municipal)**, e os "Nenhum" ganharam nome ("Sem categoria
+  territorial", "Sem parcela SIGEF/SNCI", "Fora do CAR"). O `?validar` confere.
+- Os nomes das classes de sobreposição entre CARs ainda podem mudar.
 
 ## Correção de 21/10/2026: eixo do ano com um ano só
 
@@ -133,9 +168,11 @@ opostas. Quem comparar os números das duas versões vai ver essa diferença, e 
 
 ## Como ler
 
-À esquerda você **filtra** o que entra na conta; acima do gráfico **separa** o
-que entrou. Dentro de um mesmo grupo os filtros somam com **ou**; entre grupos,
-com **e**. A frase acima dos números descreve sempre o que está na tela.
+Na aplicação Completa, as gavetas acima do gráfico **filtram** o que entra na
+conta; em **Separar por** você **separa** o que entrou. Dentro de um mesmo grupo
+os filtros somam com **ou**; entre grupos, com **e**. Nas duas aplicações dá
+para filtrar pelo próprio gráfico (abaixo). A frase acima dos números descreve
+sempre o que está na tela.
 
 Cada comparação tem o próprio botão de leitura, com três estados, que decide
 como contar um pixel que pertence a mais de uma classe daquela comparação:
@@ -143,7 +180,7 @@ como contar um pixel que pertence a mais de uma classe daquela comparação:
 | | o que você vê | soma |
 |---|---|---|
 | **cada combinação** | "Pequena + Grande" aparece separada de "Grande" — mostra QUAIS se sobrepõem | fecha com o total |
-| **sobreposições juntas** | tudo que se sobrepõe vira a classe "Sobreposição" — mostra QUANTO há de conflito | fecha com o total |
+| **combinações juntas** | todo pixel em mais de uma classe vira "Mais de uma categoria" — mostra QUANTO há | fecha com o total |
 | **total por classe** | "Grande" já inclui o que divide pixel com "Pequena" — mostra QUANTO há de cada classe | passa do total, de propósito |
 
 A **ordem** das comparações decide o que é nível 1 e nível 2 (ou a primeira
@@ -186,15 +223,15 @@ Além de treemap, sunburst, pizza e Sankey, há três gráficos:
 - **Barras** — uma barra por categoria da comparação 1, dividida pela
   comparação 2, em hectares ou em 100% (para comparar a composição). É o mais
   fácil de ler: comprimento se compara melhor que área ou ângulo.
-- **Sobreposições** — cada coluna é uma combinação de categorias da
+- **Combinações** — cada coluna é uma combinação de categorias da
   comparação 1 (as bolinhas dizem quais estão juntas no mesmo pixel; a barra,
-  quantos hectares). À esquerda, o total de cada categoria, contando a
-  sobreposição.
+  quantos hectares). À esquerda, o total de cada categoria, contando também as
+  combinações em que ela aparece.
 - **% desmatado** — quanto de cada categoria da comparação 1 foi desmatado nos
   anos marcados: área desmatada ÷ área total da categoria, sempre sobre o
   Brasil inteiro, com os filtros escolhidos menos o de desmatamento.
 
-A **calculadora de sobreposição** recebe categorias de qualquer grupo — inclusive
+A **calculadora de sobreposição** (aplicação Completa) recebe categorias de qualquer grupo — inclusive
 o **uso do solo**, no nível escolhido em Agrupado/Detalhado (duas classes de uso
 do solo nunca se sobrepõem: cada pixel tem uma só) e mostra,
 com os nomes escolhidos: a área ocupada por elas juntas (a união, cada hectare

@@ -1,6 +1,6 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Explorador PRODES</title>
+<title>FGV Agro - Plataforma Análise Territorial</title>
 <!-- Ícone da aba: grade de pixels de 10 m; os laranjas são o desmatamento. -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23175345'/%3E%3Cg fill='%237FC3AC'%3E%3Crect x='5' y='5' width='6.5' height='6.5' rx='1.2'/%3E%3Crect x='12.75' y='5' width='6.5' height='6.5' rx='1.2'/%3E%3Crect x='20.5' y='5' width='6.5' height='6.5' rx='1.2'/%3E%3Crect x='5' y='12.75' width='6.5' height='6.5' rx='1.2'/%3E%3Crect x='12.75' y='12.75' width='6.5' height='6.5' rx='1.2'/%3E%3Crect x='5' y='20.5' width='6.5' height='6.5' rx='1.2'/%3E%3C/g%3E%3Cg fill='%23F0A35E'%3E%3Crect x='20.5' y='12.75' width='6.5' height='6.5' rx='1.2'/%3E%3Crect x='12.75' y='20.5' width='6.5' height='6.5' rx='1.2'/%3E%3Crect x='20.5' y='20.5' width='6.5' height='6.5' rx='1.2'/%3E%3C/g%3E%3C/svg%3E">
 <style>
@@ -299,35 +299,106 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
  .tema{width:100%}
  th,td{padding:6px 7px}
 }
+.v2tag{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.6px;
+  text-transform:uppercase;color:var(--suave);border:1px solid var(--linha);border-radius:999px;
+  padding:2px 8px;vertical-align:middle;margin-left:4px;white-space:nowrap}
+.modoLinha{font-size:12px;color:var(--suave);margin:-4px 0 10px;max-width:880px}
+.modoBtn{font:inherit;font-size:12px;background:none;border:0;padding:0 0 0 2px;color:var(--verde);
+  text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer}
+.modoBtn:hover{text-decoration-style:solid}
+body[data-modo="det"] .modoLinha b{color:var(--apagado)}
+
+.foco .fescolha{width:100%;border:1px solid var(--verde);border-radius:10px;padding:10px 12px;
+  background:var(--painel)}
+.fpergunta{font-size:13px;line-height:1.45;margin:0 0 8px;color:var(--tinta)}
+.fopcoes{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.foco .fop{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;
+  padding:7px 12px;border:1px solid var(--verde);border-radius:8px;background:var(--fundo);
+  color:var(--tinta);cursor:pointer;max-width:340px}
+.foco .fop b{color:var(--verde);font-size:13px}
+.foco .fop span{font-size:11.5px;color:var(--suave);font-variant-numeric:tabular-nums}
+.foco .fop:hover,.foco .fop:focus-visible{background:var(--painel)}
+.fescolha .flimpa{align-self:center}
+.fnota.famb{color:var(--suave)}
+.wrap{max-width:1640px}
+.grade{grid-template-columns:minmax(0,1fr)}
+.cabeca{display:flex;flex-wrap:wrap;align-items:flex-start;gap:4px 28px;margin:0 0 14px}
+.cabeca .intro{flex:1 1 520px;min-width:0}
+.cabeca .sobre{margin-bottom:0}
+.recorteTopo{display:flex;flex-wrap:wrap;gap:12px;flex:0 1 640px;min-width:0}
+.recorteTopo .cx{flex:1 1 260px;margin-bottom:0}
+.ajustesTopo{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px 22px;margin-left:auto}
+.ajustesTopo .tema{width:auto}
+@media(max-width:600px){.ajustesTopo{justify-content:flex-start;margin-left:0;width:100%}}
+.cabeca{display:block}
+.recorteTopo{display:flex;flex-wrap:wrap;gap:10px;flex:none;margin-top:4px}
+.recorteTopo .cx{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;flex:0 1 auto;margin:0;padding:10px 14px}
+.recorteTopo .cx h3{margin:0}
+.recorteTopo #anosBox:not([hidden]){display:flex;align-items:center;gap:8px;margin-left:4px}
+.recorteTopo #anosBox .gtit{margin:0 !important}
+.recorteTopo #selUF{width:auto !important;min-width:230px}
+.recorteTopo #ufInfo{margin:0 !important}
+@media(max-width:600px){.recorteTopo .cx{flex:1 1 100%}.recorteTopo #selUF{flex:1 1 100%}}
+.ftab{width:100%;max-width:820px;border-collapse:collapse;font-size:13px;margin:8px 0 2px;
+  font-variant-numeric:tabular-nums}
+.ftab th{font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--suave);
+  font-weight:600;text-align:left;padding:4px 8px;border-bottom:1px solid var(--linha)}
+.ftab td{padding:6px 8px;border-bottom:1px solid var(--linha);color:var(--tinta)}
+.ftab .n{text-align:right;white-space:nowrap}
+.ftab .fgr{font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--suave);
+  font-weight:600;margin-right:6px}
+.ftab b{color:var(--verde)}
+.ftab tr.ft-res td{font-weight:700;color:var(--verde);background:rgba(123,176,122,.14)}
+.ftab tr.ft-uniao td,.ftab tr.ft-comum td{color:var(--suave)}
+.ftab .ftira{border:0;background:transparent;padding:0 4px;color:var(--suave);cursor:pointer;
+  font-size:14px;line-height:1}
+.ftab .ftira:hover{color:var(--apagado)}
+.fpesos{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:var(--tinta)}
+.fpesos li{margin:2px 0}
+@media(max-width:600px){.ftab{font-size:12px}.ftab .fgr{display:block;margin:0 0 2px}
+  .ftab th.n{white-space:normal}.ftab td{padding:5px 6px}}
+/* Simplificada: sem faixa de filtros nem calculadora */
+body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none !important}
+/* Completa: os filtros em gavetas, numa faixa acima do gráfico */
+.lateral{position:static;max-height:none;overflow:visible;padding-right:0;margin:0 0 6px}
+@media(min-width:901px){
+  .painelFiltros{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;align-items:start}
+}
+@media(max-width:900px){.painelFiltros.aberto{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}}
+.painelFiltros #filtros{display:contents}
+.painelFiltros .rotulo{grid-column:1/-1;margin:2px 0 0}
+.painelFiltros .cx{margin:0}
+.gaveta>h3,.gaveta .cabUso h3{cursor:pointer;user-select:none;margin:0}
+.gaveta>h3::before,.gaveta .cabUso h3::before{content:'▸ ';color:var(--suave)}
+.gaveta.aberta>h3::before,.gaveta.aberta .cabUso h3::before{content:'▾ '}
+.gaveta.aberta>h3{margin-bottom:9px}
+.gaveta .cabUso{margin-bottom:0}
+.gaveta.aberta .cabUso{margin-bottom:9px}
+.gaveta:not(.aberta) .chip{display:none}
+.gaveta .cont{font-weight:400;text-transform:none;letter-spacing:0;color:var(--suave);margin-left:4px}
+.gaveta.temFiltro{border-color:var(--aceso)}
+.gaveta.temFiltro .cont{color:var(--aceso);font-weight:600}
 </style>
 <script>try{var t=localStorage.getItem('tema');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 </head><body><div class="wrap">
 <div class="topo">
-<h1>Explorador PRODES — combinações a 10 metros, por estado</h1>
+<h1>FGV Agro - Plataforma Análise Territorial</h1>
+<div class="ajustesTopo"><div class="tema"><span class="gtit">Aplicação</span>
+  <span class="seg mini" role="group" aria-label="Aplicação: simplificada ou completa">
+    <button type="button" data-modo="simples" title="classes agrupadas (base do INCRA, UC por grupo de manejo, RL e APP juntas…) e filtro pelo próprio gráfico; ao trocar, filtros e destaque recomeçam">Simplificada</button>
+    <button type="button" data-modo="det" title="todas as classes (SIGEF e SNCI, esferas das UCs, as três classes de sobreposição entre CARs…), filtros em gavetas e calculadora; ao trocar, filtros e destaque recomeçam">Completa</button>
+  </span></div>
 <div class="tema"><span class="gtit">Tema</span>
   <span class="seg mini" role="group" aria-label="Tema da página">
     <button type="button" data-tema="auto" title="segue o modo claro ou escuro do seu computador ou celular">Automático</button>
     <button type="button" data-tema="light">Claro</button>
     <button type="button" data-tema="dark">Escuro</button>
-  </span></div>
+  </span></div></div>
 </div>
-<p class="sub">À esquerda você <b>filtra</b> o que entra na conta; acima do gráfico você
-<b>separa</b> o que entrou. Cada filtro tem três estados: um clique para <b>precisa ter</b> (+),
-dois para <b>não pode ter</b> (−), três para voltar a indiferente. Dentro de um mesmo grupo os
-filtros somam com <b>ou</b>; entre grupos, com <b>e</b>. A frase acima dos números descreve
-sempre o que está na tela.</p>
-<details class="sobre"><summary>O que esta versão tem de diferente</summary>
-<p><b>Atualizado em 17/10/2026.</b> Entraram o PRODES <b>2023</b> e o <b>2025</b> dos seis biomas, ao lado do 2024 — escolha o ano no quadro Universo. Os três anos vêm da mesma versão do INPE, publicada entre julho e outubro de 2026, que revisou o 2024 de 1.957.066 para 1.954.281 ha. A aderência ao fundiário e o tamanho do imóvel passaram a valer para <b>todos os imóveis do CAR filtrado</b>, e não só para os que cruzavam o desmatamento. O PRODES 2026 já saiu para o Cerrado; entra quando os outros biomas saírem.</p>
-<p>Resolução de <b>10 metros</b> — nove
-vezes mais pixels que a de 30 m — com a cobertura do solo vindo da
-<b>coleção 4</b> do MapBiomas, que é a única disponível nessa resolução. O CAR
-entra <b>filtrado</b>: imóvel rural (IRU), cadastro ativo ou pendente, não
-cancelado — 8.268.132 de 8.349.966 imóveis. A aderência ao SIGEF e ao SNCI é
-medida por <b>imóvel</b>, com as parcelas dissolvidas, e não parcela a parcela.
-As <b>12 categorias de unidade de conservação</b> do SNUC aparecem pela primeira
-vez, ao lado dos seis bits de esfera e grupo.</p></details>
-<div class="grade">
-<aside class="lateral">
+<div class="cabeca"><div class="intro">
+<p class="modoLinha" id="modoLinha" hidden><span id="modoTxt"></span> <button type="button" id="modoBtn" class="modoBtn"></button></p>
+</div>
+<div class="recorteTopo">
   <div class="cx"><h3>1. Universo <span id="iUni"></span></h3>
     <button id="uMestre" aria-pressed="true">Brasil inteiro</button>
     <button id="uRecorte" aria-pressed="false">Desmatamento PRODES</button>
@@ -340,12 +411,15 @@ vez, ao lado dos seis bits de esfera e grupo.</p></details>
     <select id="selUF" style="width:100%"></select>
     <div id="ufInfo" style="font-size:11.5px;color:var(--suave);margin-top:7px"></div>
   </div>
+</div></div>
+<div class="grade">
+<aside class="lateral">
   <button id="abreFiltros" class="abreFiltros" aria-expanded="false" aria-controls="painelFiltros">
     <span>Filtros</span><span class="n" id="nFiltros">nenhum ativo ▾</span></button>
   <div id="painelFiltros" class="painelFiltros">
   <div class="rotulo">Filtrar <span id="iFiltrar"></span></div>
   <div id="filtros"></div>
-  <div class="cx"><div class="cabUso"><h3>Uso do solo <span id="iUso"></span></h3><span id="nivelUsoF"></span></div>
+  <div class="cx gaveta" id="gavetaUso"><div class="cabUso"><h3>Uso do solo <span class="cont"></span><span id="iUso"></span></h3><span id="nivelUsoF"></span></div>
     <div id="fclasses"></div></div>
   <div class="cx"><button id="limpar">Limpar todos os filtros</button></div>
   </div>
@@ -353,11 +427,11 @@ vez, ao lado dos seis bits de esfera e grupo.</p></details>
 <main class="principal">
   <div id="frase" class="frase"></div>
   <div class="kpi">
-    <div class="k"><b id="kArea">—</b><span>hectares na combinação</span></div>
+    <div class="k"><b id="kArea">—</b><span>hectares</span></div>
     <div class="k"><b id="kPct">—</b><span id="kPctL">do universo selecionado</span></div>
-    <div class="k"><b id="kDes">—</b><span id="kDesL">do desmatamento PRODES</span></div>
+    <div class="k" id="kDesBox"><b id="kDes">—</b><span id="kDesL">do desmatamento PRODES</span></div>
     <div class="k" id="kNacBox" style="display:none"><b id="kNac">—</b><span id="kNacL">do Brasil</span></div>
-    <div class="k"><b id="kComb">—</b><span>combinações distintas</span></div>
+    <div class="k" hidden style="display:none"><b id="kComb">—</b><span>combinações distintas</span></div>
   </div>
   <section class="painel" aria-label="Como mostrar o resultado">
     <div class="gtit">Separar por<span id="iSeparar"></span></div>
@@ -372,7 +446,7 @@ vez, ao lado dos seis bits de esfera e grupo.</p></details>
       <button id="vSun" aria-pressed="false">Sunburst</button>
       <button id="vAnel" aria-pressed="false">Pizza + anel</button>
       <button id="vSank" aria-pressed="false">Sankey</button>
-      <button id="vUpset" aria-pressed="false" title="quais categorias se sobrepõem e quantos hectares cada combinação tem">Sobreposições</button>
+      <button id="vUpset" aria-pressed="false" title="quais categorias aparecem juntas no mesmo pixel e quantos hectares cada combinação tem">Combinações</button>
       <button id="vTaxa" aria-pressed="false" title="quanto de cada categoria foi desmatado nos anos marcados">% desmatado</button>
     </div>
     <div id="opBarra" class="seg mini opBarra" role="group" aria-label="escala das barras" hidden>
@@ -416,9 +490,99 @@ const BRUTO=(()=>{ const T=D.mestre, n=T.length, V=new Int32Array(n), U=new Int3
   A=new Float64Array(n);
   for(let i=0;i<n;i++){ const r=T[i]; let v=r[0], u=r[1];
     if((v>>>7)&1){ v&=~128; u|=1<<28; }
+    // CAR sem sobreposição: no chão (bit 29) e no imóvel inteiro (bit 30)
+    if((v>>>8)&1){ if(!(u&(7<<22))) u|=1<<29; if(!(u&(7<<25))) u|=1<<30; }
     V[i]=v; U[i]=u; A[i]=r[2]; }
   return {V,U,A,n}; })();
 D.mestre=null;   // as colunas acima bastam; a lista ocupava outro tanto de memoria
+// ---- v2: classes simplificadas (padrão) e detalhadas -------------------------
+// As duas saem do mesmo dado. As detalhadas são as do gerador (as da v1), com os
+// nomes novos do CAR; as simplificadas juntam bits na hora de montar as colunas
+// (remapSimples). Nada é reprocessado: trocar de modo é trocar o agrupamento.
+// Os nomes das classes do CAR são PROVISÓRIOS (21/10/2026): o operacional ainda
+// está discutindo.
+let modo='simples';
+const DD=D.dimensoes;
+DD.sobrep_area={tipo:'bits',rotulo:'Sobreposição entre CARs — chão sobreposto',vazio:'Fora do CAR',
+  bits:[[122,'Sobreposição ínfima'],[123,'Sobreposição parcial'],[124,'CAR duplicado'],
+        [129,'CAR sem sobreposição']]};
+DD.sobrep_imovel={tipo:'bits',rotulo:'Sobreposição entre CARs — imóvel inteiro',vazio:'Fora do CAR',
+  bits:[[125,'Imóvel com sobreposição ínfima'],[126,'Imóvel com sobreposição parcial'],
+        [127,'Imóvel duplicado'],[130,'Imóvel sem sobreposição']]};
+DD.territorial.vazio='Sem categoria territorial';
+DD.parcela.vazio='Sem parcela SIGEF/SNCI';
+DD.car.vazio='Fora do CAR';
+const FLORESTA_UC='Floresta (Nacional, Estadual ou Municipal)';
+for(const x of DD.categoria_uc.bits) if(x[1]==='Floresta') x[1]=FLORESTA_UC;
+for(const [,bs] of D.grupos) for(const x of bs) if(x[0]===117&&x[1]==='Floresta') x[1]=FLORESTA_UC;
+const DIM_SIM={
+  mapbiomas:DD.mapbiomas,
+  territorial:{tipo:'bits',rotulo:'Categoria territorial',vazio:'Nenhuma categoria',
+    bits:[[8,'CAR'],[16,'Terra Indígena'],[17,'UC de Proteção Integral'],[18,'UC de Uso Sustentável'],
+          [23,'Território Quilombola'],[24,'Assentamentos'],[26,'Áreas Não Destinadas']]},
+  fundiario:{tipo:'bits',rotulo:'Aderência do CAR à base do INCRA',vazio:'Fora do CAR',
+    bits:[[9,'Aderente ao INCRA (≥90%)'],[11,'Não aderente']]},
+  tamanho:DD.tamanho,
+  parcela:{tipo:'bits',rotulo:'Parcela da base do INCRA (SIGEF e SNCI)',vazio:'Fora da base do INCRA',
+    bits:[[28,'Parcela do INCRA']]},
+  car:{tipo:'bits',rotulo:'Imóvel no CAR',vazio:'Fora do CAR',bits:[[8,'Dentro do CAR']]},
+  app_rl:{tipo:'bits',rotulo:'RL e APP declaradas no CAR',vazio:'Fora de RL e APP',bits:[[108,'RL e APP']]},
+  sobrep_area:{tipo:'bits',rotulo:'Sobreposição entre CARs',vazio:'Fora do CAR',
+    bits:[[123,'CAR sobreposto a outro'],[124,'CAR duplicado'],[129,'CAR sem sobreposição']]},
+  prodes:DD.prodes,
+};
+const DIMS={simples:DIM_SIM, det:DD};
+// As classes do eixo do ano são os anos marcados; o resto, "Não desmatado em …".
+// (DIM_SIM.prodes e DD.prodes são o mesmo objeto.)
+function atualizaDimProdes(){
+  const d=DD.prodes;
+  d.bits=ANOS.filter(([a])=>anosSel.has(a)).map(([a,b])=>[b,String(a)]);
+  d.vazio='Não desmatado em '+anosTxt();
+  for(const k in leitores) delete leitores[k];
+  for(const k in GRUPOS_LIN) delete GRUPOS_LIN[k];
+}
+// Eixos do simplificado com uma classe por pixel, por construção (remapSimples):
+// neles o botão de leitura não mudaria nada, então não aparece. Nos outros
+// (Categoria territorial, Tamanho, Ano) ele fica, como na v1 -- pedido do
+// Eduardo em 21/10/2026, depois de ver a v2 sem ele.
+const EXCLUSIVO_SIM=new Set(['fundiario','parcela','car','app_rl','sobrep_area']);
+const soUmaClasse=d=>modo==='simples'&&EXCLUSIVO_SIM.has(d);
+D.dimensoes=DIM_SIM;
+// Junta os bits das classes simplificadas, nas colunas já copiadas. Cada eixo
+// do CAR fica com uma classe por pixel; onde dois CARs discordam, a regra está
+// escrita aqui e no ⓘ do eixo.
+function remapSimples(V,U,n){
+  const B=b=>1<<b;
+  const UC_PI=B(19)|B(21), UC_US=B(20)|B(22), ESF=UC_PI|UC_US|B(25)|B(27);
+  const ADER=B(9)|B(10), NADER=B(11)|B(12);
+  const CARCAR=B(22)|B(23)|B(24)|B(25)|B(26)|B(27)|B(29)|B(30);
+  for(let i=0;i<n;i++){
+    let v=V[i], u=U[i];
+    const car=v&B(8);
+    // UC só por grupo de manejo; assentamento e área não destinada sem esfera
+    if(v&UC_PI) v|=B(17);
+    if(v&UC_US) v|=B(18);
+    if(v&B(25)) v|=B(24);
+    if(v&B(27)) v|=B(26);
+    v&=~ESF;
+    // aderência à base do INCRA (SIGEF ou SNCI), só dentro do CAR: aderente
+    // vence quando dois CARs no mesmo pixel discordam
+    const ad=v&ADER, nad=v&NADER; v&=~(ADER|NADER);
+    if(car){ if(ad) v|=B(9); else if(nad) v|=B(11); }
+    // parcela da base do INCRA
+    if(v&B(29)) v|=B(28);
+    v&=~B(29);
+    // RL e APP numa classe
+    if(u&B(9)) u|=B(8);
+    u&=~B(9);
+    // CAR x CAR: só o chão sobreposto, só dentro do CAR; a ínfima conta como
+    // sem sobreposição. Sobreposto a outro vence duplicado.
+    const s=car&&(u&B(23)), dup=car&&!s&&(u&B(24));
+    u&=~CARCAR;
+    if(s) u|=B(23); else if(dup) u|=B(24); else if(car) u|=B(29);
+    V[i]=v; U[i]=u;
+  }
+}
 let ufSel=0;   // 0 = Brasil inteiro; 1..27 = código da UF; 99 = sem UF
 const estado={};   // bit -> 0 indiferente, 1 precisa, 2 nao pode
 const classesSel=new Set();
@@ -449,10 +613,66 @@ const PAL=['#175345','#2B6A8F','#B36E38','#7E5A9B','#2E7D5B','#C0512F','#C9A227'
            '#8C6D62','#4A7C8C','#9B6A4F','#6B7C81'];
 
 const EXPLICA = {"Sobreposição entre imóveis do CAR": "Dois cadastros declarando o mesmo chão. Três classes, decididas pelo time: ínfima (menos de 1 ha E menos de 10% do menor dos dois — encosto de vizinho), aderente (90% ou mais nos dois sentidos — o mesmo imóvel cadastrado duas vezes) e sobreposição, o intermediário. ATENÇÃO às duas leituras: os bits de ÁREA SOBREPOSTA acendem só o pedaço em que os dois se cobrem e medem hectares; os bits de IMÓVEL acendem a propriedade inteira que participa e medem ALCANCE, não área — o de ínfima acende 78% dos imóveis do CAR por causa de lascas de poucos metros, então não some os hectares dele.", "Desmatamento PRODES": "O que o PRODES/INPE apontou como desmatamento nos anos marcados no quadro Universo. O ano PRODES vai de agosto a julho e não coincide com o ano civil: o PRODES 2025 cobre de agosto de 2024 a julho de 2025.", "Cadastro": "Se o pixel está dentro de algum imóvel declarado no CAR (base de agosto). O CAR é autodeclaratório e tem imóveis sobrepostos — por isso um mesmo pixel pode pertencer a dois imóveis de portes diferentes.", "Aderência do CAR ao fundiário — SIGEF e SNCI separados": "Compara o imóvel do CAR com a parcela fundiária certificada. Aderente é 90% ou mais de sobreposição nos dois sentidos. SIGEF e SNCI são bits independentes e nunca foram fundidos: ligue um só para ver cada sistema, ou os dois para ver onde se superpõem. Atenção: a geometria aqui é a do CAR, não a da parcela — para o contorno da parcela, use o outro grupo.", "Tamanho do imóvel": "Classificação do imóvel do CAR em módulos fiscais: pequena até 4, média acima de 4 e até 15, grande acima de 15. Vale para todos os imóveis do CAR filtrado; imóvel sem módulo fiscal no CAR fica sem classe.", "Categorias territoriais": "As doze destinações públicas mais o CAR. Não são exclusivas entre si: há áreas com dupla designação, e elas aparecem como combinação.", "Contorno da parcela — SIGEF e SNCI separados": "O contorno da parcela fundiária certificada, independente de haver CAR por cima. É diferente da aderência: aqui a geometria é a da parcela. SIGEF e SNCI são bits independentes — o SNCI é o sistema legado do SIGEF, então o mesmo chão pode acender os dois, e é assim que se mede a superposição entre eles.", "Uso do solo": "A classe do MapBiomas Coleção 4 para o ano de 2025, em todo pixel do Brasil — inclusive fora do desmatamento. A Coleção 4 é a única publicada na grade de 10 m; a versão anterior deste explorador usava a Coleção 11, a 30 m. É o mesmo mapa para os três anos do PRODES: dois anos depois do desmatamento de 2023, um depois do de 2024 e no mesmo ano do de 2025 — e o mapa do mesmo ano nem sempre já mostra a supressão. Aparece ainda como vegetação nativa (floresta ou herbácea) no MapBiomas 2025: 15,8% do desmatamento de 2023, 22,4% do de 2024 e 25,8% do de 2025."};
+const EXPLICA_DIM={
+  simples:{
+    territorial:'Em que tipo de área o pixel está. <b>CAR</b> é imóvel rural declarado no Cadastro '+
+      'Ambiental Rural. As outras são áreas públicas ou de uso coletivo: <b>Terra Indígena</b>; '+
+      '<b>Unidade de Conservação (UC) de Proteção Integral</b> — parques, reservas biológicas, '+
+      'estações ecológicas…, onde não cabe propriedade privada; <b>UC de Uso Sustentável</b> — APAs, '+
+      'reservas extrativistas, florestas nacionais…, que admitem uso e moradia; <b>Território '+
+      'Quilombola</b>; <b>Assentamentos</b> da reforma agrária; e <b>Áreas Não Destinadas</b> — '+
+      'florestas públicas que ainda não receberam destinação (no cadastro oficial, Floresta Pública '+
+      'Não Destinada). UCs federais, estaduais e municipais estão juntas; assentamentos e áreas não '+
+      'destinadas, federais e estaduais também.<br><br>Um pixel pode estar em mais de uma categoria: '+
+      'um CAR declarado dentro de um assentamento aparece como “CAR + Assentamentos”, e a linha '+
+      '“Assentamentos” sozinha é só o que não tem outra categoria.',
+    fundiario:'Compara o imóvel do CAR com as parcelas certificadas do INCRA (SIGEF e SNCI, juntos). '+
+      '<b>Aderente</b>: o imóvel e a parcela cobrem 90% ou mais um do outro — descrevem o mesmo chão. '+
+      '<b>Não aderente</b>: o imóvel não tem parcela do INCRA, ou a parcela cobre menos de 90% dele. '+
+      'Onde dois CARs se sobrepõem e só um é aderente, o pixel conta como aderente.',
+    tamanho:'Tamanho do imóvel do CAR em módulos fiscais (unidade do INCRA que varia por município): '+
+      'pequena até 4, média acima de 4 e até 15, grande acima de 15. Onde dois CARs de tamanhos '+
+      'diferentes se sobrepõem, o pixel aparece como combinação, como “Pequena + Grande”.',
+    parcela:'O contorno das parcelas certificadas do INCRA (SIGEF e SNCI juntos), haja ou não CAR por '+
+      'cima. É diferente da aderência: aqui conta a área da parcela, não a do imóvel do CAR.',
+    car:'Se o pixel está dentro de algum imóvel rural do CAR (cadastro ativo ou pendente, não '+
+      'cancelado).',
+    app_rl:'Reserva Legal (RL) e Área de Preservação Permanente (APP) declaradas no CAR, juntas numa '+
+      'classe. Onde as duas se sobrepõem, o pixel conta uma vez.',
+    sobrep_area:'Quantos CARs declaram este mesmo chão. <b>CAR sem sobreposição</b>: um imóvel só — '+
+      'inclui encostos mínimos entre vizinhos (menos de 1 ha e menos de 10% do menor dos dois), que '+
+      'são imprecisão de desenho, não conflito. <b>CAR sobreposto a outro</b>: dois ou mais imóveis '+
+      'diferentes declaram o mesmo chão. <b>CAR duplicado</b>: o mesmo imóvel cadastrado duas vezes — '+
+      'os contornos cobrem 90% ou mais um do outro. Conta só o chão sobreposto, não o imóvel '+
+      'inteiro. Nomes provisórios.',
+    prodes:'O ano em que o PRODES/INPE apontou o desmatamento. Os anos marcados no quadro Universo '+
+      'viram as classes; o resto aparece como “Não desmatado em …”. O ano PRODES vai de agosto a '+
+      'julho: o PRODES 2025 cobre de agosto de 2024 a julho de 2025.',
+  },
+  det:{
+    territorial:EXPLICA['Categorias territoriais'],
+    fundiario:EXPLICA['Aderência do CAR ao fundiário — SIGEF e SNCI separados'],
+    tamanho:EXPLICA['Tamanho do imóvel'],
+    parcela:EXPLICA['Contorno da parcela — SIGEF e SNCI separados'],
+    car:EXPLICA['Cadastro'],
+    app_rl:'Reserva Legal e APP declaradas no CAR, separadas: são regimes jurídicos diferentes. '+
+      'Onde as duas se sobrepõem, o pixel aparece como combinação.',
+    sobrep_area:'O chão em que dois CARs se cobrem, em três classes decididas por par de imóveis: '+
+      '<b>sobreposição ínfima</b> (menos de 1 ha e menos de 10% do menor — encosto de vizinho), '+
+      '<b>CAR duplicado</b> (90% ou mais nos dois sentidos — o mesmo imóvel cadastrado duas vezes) e '+
+      '<b>sobreposição parcial</b>, o intermediário. Mede hectares. Nomes provisórios.',
+    sobrep_imovel:'O imóvel inteiro que tem aquela sobreposição com algum outro CAR, pelas mesmas três '+
+      'classes. Mede alcance, não área: 1 ha sobreposto acende o imóvel todo, e a ínfima acende 78% '+
+      'dos imóveis do CAR por causa de lascas. Para medir o chão em conflito, use o chão sobreposto. '+
+      'Nomes provisórios.',
+    categoria_uc:'As 12 categorias de unidade de conservação do SNUC. Uma APA admite propriedade '+
+      'privada e ocupação; um Parque, não.',
+    prodes:EXPLICA['Desmatamento PRODES'],
+  }};
 function montaFiltros(){
   const c=document.getElementById('filtros'); c.innerHTML='';
   for(const [g,bits] of D.grupos){
-    const d=document.createElement('div'); d.className='cx';
+    const d=document.createElement('div'); d.className='cx gaveta';
     d.dataset.grupo=g;
     d.innerHTML=`<h3>${g} <span class="op" style="color:var(--suave);font-weight:400;
       text-transform:none;letter-spacing:0"></span></h3>`;
@@ -464,6 +684,8 @@ function montaFiltros(){
       d.appendChild(s);
     }
     const h=d.querySelector('h3');
+    h.insertAdjacentHTML('beforeend','<span class="cont"></span>');
+    h.onclick=()=>d.classList.toggle('aberta');
     if(EXPLICA[g]) h.appendChild(info(EXPLICA[g], g));
     c.appendChild(d);
   }
@@ -610,14 +832,14 @@ function filtro(){
 let eixos = [{d:'territorial', m:'sep'}, {d:'mapbiomas', m:'sep'}];
 const dim = i => eixos[i].d;
 const MODOS = ['sep','agr','som'];
-const ROTMODO = {sep:'cada combinação', agr:'sobreposições juntas', som:'total por classe'};
+const ROTMODO = {sep:'cada combinação', agr:'combinações juntas', som:'total por classe'};
 const DICAMODO = {
   sep:'Você vê cada combinação com nome próprio — "Pequena + Grande" aparece '+
       'separada de "Grande". Serve para saber QUAIS classes se sobrepõem. A soma '+
       'fecha com o total.',
-  agr:'Todas as sobreposições viram uma classe só, "Sobreposição". Serve para '+
-      'medir QUANTO há de conflito, sem se perder em qual com qual. A soma fecha '+
-      'com o total.',
+  agr:'Todo pixel que está em mais de uma categoria vira uma classe só, "Mais de '+
+      'uma categoria". Serve para medir QUANTO há de pixel em mais de uma, sem se '+
+      'perder em qual com qual. A soma fecha com o total.',
   som:'Cada pixel entra em todas as classes a que pertence: "Grande" já inclui o '+
       'que divide pixel com "Pequena". Serve para saber QUANTO há de cada classe '+
       'ao todo. A soma passa do total, de propósito.'};
@@ -651,12 +873,16 @@ function montaEixos(){
       w.appendChild(pg); w.classList.add('cpega');
     } else w.appendChild(num);
     w.appendChild(s);
+    { const tx=EXPLICA_DIM[modo][e.d]; if(tx) w.appendChild(info(tx,D.dimensoes[e.d].rotulo)); }
     if(D.dimensoes[e.d].tipo==='classe'){
       // Cada pixel tem uma classe só: os três modos de leitura dariam o mesmo
       // resultado. O que importa aqui é o nível do uso do solo.
       e.m='sep';
       w.appendChild(seletorNivelUso());
       w.appendChild(info(textoUso(),'Uso do solo: agrupado ou detalhado'));
+    } else if(soUmaClasse(e.d)){
+      // Uma classe por pixel: os três modos de leitura dariam o mesmo resultado.
+      e.m='sep';
     } else {
     const m=document.createElement('button'); m.className='modo';
     const pinta=()=>{
@@ -678,7 +904,7 @@ function montaEixos(){
     w.appendChild(m);
     w.appendChild(info(
       '<b>cada combinação</b> — '+DICAMODO.sep+'<br><br>'+
-      '<b>sobreposições juntas</b> — '+DICAMODO.agr+'<br><br>'+
+      '<b>combinações juntas</b> — '+DICAMODO.agr+'<br><br>'+
       '<b>total por classe</b> — '+DICAMODO.som,
       'Como contar um pixel que está em mais de uma classe'));
     }
@@ -775,7 +1001,7 @@ function frase(area){
   for(const x of nega) partes.push(`<span class="ou">sem</span> <b>${x}</b>`);
   { const gr=new Map(); for(const f of filtrosG){ if(f.d==='mapbiomas') continue; const k=f.d+'|'+f.m; if(!gr.has(k)) gr.set(k,[]); gr.get(k).push(f); }
     for(const fs of gr.values()) partes.push(`<span class="ou">${escH(curtoDim(fs[0].d))} pelo gráfico</span> `+
-      fs.map(f=>`<b>${escH(f.nome)}</b>`).join(' <span class="ou">ou</span> ')); }
+      fs.map(f=>`<b>${escH(nomeFiltro(f))}</b>`).join(' <span class="ou">ou</span> ')); }
   if(classesSel.size){
     // "Floresta" também é categoria de UC: o prefixo evita "Floresta e Floresta".
     const ns=nomesFiltroUso();
@@ -790,12 +1016,12 @@ function frase(area){
   t += `: <b>${fmt(area)} ha</b>.`;
   t += ' Separado por ' + eixos.map(e=>
         `<b>${D.dimensoes[e.d].rotulo}</b> <span class="ou">(${D.dimensoes[e.d].tipo==='classe'
-          ?(nivelUso==='agr'?'agrupado':'detalhado'):ROTMODO[e.m]})</span>`
+          ?(nivelUso==='agr'?'agrupado':'detalhado'):(soUmaClasse(e.d)?'uma classe por pixel':ROTMODO[e.m])})</span>`
       ).join(' › ');
   const alg=eixos.some(e=>e.m==='som');
   t += alg
     ? `. Nas comparações <b>somadas</b> o pixel entra em todas as classes a que pertence, então a soma passa do total.`
-    : `. Em todas, cada pixel entra numa classe só e a soma fecha com o total.`;
+    : '.';
   document.getElementById('frase').innerHTML=t;
   const nf=Object.values(estado).filter(Boolean).length+classesSel.size+filtrosG.filter(f=>f.d!=='mapbiomas').length;
   const ab=document.getElementById('abreFiltros').getAttribute('aria-expanded')==='true';
@@ -806,6 +1032,16 @@ function frase(area){
     const g=d.dataset.grupo, n=(porg[g]||[]).length;
     const sp=d.querySelector('.op');
     if(sp) sp.textContent = n>1 ? `— qualquer um dos ${n}` : '';
+  });
+  marcaGavetas();
+}
+// Cabeçalho de cada gaveta: quantas opções e quantas estão no filtro.
+function marcaGavetas(){
+  document.querySelectorAll('#painelFiltros .gaveta').forEach(g=>{
+    const cs=[...g.querySelectorAll('.chip')], on=cs.filter(c=>+c.dataset.e>0).length;
+    const ct=g.querySelector('.cont');
+    if(ct) ct.textContent=`· ${cs.length} ${cs.length===1?'opção':'opções'}`+(on?` · ${on} no filtro`:'');
+    g.classList.toggle('temFiltro',on>0);
   });
 }
 
@@ -847,7 +1083,7 @@ function rotuloAgr(dimn,v,u){
   const ac=d.bits.filter(([b])=>temBit(v,u,b));
   if(!ac.length) return d.vazio||'Nenhum';
   if(ac.length===1) return ac[0][1];
-  return 'Sobreposição';
+  return 'Mais de uma categoria';
 }
 function rotuloDim(dim,v,u){
   const d=D.dimensoes[dim];
@@ -890,7 +1126,9 @@ function colunas(uni){
   if(uni==='mestre'){
     const V=new Int32Array(n0);
     for(let i=0;i<n0;i++) V[i]=(U[i]&mA)?(V0[i]|128):V0[i];
-    return COLS.mestre={V,U,A:A0,n:n0};
+    if(modo!=='simples') return COLS.mestre={V,U,A:A0,n:n0};
+    const Us=U.slice(); remapSimples(V,Us,n0);
+    return COLS.mestre={V,U:Us,A:A0,n:n0};
   }
   // O recorte é o Brasil inteiro restrito às linhas desmatadas nos anos
   // marcados. A autoconferência compara com a tabulação do raster do recorte,
@@ -898,13 +1136,45 @@ function colunas(uni){
   let n=0; for(let i=0;i<n0;i++) if(U[i]&mA) n++;
   const V=new Int32Array(n), Uc=new Int32Array(n), A=new Float64Array(n);
   for(let i=0,k=0;i<n0;i++) if(U[i]&mA){ V[k]=V0[i]|128; Uc[k]=U[i]; A[k]=A0[i]; k++; }
+  if(modo==='simples') remapSimples(V,Uc,n);
   return COLS[uni]={V,U:Uc,A,n};
 }
 // Trocar os anos refaz as colunas e tudo o que foi guardado a partir delas.
 function mudaAnos(){
   for(const k in COLS) delete COLS[k];
   for(const k in GRUPOS_LIN) delete GRUPOS_LIN[k];
-  TOT_DES=null; taxaCache=null;
+  TOT_DES=null; taxaCache=null; atualizaDimProdes();
+}
+// Trocar de modo refaz as colunas e tudo o que foi guardado com os nomes antigos.
+function limpaCaches(){
+  for(const k in COLS) delete COLS[k];
+  for(const k in GRUPOS_LIN) delete GRUPOS_LIN[k];
+  for(const k in leitores) delete leitores[k];
+  taxaCache=null; cacheFoco=null; cacheFluxo=null; cacheAmb.clear();
+}
+const EIXO_PARA={sobrep_imovel:'sobrep_area',categoria_uc:'territorial'};
+function mudaModo(m){
+  if(m===modo||!DIMS[m]) return;
+  modo=m; D.dimensoes=DIMS[m]; limpaCaches();
+  // Os nomes de um modo não existem no outro: destaque e filtros pelo gráfico
+  // recomeçam, para nenhum número ficar valendo com um nome que sumiu.
+  filtrosG=[]; pilhaFG=[]; foco.clear(); focoPrevia=null; escolhaFiltro=null; classesSel.clear();
+  for(const k in estado) delete estado[k]; calcSel.clear(); sincChips(); marcaU();
+  eixos=eixos.map(e=>({d:D.dimensoes[e.d]?e.d:(EIXO_PARA[e.d]||'territorial'),
+                       m:e.m}));
+  eixos.forEach(e=>{ if(soUmaClasse(e.d)) e.m='sep'; });
+  marcaModo(); montaEixos(); montaClasses(); agenda();
+}
+function marcaModo(){
+  document.body.dataset.modo=modo;
+  document.querySelectorAll('button[data-modo]').forEach(b=>
+    b.setAttribute('aria-pressed',b.dataset.modo===modo));
+  // No detalhado, uma linha avisa que aquilo é para conferência.
+  document.getElementById('modoLinha').hidden=true;   // o seletor no topo já diz a versão
+  document.getElementById('modoTxt').innerHTML='Classes <b>detalhadas</b>, para conferência.';
+  const b=document.getElementById('modoBtn');
+  b.textContent='voltar às simplificadas';
+  b.title='volta às classes da versão simplificada; destaque e filtros do gráfico recomeçam';
 }
 // Grupos de linhas por dimensão: linhas com os mesmos bits da dimensão têm o
 // mesmo rótulo. Numerados uma vez por universo e dimensão, deixam o laço da
@@ -1030,12 +1300,11 @@ function calcula(){
   avisa();
   document.getElementById('kArea').textContent=fmt(area);
   document.getElementById('kPct').textContent=area?pcBR(100*area/tot,2):'—';
-  document.getElementById('kPctL').textContent =
-    (ufSel? (universo==='mestre'?'do estado':'do desmatamento no estado')
-          : (universo==='mestre'?'do Brasil inteiro':'do desmatamento'));
+  document.getElementById('kPctL').textContent = nomeTotal();
   // So faz sentido quando a selecao esta dentro do desmatamento: fora disso a
   // conta daria 43.559%, que e a area do Brasil dividida pela do desmatamento.
-  const dentroDes = universo==='recorte' || estado[7]===1;
+  const dentroDes = universo==='recorte' || estado[7]===1 ||
+    filtrosG.some(f=>f.d==='prodes'&&f.labs.length&&f.labs.every(l=>l!==D.dimensoes.prodes.vazio));
   document.getElementById('kDes').textContent =
     (area&&dentroDes)?pcBR(100*area/TOT_DES,2):'—';
   // Com um estado escolhido há dois denominadores possíveis. Mostrar os dois,
@@ -1043,11 +1312,13 @@ function calcula(){
   if(ufSel){
     document.getElementById('kNac').textContent = nac?pcBR(100*area/nac,2):'—';
     document.getElementById('kNacL').textContent =
-      'deste recorte no Brasil está em '+(ufSel===99?'sem UF':D.ufs[ufSel-1]);
+      (universo==='recorte'?'do desmatamento de '+anosTxt()+' do Brasil está em ':'do total do Brasil está em ')+
+      (ufSel===99?'área sem UF':D.ufs[ufSel-1]);
   }
   document.getElementById('kDesL').textContent = dentroDes
     ? 'do desmatamento de '+anosTxt()
-    : 'ligue o filtro de desmatamento';
+    : '';
+  document.getElementById('kDesBox').style.display=(universo==='mestre'&&dentroDes)?'':'none';
   document.getElementById('kComb').textContent=fmt(comb);
   let arr=[...mapa.entries()].map(([k,o])=>({nome:k,valor:o.total,
     filhos:[...o.filhos.entries()].map(([n,v])=>({nome:n,valor:v})).sort((a,b)=>b.valor-a.valor)}))
@@ -1083,11 +1354,8 @@ function avisa(){
   const av=document.getElementById('aviso');
   if(inclusivo){
     av.style.display='block';
-    av.innerHTML='Há comparação em <b>somado</b>: nela cada pixel entra em '+
-      '<i>todas</i> as classes a que pertence, então "Grande" já inclui '+
-      '"Pequena + Grande" e a soma passa do total — de propósito, é a resposta '+
-      'para “quanto há de grande ao todo”. Para um total que fecha, volte a '+
-      '<b>separado</b> naquela comparação; aí as sobreposições viram classe própria.';
+    av.innerHTML='Em <b>total por classe</b>, cada pixel conta em todas as categorias a que '+
+      'pertence: a soma das linhas passa do total.';
   } else if(eixos.length>2 && ['tree','sun','anel','barra'].includes(vis)){
     av.style.display='block';
     av.innerHTML='Você tem <b>'+eixos.length+' comparações</b>, e só o <b>Sankey</b> desenha mais de duas. Nos outros '+
@@ -1238,7 +1506,7 @@ function desenha(arr,area){
   larguraDesenhada=w;
   GW=w;
   GH = w<640 ? Math.round(w*(vis==='tree'?1.2:vis==='sank'?1.6:1))
-             : Math.round(Math.min(620,Math.max(460,w*0.62)));
+             : Math.round(Math.min(w>=1100?700:620,Math.max(460,w*0.62)));
   let o; PADROES=new Map();
   if(!arr.length||!area)
     o=`<text x="${GW/2}" y="${GH/2}" text-anchor="middle" fill="var(--suave)" font-size="14">Nenhuma combinação satisfaz os filtros</text>`;
@@ -1676,7 +1944,7 @@ const COR_FIXA={
     'Não Destinada Federal':'#486079','Não Destinada Estadual':'#758faa'},
   categoria_uc:{'Estação Ecológica':'#483c95','Reserva Biológica':'#6359b5','Parque':'#7f78d6',
     'Monumento Natural':'#9993f5','Refúgio de Vida Silvestre':'#b5b0ff',
-    'Área de Proteção Ambiental (APA)':'#dd5b8f','ARIE':'#ae648f','Floresta':'#8e791b',
+    'Área de Proteção Ambiental (APA)':'#dd5b8f','ARIE':'#ae648f','Floresta (Nacional, Estadual ou Municipal)':'#8e791b',
     'Reserva Extrativista':'#249ebd','Reserva de Fauna':'#017e9a',
     'Reserva de Desenv. Sustentável':'#3963a1','RPPN':'#8e4771'},
   tamanho:{'Pequena':'#82baff','Média':'#5188cd','Grande':'#225899'},
@@ -1726,7 +1994,7 @@ function corCat(dimn,nome){
   const b=corBase(dimn,nome); if(b) return {fill:b,base:b,lista:false};
   const ms=membrosCombo(dimn,nome);
   if(ms){ const cs=ms.map(m=>corBase(dimn,m)||COR_OUTRAS); return {fill:padrao(cs),base:cs[0],lista:true}; }
-  if(nome==='Sobreposição') return {fill:padrao([COR_OUTRAS,'#c4cacd']),base:COR_OUTRAS,lista:true};
+  if(nome==='Mais de uma categoria') return {fill:padrao([COR_OUTRAS,'#c4cacd']),base:COR_OUTRAS,lista:true};
   return {fill:COR_OUTRAS,base:COR_OUTRAS,lista:false};   // "Outras N combinações", "mais N grupos"
 }
 // Texto sobre listra: contorno na cor de base, para continuar legível.
@@ -1815,14 +2083,14 @@ const COR_UMA='#6f7a80', COR_SOBREP='#B36E38';
 function upset(){
   const U=window.__ult, d1=dim(0), dd=D.dimensoes[d1];
   if(!U.combos){
-    return mensagemGrafico(`O gráfico de sobreposições mostra quais categorias se acumulam no mesmo pixel. `+
-      `${dd.rotulo} tem uma classe só por pixel, então não há sobreposição para mostrar: `+
+    return mensagemGrafico(`O gráfico de combinações mostra quais categorias se acumulam no mesmo pixel. `+
+      `${dd.rotulo} tem uma classe só por pixel, então não há combinação para mostrar: `+
       `escolha outra comparação 1, como Categoria territorial.`);
   }
   const todos=U.combos.slice().sort((a,b)=>b.valor-a.valor);
   const combos=todos.filter(c=>c.membros.length);
   const fora=todos.filter(c=>!c.membros.length).reduce((s,c)=>s+c.valor,0);
-  if(!combos.length) return mensagemGrafico(`Nenhum pixel da seleção está em alguma categoria de ${dd.rotulo}.`);
+  if(!combos.length) return mensagemGrafico(`Nenhum pixel aqui está em alguma categoria de ${dd.rotulo}.`);
   const estreito=GW<640, colW=estreito?24:28;
   const nomeW=Math.max(96,Math.min(210,GW*(estreito?0.36:0.2)));
   const tamW=estreito?0:Math.max(70,Math.min(150,GW*0.13));
@@ -1837,7 +2105,7 @@ function upset(){
   // Legenda e títulos na coluna da esquerda, que fica vazia acima das linhas.
   const xl=x0-10, lw=x0-14;
   o+=`<text x="${f1(xl)}" y="${f1(topo+8)}" text-anchor="end" font-size="9.5" font-weight="600" fill="var(--suave)">${cabe('ÁREA DE CADA COMBINAÇÃO',9.5,lw,600)}</text>`;
-  [[COR_UMA,'uma categoria só'],[COR_SOBREP,'sobreposição']].forEach(([c,t],k)=>{
+  [[COR_UMA,'uma categoria só'],[COR_SOBREP,'mais de uma categoria']].forEach(([c,t],k)=>{
     const yy=topo+28+k*17, tt=cabe(t,11,lw-16);
     o+=`<rect x="${f1(xl-largura(tt,11)-15)}" y="${f1(yy-9)}" width="10" height="10" rx="2" fill="${c}"/>`+
        `<text x="${f1(xl)}" y="${f1(yy)}" text-anchor="end" font-size="11" fill="var(--tinta)">${tt}</text>`;
@@ -1916,7 +2184,7 @@ function taxa(){
   if(d1==='prodes') return mensagemGrafico('A comparação 1 é o próprio desmatamento: a taxa seria 100% '+
     'de um lado e 0% do outro. Escolha outra comparação 1, como Categoria territorial.');
   const {linhas,T0,D0}=dadosTaxa();
-  if(!linhas.length||!T0) return mensagemGrafico('Nenhuma área na seleção.');
+  if(!linhas.length||!T0) return mensagemGrafico('Nenhuma área com estes filtros.');
   const media=D0/T0, maxT=Math.max(media,...linhas.map(x=>x.taxa))||1e-9;
   const passo=passoBonito(maxT), topoEsc=Math.ceil(maxT/passo)*passo;
   const estreito=GW<640;
@@ -1951,7 +2219,7 @@ function taxa(){
     if(!estreito) o+=`<text x="${f1(x0+w+6)}" y="${f1(yb+bh/2+4)}" font-size="10.5" fill="var(--suave)" ${HALO}>${val}</text>`;
     o+='</g>';
   });
-  const tm=`média da seleção: ${pcTaxa(media)}`, wm=largura(tm,10,600);
+  const tm=`média geral: ${pcTaxa(media)}`, wm=largura(tm,10,600);
   const ancDir=xm+6+wm>GW-4;
   o+=`<text x="${f1(ancDir?xm-6:xm+6)}" y="${f1(yFim+16)}" text-anchor="${ancDir?'end':'start'}" font-size="10" font-weight="600" fill="var(--tinta)">${tm}</text>`;
   GH=Math.round(yFim+26);
@@ -1967,8 +2235,8 @@ function notaGrafico(){
           :`Cada barra é uma categoria de <b>${r1}</b>.`)
     : vis==='upset'
       ? `Cada coluna é uma combinação de categorias de <b>${r1}</b>: as bolinhas mostram quais estão `+
-        `juntas no mesmo pixel, e a barra, quantos hectares. Em laranja, as sobreposições. À esquerda, `+
-        `o total de cada categoria, contando a sobreposição.`+so1
+        `juntas no mesmo pixel, e a barra, quantos hectares. Em laranja, as de mais de uma categoria. `+
+        `À esquerda, o total de cada categoria, contando também as combinações em que ela aparece.`+so1
     : vis==='taxa'
       ? `Quanto de cada categoria de <b>${r1}</b> foi desmatado em ${anosTxt()}: área desmatada ÷ área total da `+
         `categoria, no Brasil inteiro${ufSel?' (no estado escolhido)':''}, com os filtros escolhidos — `+
@@ -2197,37 +2465,49 @@ function fluxosFoco(K){
 function textosFoco(){
   const ks=[...foco], U=window.__ult, area=U?U.area:0, ctx=contextoPc();
   const pcs=v=>area?pcBR(100*v/area,1)+' '+ctx:'';
+  const pcN=v=>area?pcBR(100*v/area,1):'';
   const c=ks.length?contaFoco(ks):null;
   const itens=ks.map((k,x)=>({k,t:c?`${fmt(c.tot[x])} ha${area?' · '+pcs(c.tot[x]):''}`:(resumoChave(k)||'não aparece neste gráfico')}));
-  if(!c) return {itens,res:null,grupos:[{rot:'',nomes:ks}],notas:[],detalhes:[]};
-  const R=Math.round, notas=[], detalhes=[];
+  if(!c) return {itens,res:null,grupos:[{rot:'',nomes:ks}],notas:[],detalhes:[],tab:[],pesos:[],ctx};
+  const R=Math.round, notas=[], detalhes=[], tab=[], pesos=[];
   const grupos=c.gInfo.map((g,i)=>({rot:curtoDim(g.d),nomes:c.grupos[i]}));
-  // Sobreposição dentro de uma linha: as contas mostradas fecham com os
-  // números mostrados (soma dos valores arredondados; o resto de casas
-  // decimais nunca inventa sobreposição).
-  // A sobreposição aparece sempre, também quando é zero: sem a linha, "0" e
-  // "não calculado" ficavam iguais na tela.
+  // As contas mostradas fecham com os números mostrados (soma dos valores
+  // arredondados); a parte em comum aparece também quando é zero.
   const sobreposicao=(xs,uniao,soma)=>{ const S=xs.reduce((s,x)=>s+R(c.tot[x]),0);
     if(soma-uniao<0.5) return {J:S,O:0,S};
     const J=R(uniao); return {J,O:Math.max(0,S-J),S}; };
+  const gNome=g=>g.length>1?'('+g.join(' ou ')+')':g[0];
+  const poeItens=()=>grupos.forEach(g=>g.nomes.forEach(k=>{ const x=ks.indexOf(k);
+    tab.push({tipo:'item',nome:k,sub:g.rot,v:R(c.tot[x]),pc:pcN(c.tot[x]),k}); }));
   let res;
   if(c.grupos.length>1){
-    res={v:R(c.res),pc:pcs(c.res),desc:'área que cumpre todas as linhas abaixo ao mesmo tempo'};
+    // "Não aderente e Floresta, ao mesmo tempo", e o peso disso em cada um:
+    // "47,8% de Não aderente também é Floresta".
+    const eN=c.grupos.map(gNome).join(' e '), ouN=c.grupos.map(gNome).join(' ou ');
+    res={v:R(c.res),pc:pcs(c.res),desc:`${eN}, ao mesmo tempo`};
+    poeItens();
+    tab.push({tipo:'res',nome:`${eN} — ao mesmo tempo`,v:R(c.res),pc:pcN(c.res)});
+    tab.push({tipo:'uniao',nome:`${ouN} — pelo menos um`,v:R(c.uniao),pc:pcN(c.uniao)});
+    c.gInfo.forEach((g,i)=>{ if(!g.uniao) return;
+      const outros=c.grupos.filter((_,j)=>j!==i).map(gNome).join(' e ');
+      pesos.push(`${pcBR(100*c.res/g.uniao,1)} de ${gNome(c.grupos[i])} também é ${outros}`); });
     c.gInfo.forEach((g,i)=>{ if(g.xs.length<2) return; const {O}=sobreposicao(g.xs,g.uniao,g.soma);
-      notas.push(O>0?`Sobreposição em ${grupos[i].rot}: ${fmt(O)} ha estão em mais de um destes — contados uma vez`
-                    :`Sobreposição em ${grupos[i].rot}: 0 ha — nenhum hectare está em mais de um destes`); });
+      notas.push(O>0?`${fmt(O)} ha estão em mais de um de ${gNome(c.grupos[i])} — contados uma vez`
+                    :`Nenhum hectare está em mais de um de ${gNome(c.grupos[i])}`); });
     itens.forEach(it=>detalhes.push(`${it.k}: ${it.t}`));
-    detalhes.push(`Em qualquer um deles (sem exigir todas as linhas): ${fmt(c.uniao)} ha${area?' · '+pcs(c.uniao):''}`);
+    detalhes.push(`${ouN} (pelo menos um): ${fmt(c.uniao)} ha${area?' · '+pcs(c.uniao):''}`);
   } else if(ks.length>1){
-    const xs=ks.map((k,x)=>x), {J,O,S}=sobreposicao(xs,c.uniao,c.soma);
-    res={v:J,pc:pcs(c.uniao),desc:'área das escolhidas juntas, cada hectare contado uma vez'};
-    notas.push(O>0?`Sobreposição: ${fmt(O)} ha estão em mais de uma — contados uma vez`
-                  :'Sobreposição: 0 ha — nenhum hectare está em mais de uma');
-    detalhes.push(`Soma simples ${fmt(S)} ha − sobreposição ${fmt(O)} ha = ${fmt(J)} ha`);
-    if(ks.length===2) detalhes.push(`só ${ks[0]}: ${fmt(R(c.tot[0])-O)} ha · nas duas: ${fmt(O)} ha · só ${ks[1]}: ${fmt(R(c.tot[1])-O)} ha`);
-    detalhes.unshift(...itens.map(it=>`${it.k}: ${it.t}`));
+    const xs=ks.map((k,x)=>x), {J,O,S}=sobreposicao(xs,c.uniao,c.soma), ouN=ks.join(' ou ');
+    res={v:J,pc:pcs(c.uniao),desc:`${ouN}, cada hectare contado uma vez`};
+    poeItens();
+    if(O>0) tab.push({tipo:'comum',nome:'Em comum — em mais de uma delas',v:O,pc:pcN(O)});
+    tab.push({tipo:'res',nome:`${ouN} — juntas, cada hectare uma vez`,v:J,pc:pcN(c.uniao)});
+    notas.push(O>0?`Em comum: ${fmt(O)} ha estão em mais de uma — contados uma vez`
+                  :'Em comum: 0 ha — nenhum hectare está em mais de uma');
+    detalhes.push(...itens.map(it=>`${it.k}: ${it.t}`),
+      `Soma simples ${fmt(S)} ha − em comum ${fmt(O)} ha = ${fmt(J)} ha`);
   } else res={v:R(c.tot[0]),pc:pcs(c.tot[0]),desc:''};
-  return {itens,res,grupos,notas,detalhes};
+  return {itens,res,grupos,notas,detalhes,tab,pesos,ctx};
 }
 function resumoChave(k){
   const t=totalChave(k), U=window.__ult; if(!t) return '';
@@ -2296,39 +2576,59 @@ function painelFoco(){
   { const U=window.__ult, ch=[...foco].join('\u0000');
     if(U&&ch!==tabFoco) tabela(U.arr,U.area); }
   const p=document.getElementById('foco'), ks=[...foco];
-  if(!ks.length){
-    p.innerHTML='<span class="fdica"><b>Clique</b> numa parte do gráfico para destacá-la (pode ser mais de uma) · '+
-      '<b>duplo clique</b> para filtrar a página só por ela.</span>';
+  if(escolhaFiltro){
+    p.innerHTML=htmlEscolha();
+    p.querySelectorAll('[data-como]').forEach(b=>b.onclick=()=>{
+      const c=b.dataset.como, e=escolhaFiltro;
+      if(!c){ escolhaFiltro=null; painelFoco(); } else e.vai(c); });
     return;
   }
-  const T=textosFoco(), tot=new Map(T.itens.map(it=>[it.k,it.t]));
-  const chip=k=>`<span class="fch" title="${escAttr(k+': '+(tot.get(k)||''))}"><b>${escH(k)}</b>`+
-    `<button type="button" data-tira-foco="${escAttr(k)}" aria-label="tirar ${escAttr(k)} do foco">×</button></span>`;
+  if(!ks.length){
+    p.innerHTML='<span class="fdica"><b>Clique</b> no gráfico para destacar · <b>duplo clique</b> para filtrar.</span>';
+    return;
+  }
+  const T=textosFoco();
+  const tira=k=>`<button type="button" class="ftira" data-tira-foco="${escAttr(k)}" `+
+    `aria-label="tirar ${escAttr(k)} do foco" title="tirar do foco">×</button>`;
   let h='<div class="fcard"><div class="fres"><span class="ftit">Em foco</span>';
   if(T.res) h+=`<span class="fnum"><b>${fmt(T.res.v)} ha</b>${T.res.pc?` <span>${escH(T.res.pc)}</span>`:''}</span>`;
   h+='<span class="facoes"><button type="button" class="fprim" data-filtra-foco title="a página inteira passa a ser só o que está em foco">Filtrar por isto</button>'+
      '<button type="button" class="flimpa" data-limpa-foco>limpar</button></span>';
   if(T.res&&T.res.desc) h+=`<span class="fdesc">${escH(T.res.desc)}</span>`;
-  h+='</div><div class="fconds">';
-  T.grupos.forEach((g,i)=>{
-    if(i) h+='<div class="fe">e</div>';
+  h+='</div>';
+  if(T.tab.length){
+    h+=`<table class="ftab"><thead><tr><th></th><th class="n">Área (ha)</th>`+
+       `<th class="n">% ${escH(T.ctx)}</th></tr></thead><tbody>`+
+      T.tab.map(l=>`<tr class="ft-${l.tipo}"><td>`+
+        (l.tipo==='item'?`${l.sub?`<span class="fgr">${escH(l.sub)}</span>`:''}<b>${escH(l.nome)}</b>${tira(l.k)}`
+                        :escH(l.nome))+
+        `</td><td class="n">${fmt(l.v)}</td><td class="n">${escH(l.pc)}</td></tr>`).join('')+
+      '</tbody></table>';
+  } else {
+    const g=T.grupos[0]||{rot:''};
     h+=`<div class="flin">${g.rot?`<span class="fgr">${escH(g.rot)}</span>`:''}`+
-       g.nomes.map(chip).join('<span class="fou">ou</span>')+'</div>';
-  });
-  h+='</div>';
-  if(T.notas.length) h+='<div class="fnota">'+T.notas.map(escH).join(' · ')+'</div>';
+       ks.map(k=>`<span class="fch"><b>${escH(k)}</b>`+
+         `<button type="button" data-tira-foco="${escAttr(k)}" aria-label="tirar ${escAttr(k)} do foco">×</button></span>`)
+       .join('<span class="fou">ou</span>')+'</div>';
+  }
+  if(T.pesos.length) h+='<ul class="fpesos">'+T.pesos.map(t=>`<li>${escH(t)}</li>`).join('')+'</ul>';
+  if(T.grupos.length>1&&T.notas.length) h+='<div class="fnota">'+T.notas.map(escH).join(' · ')+'</div>';
+  { const amb=[];
+    for(const k of ks){ const r=resolveNome(k); if(!r||!ambiguo(k,r)) continue;
+      const so=totalChave(k), tudo=totalComCombinacoes(r,k);
+      if(so&&so.v!=null&&tudo-so.v>=0.5) amb.push(`“${escH(k)}” no gráfico é só a parte sem outra `+
+        `categoria (${fmt(so.v)} ha). Com as combinações em que aparece`+
+        `${(()=>{ const ex=exemploCombo(r.d,[k]); return ex?`, como “${escH(ex)}”`:''; })()}: `+
+        `<b>${fmt(tudo)} ha</b>.`); }
+    if(amb.length) h+='<div class="fnota famb">'+amb.join('<br>')+'</div>'; }
   if(!T.res) h+='<div class="fnota">'+T.itens.map(it=>`${escH(it.k)}: ${escH(it.t)}`).join(' · ')+'</div>';
-  if(T.detalhes.length) h+='<details class="fdet"><summary>ver o total de cada um</summary><ul>'+
-    T.detalhes.map(t=>`<li>${escH(t)}</li>`).join('')+'</ul></details>';
   h+='</div>';
-  const aberto=p.querySelector('details.fdet[open]');
   p.innerHTML=h;
-  if(aberto){ const d=p.querySelector('details.fdet'); if(d) d.open=true; }
   p.querySelectorAll('[data-tira-foco]').forEach(b=>b.onclick=()=>{ foco.delete(b.dataset.tiraFoco); aplicaFoco(); });
   p.querySelector('[data-limpa-foco]').onclick=()=>{ foco.clear(); focoPrevia=null; aplicaFoco(); };
   p.querySelector('[data-filtra-foco]').onclick=filtraFoco;
 }
-function alternaFoco(k){ if(!k) return; foco.has(k)?foco.delete(k):foco.add(k); focoPrevia=null; aplicaFoco(); }
+function alternaFoco(k){ if(!k) return; escolhaFiltro=null; foco.has(k)?foco.delete(k):foco.add(k); focoPrevia=null; aplicaFoco(); }
 
 // ---- filtrar e o caminho -----------------------------------------------------
 // Dois conceitos, cada um com lugar e cara próprios:
@@ -2357,7 +2657,7 @@ function aplicaPasso(itens,rot,zoom){
   for(const {nome,r} of itens){
     if(r.d==='mapbiomas'){ codigosUso(nome).forEach(c=>usos.add(c)); continue; }
     if(filtrosG.some(f=>f.d===r.d&&f.m===r.m&&f.nome===nome)) continue;
-    filtrosG.push({d:r.d,m:r.m,labs:r.labs,nome,p:passo}); novo=true;
+    filtrosG.push({d:r.d,m:r.m,labs:r.labs,nome,p:passo,como:r.como}); novo=true;
   }
   if(usos.size){
     const alvo=classesSel.size?[...classesSel].filter(c=>usos.has(c)):[...usos];
@@ -2382,7 +2682,7 @@ function filtraPor(el){
   for(const [nome,col] of alvos){ const r=resolveNome(nome,vis==='upset'||vis==='taxa'?undefined:col); if(r) itens.push({nome,r}); }
   if(!itens.length) return;
   const svg=document.getElementById('g'), rel=caixaRel(el,svg);
-  aplicaPasso(itens,itens.map(x=>x.nome).join(' e '),rel?{tipo:'entra',rel}:null);
+  pedeFiltro(itens,its=>its.map(rotItem).join(' e '),rel?{tipo:'entra',rel}:null);
 }
 // "Filtrar por isto": o que está em destaque vira o próximo passo da trilha.
 function filtraFoco(){
@@ -2396,10 +2696,89 @@ function filtraFoco(){
   if(rs.length){ const l=Math.min(...rs.map(r=>r.left)), t=Math.min(...rs.map(r=>r.top)),
       rr=Math.max(...rs.map(r=>r.right)), b=Math.max(...rs.map(r=>r.bottom));
     const rel=caixaRel({getBoundingClientRect:()=>({left:l,top:t,width:rr-l,height:b-t})},svg); if(rel) zoom={tipo:'entra',rel}; }
-  aplicaPasso(itens,descreveGrupos([...gs.values()]),zoom);
+  pedeFiltro(itens,its=>{ const g=new Map();
+    its.forEach(x=>{ if(!g.has(x.r.i)) g.set(x.r.i,[]); g.get(x.r.i).push(rotItem(x)); });
+    return descreveGrupos([...g.values()]); },zoom);
+}
+// Categoria sozinha num eixo que admite mais de uma por pixel: no gráfico ela é
+// só a parte sem outra categoria, e filtrar por ela pode querer dizer duas coisas.
+function ambiguo(nome,r){
+  const d=D.dimensoes[r.d];
+  if(!d||d.tipo!=='bits'||r.m==='som'||r.labs.length!==1||r.labs[0]!==nome) return false;
+  return d.bits.some(([,n])=>n===nome);
+}
+const rotItem=x=>x.r.como==='tudo'?`${x.nome} (com combinações)`
+               :x.r.como==='so'?`${x.nome} (sem combinação)`:x.nome;
+const nomeFiltro=f=>f.como==='tudo'?`${f.nome} (com combinações)`
+                  :f.como==='so'?`${f.nome} (sem combinação)`:f.nome;
+// Área da página com filtros a mais (sem aplicá-los): a mesma conta do filtro.
+function areaFiltrada(extra,usos){
+  const fg0=filtrosG; filtrosG=fg0.concat(extra);
+  let ok; try{ ok=filtro(); } finally { filtrosG=fg0; }
+  const {V,U,A,n}=colunas(universo); let s=0;
+  for(let i=0;i<n;i++){ const v=V[i], u=U[i];
+    if(passaUF(u)&&ok(v,u)&&(!usos||usos.has(v&127))) s+=A[i]; }
+  return s;
+}
+// A maior combinação na tela que contém algum dos nomes, para dar o exemplo.
+function exemploCombo(d,nomes){
+  const U=window.__ult; if(!U) return null; let m=null;
+  const ve=(n,v)=>{ const ms=membrosCombo(d,n);
+    if(ms&&ms.some(x=>nomes.includes(x))&&(!m||v>m.v)) m={n,v}; };
+  for(const it of U.bruto||U.arr){
+    if(dim(0)===d) ve(it.nome,it.valor);
+    if(eixos.length>1&&dim(1)===d) for(const f of it.filhos||[]) ve(f.nome,f.valor); }
+  return m&&m.n;
+}
+let escolhaFiltro=null;
+function pedeFiltro(itens,agrupa,zoom){
+  const amb=itens.filter(x=>ambiguo(x.nome,x.r));
+  const comComo=como=>itens.map(x=>amb.includes(x)
+    ?{nome:x.nome,r:{...x.r,m:como==='tudo'?'som':x.r.m,como}}:x);
+  const vai=como=>{ escolhaFiltro=null; const its=comoNada?itens:comComo(como);
+    if(!aplicaPasso(its,agrupa(its),zoom)) painelFoco(); };
+  let comoNada=!amb.length;
+  if(comoNada) return vai(null);
+  // As duas áreas, com tudo o que o passo filtraria (uso do solo inclusive).
+  const usos=new Set(); let temUso=false;
+  for(const x of itens) if(x.r.d==='mapbiomas'){ temUso=true; codigosUso(x.nome).forEach(c=>usos.add(c)); }
+  const extra=como=>comComo(como).filter(x=>x.r.d!=='mapbiomas')
+    .map(x=>({d:x.r.d,m:x.r.m,labs:x.r.labs,nome:x.nome,p:pilhaFG.length+1}));
+  const u=temUso?(classesSel.size?new Set([...classesSel].filter(c=>usos.has(c))):usos):null;
+  const tudo=areaFiltrada(extra('tudo'),u), so=areaFiltrada(extra('so'),u);
+  // Sem combinação nenhuma aqui, as duas escolhas dão o mesmo: filtra direto.
+  if(Math.abs(tudo-so)<0.5){ comoNada=true; return vai(null); }
+  const nomes=amb.map(x=>x.nome);
+  escolhaFiltro={nomes,tudo,so,ex:exemploCombo(amb[0].r.d,nomes),vai};
+  painelFoco();
+  const b=document.querySelector('#foco .fop'); if(b) b.focus();
+}
+// Total de uma categoria contando as combinações em que ela aparece, para o Em
+// foco dizer as duas contas lado a lado.
+const cacheAmb=new Map();
+function totalComCombinacoes(r,k){
+  const ch=JSON.stringify([modo,universo,[...anosSel],ufSel,estado,[...classesSel],filtrosG,r.d,k]);
+  if(!cacheAmb.has(ch)){ if(cacheAmb.size>200) cacheAmb.clear();
+    cacheAmb.set(ch,areaFiltrada([{d:r.d,m:'som',labs:[k],nome:k,p:0}],null)); }
+  return cacheAmb.get(ch);
+}
+const listaNomes=a=>a.length>1?a.slice(0,-1).join(', ')+' ou '+a[a.length-1]:a[0];
+function htmlEscolha(){
+  const e=escolhaFiltro, ns=listaNomes(e.nomes.map(n=>`<b>${escH(n)}</b>`)), um=e.nomes.length===1;
+  const tx=listaNomes(e.nomes.map(escH));
+  return `<div class="fescolha" role="group" aria-label="o que entra no filtro">`+
+    `<p class="fpergunta">${ns} também ${um?'aparece':'aparecem'} junto com outras categorias`+
+    (e.ex?`, como em “${escH(e.ex)}”`:'')+`. No gráfico, “${tx}” é só a parte sem outra `+
+    `categoria. O que entra no filtro?</p><div class="fopcoes">`+
+    `<button type="button" class="fop" data-como="tudo"><b>Tudo que tem ${tx}</b>`+
+    `<span>inclui as combinações · ${fmt(e.tudo)} ha</span></button>`+
+    `<button type="button" class="fop" data-como="so"><b>Só ${tx}, sem outra categoria</b>`+
+    `<span>${fmt(e.so)} ha</span></button>`+
+    `<button type="button" class="flimpa" data-como="">cancelar</button></div></div>`;
 }
 // Voltar a um ponto da trilha: i = último passo que fica (-1 = início).
 function irPara(i){
+  escolhaFiltro=null;
   if(i>=pilhaFG.length-1) return;
   const s=pilhaFG[i+1], removidos=pilhaFG.slice(i+1).flatMap(x=>x.nomes||[]);
   const mudouUso=s.cls.length!==classesSel.size||s.cls.some(c=>!classesSel.has(c));
@@ -2428,7 +2807,11 @@ function compilaFiltrosG(){
 // "de “Em CAR › Floresta”" ou "da seleção": as porcentagens do destaque dizem
 // sobre o quê elas são.
 // Só o último passo: o caminho inteiro já está na trilha, logo acima.
-const contextoPc=()=>pilhaFG.length?`de “${pilhaFG[pilhaFG.length-1].rot}”`:'da seleção';
+// O total de onde sai cada porcentagem, com nome.
+const nomeTotal=()=>{ const uf=ufSel?(ufSel===99?'área sem UF':D.ufs[ufSel-1]):'';
+  if(universo==='recorte') return 'do desmatamento de '+anosTxt()+(uf?' em '+uf:'');
+  return uf?'de '+uf:'do Brasil inteiro'; };
+const contextoPc=()=>pilhaFG.length?`de “${pilhaFG[pilhaFG.length-1].rot}”`:nomeTotal();
 function painelTrilha(){
   const p=document.getElementById('clique'); if(!p) return;
   if(!pilhaFG.length){ p.hidden=true; p.innerHTML=''; return; }
@@ -2445,8 +2828,8 @@ function painelTrilha(){
   p.innerHTML=h;
   p.querySelectorAll('[data-ir]').forEach(b=>b.onclick=()=>irPara(+b.dataset.ir));
 }
-const curtoDim=d=>({territorial:'Territorial',fundiario:'Aderência',tamanho:'Tamanho',parcela:'Parcela',car:'CAR',
-  app_rl:'APP/RL',sobrep_area:'CAR × CAR (área)',sobrep_imovel:'CAR × CAR (imóvel)',categoria_uc:'UC',prodes:'Desmatamento',
+const curtoDim=d=>({territorial:'Territorial',fundiario:'Aderência ao INCRA',tamanho:'Tamanho',parcela:'Parcela do INCRA',car:'CAR',
+  app_rl:'RL e APP',sobrep_area:'Sobreposição entre CARs',sobrep_imovel:'Sobreposição (imóvel inteiro)',categoria_uc:'UC',prodes:'Desmatamento',
   mapbiomas:'Uso do solo'}[d]||(D.dimensoes[d]||{}).rotulo||d);
 (()=>{
   const svg=document.getElementById('g');
@@ -2495,6 +2878,7 @@ document.getElementById('abreFiltros').onclick=()=>{
 function estadoParaURL(){
   const p=new URLSearchParams();
   p.set('u',universo);
+  p.set('modo',modo==='simples'?'simples':'det');
   p.set('a',[...anosSel].sort().join(','));
   if(ufSel) p.set('uf',ufSel);
   const mais=[], menos=[];
@@ -2508,7 +2892,7 @@ function estadoParaURL(){
   if(vis==='barra'&&barraModo==='pct') p.set('bm','pct');
   if(calcSel.size) p.set('k',[...calcSel].join(','));
   if(foco.size) p.set('f',[...foco].join('|'));
-  if(filtrosG.length) p.set('fg',JSON.stringify(filtrosG.map(f=>[f.d,f.m,f.labs,f.nome,f.p||1])));
+  if(filtrosG.length) p.set('fg',JSON.stringify(filtrosG.map(f=>[f.d,f.m,f.labs,f.nome,f.p||1,f.como||0])));
   // O uso do solo de antes de cada passo, para o voltar de quem abre o link
   // restaurar exatamente o que havia (inclusive um uso marcado à esquerda).
   if(pilhaFG.length&&pilhaFG.some(s=>s.cls.length)) p.set('fu',pilhaFG.map(s=>s.cls.join('.')).join('|'));
@@ -2519,6 +2903,8 @@ function estadoParaURL(){
 function aplicaURL(){
   const p=new URLSearchParams(location.search);
   if(![...p.keys()].length) return false;
+  // Link da v1 (sem 'modo') abre na Completa, que é a v1; só 'modo=simples' abre a Simplificada.
+  if(p.get('modo')!=='simples'){ modo='det'; D.dimensoes=DD; limpaCaches(); }
   nivelUso = p.get('us')==='agr' ? 'agr' : 'det';
   if(p.get('u')==='recorte'||p.get('u')==='mestre') universo=p.get('u');
   // Link de antes de 16/10/2026 não tem 'a': era só o 2024, e é nele que reabre.
@@ -2536,11 +2922,11 @@ function aplicaURL(){
   if(VIS.some(([,v])=>v===p.get('g'))) vis=p.get('g');
   if(p.get('bm')==='pct') barraModo='pct';
   for(const k of (p.get('f')||'').split('|').filter(Boolean)) foco.add(k);
-  try{ filtrosG=JSON.parse(p.get('fg')||'[]').filter(f=>D.dimensoes[f[0]]).map(([d,m,labs,nome,ps])=>({d,m,labs,nome,p:ps||1})); }catch(e){ filtrosG=[]; }
+  try{ filtrosG=JSON.parse(p.get('fg')||'[]').filter(f=>D.dimensoes[f[0]]).map(([d,m,labs,nome,ps,como])=>({d,m,labs,nome,p:ps||1,como:como||undefined})); }catch(e){ filtrosG=[]; }
   // A trilha volta junto: um passo por grupo do link, na ordem em que foi feito.
   { const ps=[...new Set(filtrosG.map(f=>f.p))].sort((a,b)=>a-b);
     pilhaFG=ps.map(n=>{ const doPasso=filtrosG.filter(f=>f.p===n), gs=new Map();
-      doPasso.forEach(f=>{ const k=f.d+'|'+f.m; if(!gs.has(k)) gs.set(k,[]); gs.get(k).push(f.nome); });
+      doPasso.forEach(f=>{ const k=f.d+'|'+f.m; if(!gs.has(k)) gs.set(k,[]); gs.get(k).push(nomeFiltro(f)); });
       // uso do solo filtrado num passo deste ou de depois: antes dele não havia
       const usoDepois=filtrosG.some(f=>f.d==='mapbiomas'&&f.p>=n);
       return {fg:filtrosG.filter(f=>f.p<n),cls:usoDepois?[]:[...classesSel],rot:descreveGrupos([...gs.values()]),nomes:doPasso.map(f=>f.nome)}; });
@@ -2590,6 +2976,7 @@ const CORES_K=['#175345','#C9A227','#B36E38','#C0512F','#7E5A9B','#2B6A8F'];
 function montaCalc(){
   const c=document.getElementById('calc'); const U=window.__ult;
   if(!c||!U) return;
+  if(modo==='simples'){ c.innerHTML=''; return; }   // na Simplificada o Em foco faz a conta
   const cat=bitsPorRotulo();
   for(const b of [...calcSel]) if(!cat.has(b)) calcSel.delete(b);
   const nome=b=>cat.get(b).rot, grupo=b=>cat.get(b).grupo;
@@ -2763,7 +3150,7 @@ function tabela(arr,area){
     +`<td class="n">${nBR(100*it.valor/area,2)}</td></tr>`;
 
   let h='<tr><th>Categoria</th><th style="text-align:right">Área (ha)</th>'
-       +'<th style="text-align:right">% da seleção</th></tr>';
+       +`<th style="text-align:right">% ${escH(contextoPc())}</th></tr>`;
   if(sel.length) h+=`<tr><td colspan="3" style="padding:0;height:6px;border:0"></td></tr>`;
   for(const it of sel) h+=linha(it,true);
   if(sel.length){
@@ -2808,16 +3195,15 @@ function tabela(arr,area){
   if(U.modo==='sep' && U.multi>0){
     const pc=nBR(100*U.multi/area,2);
     h+=`<tr><td colspan="3" style="color:var(--suave);font-size:12.5px;${nota}">`
-      +`<b>${fmt(U.multi)} ha (${pc}%)</b> da seleção estão em linhas que combinam `
-      +`mais de uma categoria deste eixo. Aqui cada pixel aparece <b>uma vez só</b>. `
-      +`Se você somar filtros separados — um para cada categoria — essa área `
-      +`é contada <b>duas vezes</b>. Clique nas linhas para destacá-las: a soma `
-      +`delas conta cada hectare uma vez.`
+      +`<b>${fmt(U.multi)} ha (${pc}% ${escH(contextoPc())})</b> estão em mais de uma categoria `
+      +`deste eixo${(()=>{ const ex=(U.bruto||arr).find(it=>membrosCombo(U.eixo,it.nome));
+          return ex?` (como “${escH(ex.nome)}”)`:''; })()}. Cada linha conta só o pixel com `
+      +`exatamente aquelas categorias: a de uma categoria sozinha não inclui as combinações.`
       +`</td></tr>`;
-  } else if(U.modo==='sep' && U.combos){
+  } else if(U.modo==='sep' && U.combos && modo!=='simples'){
     h+=`<tr><td colspan="3" style="color:var(--suave);font-size:12.5px;${nota}">`
-      +`<b>Sobreposição: 0 ha (0,00%)</b> — nesta seleção nenhuma linha combina mais `
-      +`de uma categoria deste eixo.</td></tr>`;
+      +`<b>Em mais de uma categoria: 0 ha (0,00%)</b> — aqui nenhum pixel está em mais de uma `
+      +`categoria deste eixo.</td></tr>`;
   }
   t.innerHTML=h;
   t.querySelectorAll('tr[data-nome]').forEach(tr=>{
@@ -2880,7 +3266,7 @@ function montaAnos(){
 // Brasil inteiro com o filtro de desmatamento ligado ou no % desmatado. Antes
 // ficavam sempre a vista, e no Brasil inteiro clicar nao mudava numero nenhum
 // -- o usuario achou que estava quebrado (17/10/2026).
-const anoVale=()=>universo!=='mestre'||estado[7]===1||vis==='taxa';
+const anoVale=()=>universo!=='mestre'||estado[7]===1||vis==='taxa'||eixos.some(e=>e.d==='prodes');
 function marcaAnos(){
   document.getElementById('anosBox').hidden=!anoVale();
   document.querySelectorAll('#selAnos button').forEach(b=>
@@ -2908,7 +3294,7 @@ document.getElementById('baixar').onclick=()=>{
   // combinacoes, uma por linha, porque e nela que se faz a soma.
   const {bruto,arr,area}=window.__ult||{bruto:[],arr:[],area:0};
   const fonte=(bruto&&bruto.length)?bruto:arr;
-  let csv='categoria;subcategoria;area_ha;pct_da_selecao\n';
+  let csv='categoria;subcategoria;area_ha;pct_do_total\n';
   for(const it of fonte){ if(it.filhos&&it.filhos.length)
       for(const f of it.filhos) csv+=`"${it.nome}";"${f.nome}";${f.valor.toFixed(2)};${(100*f.valor/area).toFixed(4)}\n`;
     else csv+=`"${it.nome}";;${it.valor.toFixed(2)};${(100*it.valor/area).toFixed(4)}\n`;}
@@ -2971,10 +3357,12 @@ function baixarPNG(){
     const GWp=+svg.getAttribute('viewBox').split(' ')[2], larg=GWp-16;
     const linhas=[], tf=textosFoco(), poe=t=>quebraW(t,12,larg,3).forEach(l=>linhas.push(l));
     if(tf.res) poe(`${fmt(tf.res.v)} ha${tf.res.pc?' · '+tf.res.pc:''}${tf.res.desc?' — '+tf.res.desc:''}`);
-    tf.grupos.forEach((g,i)=>poe(`${i?'e  ':''}${g.rot?g.rot+': ':''}${g.nomes.join(' ou ')}`));
-    tf.notas.forEach(poe);
-    if(tf.res&&tf.detalhes.length) poe('Total de cada um, sozinho:');
-    (tf.res?tf.detalhes:tf.itens.map(it=>`${it.k}: ${it.t}`)).forEach(t=>poe(tf.res?'  '+t:t));
+    if(tf.tab.length) tf.tab.forEach(l=>poe(`${l.nome}${l.sub?' ('+l.sub+')':''}: ${fmt(l.v)} ha`+
+      `${l.pc?' · '+l.pc+' '+tf.ctx:''}`));
+    else tf.grupos.forEach(g=>poe(`${g.rot?g.rot+': ':''}${g.nomes.join(' ou ')}`));
+    tf.pesos.forEach(poe);
+    if(tf.grupos.length>1) tf.notas.forEach(poe);
+    if(!tf.res) tf.itens.forEach(it=>poe(`${it.k}: ${it.t}`));
     const y0=+svg.getAttribute('viewBox').split(' ')[3];
     extra=34+linhas.length*17;
     rodape=`<line x1="8" x2="${GWp-8}" y1="${y0+10}" y2="${y0+10}" stroke="var(--linha)"/>`+
@@ -3041,8 +3429,8 @@ function aplicaTema(t){
   põe('iUni','<b>Brasil inteiro</b> traz todos os pixels do país, desmatados ou não — '+
     'serve para medir proporções, como "quanto da Terra Indígena foi desmatado". '+
     '<b>Desmatamento PRODES</b> restringe à mancha do PRODES e mostra os anos: um, ou '+
-    'mais de um somados. No Brasil inteiro os anos aparecem quando o filtro de '+
-    'desmatamento está ligado ou no gráfico % desmatado — só onde o ano entra na conta. '+
+    'mais de um somados. No Brasil inteiro os anos aparecem no gráfico % desmatado, '+
+    'que é onde entram na conta. '+
     'Os anos não se sobrepõem: o PRODES marca cada pixel uma vez só.','Universo');
   põe('iUF','Recorta tudo para um estado. Com um estado escolhido, os percentuais passam '+
     'a ser dele, e um cartão à parte mostra o peso daquele recorte no Brasil.','Estado');
@@ -3050,23 +3438,32 @@ function aplicaTema(t){
     'a proíbem (−), três voltam a indiferente. Dentro de um mesmo grupo os filtros somam '+
     'com <b>ou</b>; entre grupos, com <b>e</b> — assim "dentro de alguma UC" é um clique '+
     'em cada UC, não a interseção das seis.','Filtrar');
-  põe('iSeparar','Define como o que entrou é QUEBRADO no gráfico. Cada comparação tem o '+
-    'próprio botão de leitura ao lado; a de uso do solo tem, no lugar dele, a escolha entre '+
-    'agrupado e detalhado. Da terceira em diante só o Sankey desenha.',
+  põe('iSeparar','Define em que categorias o resultado é separado no gráfico. O ⓘ ao lado '+
+    'de cada comparação explica as classes dela; a de uso do solo tem a escolha entre agrupado '+
+    'e detalhado. Onde um pixel pode estar em mais de uma classe (como na Categoria territorial: '+
+    '“CAR + Assentamentos”), a comparação tem também o botão de leitura, que decide como contá-lo: '+
+    '<b>cada combinação</b> com nome próprio, <b>combinações juntas</b> numa classe só, ou '+
+    '<b>total por classe</b>. Da terceira comparação em '+
+    'diante só o Sankey desenha.',
     'Separar por');
   const iu=document.getElementById('iUso');
   iu.appendChild(info(EXPLICA['Uso do solo']+'<br><br>'+textoUso(),'Uso do solo'));
   document.getElementById('nivelUsoF').appendChild(seletorNivelUso());
+  document.querySelectorAll('button[data-modo]').forEach(b=>b.onclick=()=>mudaModo(b.dataset.modo));
+  document.getElementById('modoBtn').onclick=()=>mudaModo('simples');
+  document.querySelector('#gavetaUso h3').onclick=()=>document.getElementById('gavetaUso').classList.toggle('aberta');
 })();
 aplicaURL();
 // Tudo o que o link trouxe (estado, gráfico, classes) é pintado antes da única
 // conta da abertura.
-montaFiltros(); montaAnos(); marcaU(); marcaV(); marcaNivelUso(); montaUF(); sincLeitura(); sincUF(); calcula();
+atualizaDimProdes(); marcaModo(); montaFiltros(); montaAnos(); marcaU(); marcaV(); marcaNivelUso(); montaUF(); sincLeitura(); sincUF(); calcula();
 
 // Autoconferencia: abra o arquivo com ?validar no fim do endereco.
 // Refaz em JavaScript as combinacoes calculadas em pandas e compara.
 if(location.search.includes('validar')){
   const guarda={e:{...estado},c:[...classesSel],u:universo,a:[...anosSel]};
+  const modoAntes=modo;
+  if(modo!=='det'){ modo='det'; D.dimensoes=DD; limpaCaches(); }
   const poeAnos=as=>{ const k=[...as].sort().join(',');
     if(k!==[...anosSel].sort().join(',')){ anosSel=new Set(as); mudaAnos(); } };
   let okC=0, okA=0, pior=0; const ruins=[];
@@ -3119,10 +3516,73 @@ if(location.search.includes('validar')){
   Object.assign(estado,guarda.e); guarda.c.forEach(x=>classesSel.add(x));
   universo=guarda.u; poeAnos(guarda.a); marcaAnos();
   sincChips();
+  // ---- as classes simplificadas, contra os bits brutos --------------------------
+  // Cada classe simplificada é refeita direto do dado bruto, por uma fórmula
+  // escrita à parte da remapSimples; "Fora do CAR" tem de ser a mesma área em
+  // todos os eixos do CAR; e filtrar uma categoria "com combinações" pelo
+  // gráfico tem de dar o mesmo que o filtro de bit dela.
+  modo='simples'; D.dimensoes=DIM_SIM; limpaCaches();
+  let okF=0, nF=0; const ruinsF=[];
+  { const B=b=>1<<b, car=v=>(v&256)!==0;
+    const ref={
+      territorial:{'UC de Proteção Integral':(v)=>v&(B(17)|B(19)|B(21)),
+        'UC de Uso Sustentável':(v)=>v&(B(18)|B(20)|B(22)),'Assentamentos':(v)=>v&(B(24)|B(25)),
+        'Áreas Não Destinadas':(v)=>v&(B(26)|B(27)),'Terra Indígena':(v)=>v&B(16),'CAR':car},
+      fundiario:{'Aderente ao INCRA (≥90%)':(v)=>car(v)&&(v&(B(9)|B(10))),
+        'Não aderente':(v)=>car(v)&&(v&(B(11)|B(12)))&&!(v&(B(9)|B(10))),
+        'Fora do CAR':(v)=>!car(v)},
+      parcela:{'Parcela do INCRA':(v)=>v&(B(28)|B(29))},
+      app_rl:{'RL e APP':(v,u)=>u&(B(8)|B(9))},
+      sobrep_area:{'CAR sobreposto a outro':(v,u)=>car(v)&&(u&B(23)),
+        'CAR duplicado':(v,u)=>car(v)&&!(u&B(23))&&(u&B(24)),
+        'CAR sem sobreposição':(v,u)=>car(v)&&!(u&(B(23)|B(24))),'Fora do CAR':(v)=>!car(v)},
+      car:{'Fora do CAR':(v)=>!car(v)}};
+    for(const uni of ['mestre','recorte']){
+      for(const as of [[ANOS[0][0]],ANOS.map(x=>x[0])]){
+        poeAnos(as); limpaCaches();
+        let mA=0; for(const [a,b] of ANOS) if(anosSel.has(a)) mA|=1<<(b-100);
+        const S=colunas(uni);
+        for(const dn in ref){
+          const tot=new Map(), L=leitor(dn).lista.som;
+          for(let i=0;i<S.n;i++) for(const l of L(S.V[i],S.U[i])) tot.set(l,(tot.get(l)||0)+S.A[i]);
+          for(const nome in ref[dn]){
+            const f=ref[dn][nome]; let s=0;
+            for(let i=0;i<BRUTO.n;i++){ const u=BRUTO.U[i];
+              if(uni==='recorte'&&!(u&mA)) continue;
+              if(f(BRUTO.V[i],u)) s+=BRUTO.A[i]; }
+            nF++; const a=tot.get(nome)||0;
+            if(Math.abs(a-s)<0.01) okF++;
+            else ruinsF.push(`${uni} ${dn} ${nome}: ${Math.round(a)} ≠ ${Math.round(s)}`);
+          }
+        }
+        // filtro "com combinações" pelo gráfico = filtro de bit
+        for(const [nome,b] of [['Terra Indígena',16],['Assentamentos',24],['CAR',8]]){
+          for(const k in estado) delete estado[k]; universo=uni;
+          const viaG=areaFiltrada([{d:'territorial',m:'som',labs:[nome],nome,p:1}],null);
+          estado[b]=1; const viaB=areaFiltrada([],null); delete estado[b];
+          nF++; if(Math.abs(viaG-viaB)<0.01) okF++;
+          else ruinsF.push(`${uni} filtro “${nome} (com combinações)”: ${Math.round(viaG)} ≠ ${Math.round(viaB)}`);
+        }
+      }
+    }
+  }
+  // Nomes únicos entre eixos, nas duas versões (e contra o uso do solo).
+  { const uso=new Set([...GRUPOS_USO.map(g=>g[0]),...Object.values(D.classes).map(c=>c[0])]);
+    for(const [nm,DS] of Object.entries(DIMS)){
+      const onde=new Map();
+      for(const [k,d] of Object.entries(DS)){ if(d.tipo!=='bits') continue;
+        for(const n of [...d.bits.map(b=>b[1]),d.vazio||'Nenhum']){
+          if(!onde.has(n)) onde.set(n,new Set()); onde.get(n).add(k); } }
+      const rep=[...onde].filter(([n,ks])=>(ks.size>1&&n!=='Fora do CAR')||uso.has(n)).map(([n])=>n);
+      nF++; if(!rep.length) okF++; else ruinsF.push(`nomes repetidos (${nm}): ${rep.join(', ')}`);
+    } }
+  if(modoAntes!==modo){ modo=modoAntes; D.dimensoes=DIMS[modo]; }
+  limpaCaches(); universo=guarda.u; poeAnos(guarda.a); marcaAnos();
+  for(const k in estado) delete estado[k]; Object.assign(estado,guarda.e);
   document.getElementById('uMestre').setAttribute('aria-pressed',universo==='mestre');
   document.getElementById('uRecorte').setAttribute('aria-pressed',universo==='recorte');
   calcula();
-  const tudoOk = okC===D.testes.length && okA===D.testes.length && okCons===nCons;
+  const tudoOk = okC===D.testes.length && okA===D.testes.length && okCons===nCons && okF===nF;
   const d=document.createElement('div'); d.id='painelValidacao';
   d.style.cssText='position:fixed;right:14px;bottom:14px;z-index:99;max-width:330px;'+
     'background:var(--fundo);border:2px solid '+(tudoOk?'var(--verde)':'var(--apagado)')+
@@ -3132,10 +3592,11 @@ if(location.search.includes('validar')){
     `contagem de combinações: ${okC}/${D.testes.length}<br>`+
     `área no hectare cheio: ${okA}/${D.testes.length}<br>`+
     `conservação da quebra: ${okCons}/${nCons}<br>`+
+    `classes simplificadas e nomes únicos: ${okF}/${nF}<br>`+
     `maior diferença: ${pior.toFixed(4)} ha<br>`+
     `<span style="color:var(--suave)">valores de referência calculados em pandas sobre `+
     `a tabulação do mestre e a do recorte, feitas à parte, e embutidos neste arquivo</span>`+
-    (ruins.length?`<br><span style="color:var(--apagado)">${ruins.slice(0,3).join('<br>')}</span>`:'');
+    ([...ruins,...ruinsF].length?`<br><span style="color:var(--apagado)">${[...ruins,...ruinsF].slice(0,4).join('<br>')}</span>`:'');
   document.body.appendChild(d);
 }
 </script></body></html>
