@@ -14,6 +14,44 @@ página antiga.
 Acrescente `?validar` ao endereço para a página conferir a si mesma: ela refaz
 em JavaScript as combinações calculadas em pandas e mostra o placar.
 
+## Revisão da experiência de análise de 21/10/2026
+
+- **Simplificado / Detalhado** substituem Simplificada / Completa. A abertura
+  sem parâmetros usa barras, uma comparação e classes agrupadas. No celular,
+  as configurações começam recolhidas e a exportação fica depois do gráfico.
+- Os filtros do Detalhado ficam organizados por assunto. No computador, cada
+  painel abre a 8 px do botão que o acionou, com ajuste às bordas da janela,
+  fechamento por Escape ou clique fora e relação acessível entre botão e painel.
+  No celular, o painel abre imediatamente abaixo do respectivo botão.
+- Grupos de opções territoriais, categorias de UC e sobreposição seguem o mesmo
+  ciclo das suas opções: **incluir → excluir → limpar**. Exclusão aparece em
+  laranja com **−**. O botão **Excluir** também permite chegar diretamente a
+  esse estado. Abrir os detalhes não altera a seleção. Os grupos de cobertura
+  do solo mantêm a seleção por classes, sem exclusão implícita.
+- **Filtros aplicados** apresenta etiquetas removíveis, inclusive quando o painel
+  está fechado ou o usuário muda para o modo Simplificado.
+- A troca de modo preserva os filtros e a área selecionada. Os filtros guardam
+  sua origem (`q` nos filtros pelo gráfico e `eb` para as opções), permitindo
+  consultar os bits detalhados ou as classes agrupadas sem alargar o recorte.
+  Os links compartilham essa origem. Comparações indisponíveis no Simplificado
+  são adaptadas com uma mensagem; a seleção temporária no gráfico é limpa.
+- A leitura de combinações usa um seletor com explicação. Os rótulos distinguem
+  **Somente imóvel no CAR** de **Imóvel no CAR (inclui combinações)**. Os nomes
+  de apresentação foram revisados também nas tabelas, legendas e exportações;
+  as identidades internas dos filtros e das classes foram preservadas.
+- “Floresta” aparece como **Formações florestais e savânicas**. O antigo grupo de
+  vegetação herbácea passa a **Formações campestres, arbustivas e áreas úmidas**;
+  **Afloramentos rochosos** ficam separados. O restante dos grupos conserva sua
+  posição para manter os identificadores da calculadora.
+- Marcas dos gráficos e linhas da tabela podem ser selecionadas pelo teclado.
+  Enter/Espaço selecionam; Shift+Enter aplica como filtro no gráfico. Controles
+  de ajuda têm alvos maiores. Os tipos adicionais ficam em **Mais gráficos**.
+
+Validação: 472/472 contagens e áreas, 60/60 conservações e 78/78 verificações
+existentes de classes e nomes. Testes de navegador cobriram os três estados do
+conjunto e dos filhos, posição do painel, preservação entre modos e por link,
+links antigos, teclado, CSV/PNG e celular sem rolagem horizontal da página.
+
 ## Revisão de filtros de 21/10/2026
 
 - A gaveta redundante de desmatamento saiu. O recorte continua disponível em
@@ -23,7 +61,7 @@ em JavaScript as combinações calculadas em pandas e mostra o placar.
   **Tipo de área ou território** e **Uso e cobertura do solo**. As opções
   explicitam módulos fiscais, proteção integral, uso sustentável e outras siglas.
 - Nos subgrupos, clicar no **nome** seleciona todas as opções; clicar novamente
-  desmarca todas. **Detalhar** abre as opções sem mudar o filtro. O cabeçalho
+  exclui todas e o terceiro clique limpa o filtro. **Detalhar** abre as opções sem mudar o filtro. O cabeçalho
   mostra seleção parcial e exclusões, inclusive quando os detalhes estão fechados.
 - O padrão vale para **Unidades de conservação**, **Assentamentos** e
   **Florestas públicas não destinadas**; também para os grupos de categorias de
