@@ -320,12 +320,22 @@ body[data-modo="det"] .modoLinha b{color:var(--apagado)}
 .foco .fop:hover,.foco .fop:focus-visible{background:var(--painel)}
 .fescolha .flimpa{align-self:center}
 .fnota.famb{color:var(--suave)}
+.wrap{max-width:1640px}
+.grade{grid-template-columns:minmax(0,1fr)}
+.cabeca{display:flex;flex-wrap:wrap;align-items:flex-start;gap:4px 28px;margin:0 0 14px}
+.cabeca .intro{flex:1 1 520px;min-width:0}
+.cabeca .sobre{margin-bottom:0}
+.recorteTopo{display:flex;flex-wrap:wrap;gap:12px;flex:0 1 640px;min-width:0}
+.recorteTopo .cx{flex:1 1 260px;margin-bottom:0}
+.ajustesTopo{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px 22px;margin-left:auto}
+.ajustesTopo .tema{width:auto}
+@media(max-width:600px){.ajustesTopo{justify-content:flex-start;margin-left:0;width:100%}}
 </style>
 <script>try{var t=localStorage.getItem('tema');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 </head><body><div class="wrap">
 <div class="topo">
 <h1>Explorador PRODES — combinações a 10 metros, por estado <span class="v2tag" title="versão simplificada em validação; a versão anterior continua no endereço principal">v2 · em validação</span></h1>
-<div class="tema"><span class="gtit">Classes</span>
+<div class="ajustesTopo"><div class="tema"><span class="gtit">Classes</span>
   <span class="seg mini" role="group" aria-label="Nível das classes">
     <button type="button" data-modo="simples" title="as classes da versão simplificada: base do INCRA, UC por grupo de manejo, RL e APP juntas…">Simplificadas</button>
     <button type="button" data-modo="det" title="a separação completa (SIGEF e SNCI, esferas das UCs, as três classes de sobreposição entre CARs…), para conferir; destaque e filtros do gráfico recomeçam">Detalhadas</button>
@@ -335,10 +345,11 @@ body[data-modo="det"] .modoLinha b{color:var(--apagado)}
     <button type="button" data-tema="auto" title="segue o modo claro ou escuro do seu computador ou celular">Automático</button>
     <button type="button" data-tema="light">Claro</button>
     <button type="button" data-tema="dark">Escuro</button>
-  </span></div>
+  </span></div></div>
 </div>
-<p class="sub">À esquerda você escolhe o <b>universo</b> (o Brasil inteiro ou só o
-desmatamento) e o <b>estado</b>; acima do gráfico, por quais categorias <b>separar</b>. No
+<div class="cabeca"><div class="intro">
+<p class="sub">Nos quadros <b>Universo</b> e <b>Estado</b> você escolhe se a conta é do
+Brasil inteiro ou só do desmatamento, e de qual estado; acima do gráfico, por quais categorias <b>separar</b>. No
 gráfico, um <b>clique</b> destaca uma parte e mostra os números dela; <b>Filtrar por isto</b>
 (ou um duplo clique) faz a página inteira passar a ser só aquilo — e ← voltar desfaz. A frase
 acima dos números descreve sempre o que está na tela.</p>
@@ -354,8 +365,8 @@ cancelado — 8.268.132 de 8.349.966 imóveis. A aderência ao SIGEF e ao SNCI �
 medida por <b>imóvel</b>, com as parcelas dissolvidas, e não parcela a parcela.
 As <b>12 categorias de unidade de conservação</b> do SNUC aparecem pela primeira
 vez, ao lado dos seis bits de esfera e grupo.</p></details>
-<div class="grade">
-<aside class="lateral">
+</div>
+<div class="recorteTopo">
   <div class="cx"><h3>1. Universo <span id="iUni"></span></h3>
     <button id="uMestre" aria-pressed="true">Brasil inteiro</button>
     <button id="uRecorte" aria-pressed="false">Desmatamento PRODES</button>
@@ -368,6 +379,9 @@ vez, ao lado dos seis bits de esfera e grupo.</p></details>
     <select id="selUF" style="width:100%"></select>
     <div id="ufInfo" style="font-size:11.5px;color:var(--suave);margin-top:7px"></div>
   </div>
+</div></div>
+<div class="grade">
+<aside class="lateral" hidden style="display:none">
   <button id="abreFiltros" class="abreFiltros" hidden style="display:none" aria-expanded="false" aria-controls="painelFiltros">
     <span>Filtros</span><span class="n" id="nFiltros">nenhum ativo ▾</span></button>
   <div id="painelFiltros" class="painelFiltros" hidden style="display:none">
@@ -1435,7 +1449,7 @@ function desenha(arr,area){
   larguraDesenhada=w;
   GW=w;
   GH = w<640 ? Math.round(w*(vis==='tree'?1.2:vis==='sank'?1.6:1))
-             : Math.round(Math.min(620,Math.max(460,w*0.62)));
+             : Math.round(Math.min(w>=1100?700:620,Math.max(460,w*0.62)));
   let o; PADROES=new Map();
   if(!arr.length||!area)
     o=`<text x="${GW/2}" y="${GH/2}" text-anchor="middle" fill="var(--suave)" font-size="14">Nenhuma combinação satisfaz os filtros</text>`;
