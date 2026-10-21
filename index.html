@@ -445,6 +445,56 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
  #maisGraficos[open] .seg{right:auto;left:0;width:min(300px,calc(100vw - 44px))}
  .subfiltro{display:block;margin-right:0}.subseleciona{flex:1;min-width:0}
 }
+
+@media(min-width:701px){
+ #maisGraficos{display:contents}#maisGraficos>summary{display:none}
+ #maisGraficos[open] .seg{position:static;width:auto;padding:0;box-shadow:none;display:flex;flex-wrap:wrap}
+ #maisGraficos .seg button{border-radius:0;border-right:1px solid var(--linha);padding:7px 13px}
+ #maisGraficos .seg button:last-child{border-right:0}
+}
+
+/* A caixa altera o filtro; só a seta abre o painel. */
+.gavItem{display:inline-flex;align-items:stretch}
+.gavSeleciona{min-width:34px;min-height:36px;padding:4px 8px;border-radius:8px 0 0 8px;border-right:0;background:var(--painel);font-size:17px;color:var(--suave)}
+.gavItem>.gavBtn{border-radius:0 8px 8px 0}
+.gavSeleciona[data-e="1"]{color:var(--aceso);border-color:var(--aceso);background:color-mix(in srgb,var(--aceso) 10%,var(--painel))}
+.gavSeleciona[data-e="2"],.gavBtn[data-grupo-estado="2"]{color:var(--apagado);border-color:var(--apagado);background:color-mix(in srgb,var(--apagado) 10%,var(--painel))}
+.gavSeleciona[data-e="3"]{color:var(--aceso);outline:1px dashed var(--aceso);outline-offset:-3px}
+.opFiltro{border:0;overflow:visible}.opFiltro .chip{border:1px solid var(--linha);border-radius:8px}
+@media(min-width:701px){.escolhaGraficos{gap:0;max-width:100%}.pgrupo{min-width:0;max-width:100%}.escolhaGraficos>.seg{flex:0 1 auto;max-width:100%}.escolhaGraficos>.seg{display:flex;flex-wrap:wrap}#maisGraficos{display:none}}
+@media(max-width:700px){.gavItem{display:flex;flex-wrap:wrap}.gavItem>.gavSeleciona{min-height:42px;flex:0 0 38px}.gavItem>.gavBtn{width:auto;flex:1}.gavItem>.gaveta{flex-basis:100%}}
+
+/* Listas de opções: conjuntos antes dos itens isolados, ordenados no DOM em pt-BR. */
+.gaveta .subfiltro{display:block;width:100%;margin:0 0 8px}
+.gaveta .subcab{flex-wrap:nowrap}.gaveta .subseleciona{flex:1;min-width:0}
+.gaveta .opFiltro{display:flex;width:100%;margin:0 0 6px}
+.gaveta .opFiltro .chip{width:100%;text-align:left;justify-content:flex-start;overflow-wrap:anywhere}
+.gaveta .subitens{max-width:none}
+#gavetaUso #fclasses>.chip{display:flex;width:100%;justify-content:flex-start;text-align:left}
+
+/* Painéis compactos: uma caixa externa e tópicos recuados, sem cartões aninhados. */
+.painelFiltros .gaveta{padding:12px 14px}
+.gaveta .dicaFiltro{font-size:12px;line-height:1.4;margin-bottom:8px}
+.gaveta .subfiltro{border:0;border-radius:0;background:transparent;margin-bottom:3px}
+.gaveta .subcab{gap:2px;align-items:center}
+.gaveta .subseleciona{min-height:30px;padding:3px 6px;border-radius:4px;gap:7px;font-size:12px;background:transparent}
+.gaveta .subseleciona small{font-size:10.5px}
+.gaveta .estadoGrupo{font-size:16px;width:18px}
+.gaveta .subabre{min-width:30px;min-height:30px;border:0;border-radius:4px;padding:3px 6px;font-size:15px}
+.gaveta .subitens{border-top:0;border-left:1px solid var(--linha);padding:3px 0 2px 10px;margin:2px 0 5px 14px}
+.gaveta .opFiltro{margin-bottom:2px}
+.gaveta .opFiltro .chip{border:0;border-radius:4px;background:transparent;min-height:28px;padding:3px 6px;font-size:12px}
+.gaveta .chip[data-e="1"],.gaveta .subseleciona[data-e="1"]{color:var(--aceso);background:color-mix(in srgb,var(--aceso) 7%,var(--painel));box-shadow:none}
+.gaveta .chip[data-e="2"],.gaveta .subseleciona[data-e="2"]{color:var(--apagado);background:color-mix(in srgb,var(--apagado) 7%,var(--painel));box-shadow:none;outline:0}
+.gaveta .subseleciona[data-e="3"]{outline:0;border-left:2px dashed var(--aceso)}
+#gavetaUso #fclasses>.chip{min-height:28px;padding:3px 6px;border:0;border-radius:4px;margin-bottom:2px}
+@media(max-width:700px){.painelFiltros .gaveta{position:relative;left:auto!important;top:auto!important}.gaveta .subseleciona,.gaveta .subabre,.gaveta .opFiltro .chip,#gavetaUso #fclasses>.chip{min-height:36px}}
+
+/* Contagem fora da composição visual; título e fechar compartilham o mesmo eixo. */
+.gaveta .subseleciona small{display:none}
+.cabPainel{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.cabPainel h3{flex:1;min-width:0;padding:0;margin:0!important}
+.cabPainel .fechaPainel{position:static;flex:0 0 auto;min-height:28px;line-height:1.2;padding:5px 8px;margin:0}
 </style>
 <script>try{var t=localStorage.getItem('tema');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 </head><body><div class="wrap">
@@ -662,6 +712,9 @@ let ufSel=0;   // 0 = Brasil inteiro; 1..27 = código da UF; 99 = sem UF
 let fonteEstado=null;
 const estado={};   // bit -> 0 indiferente, 1 precisa, 2 nao pode
 const classesSel=new Set();
+const classesNeg=new Set();
+const estadoClasse=c=>classesNeg.has(c)?2:classesSel.has(c)?1:0;
+function marcaClasses(cs,e){cs.forEach(c=>{classesSel.delete(c);classesNeg.delete(c);if(e===1)classesSel.add(c);if(e===2)classesNeg.add(c);});}
 // Uso do solo em dois níveis: as classes do MapBiomas como vêm no dado, ou os
 // grupos definidos pelo time. A coleção de 10 m não separa as culturas: a
 // agricultura vem só como Lavoura Temporária (19) e Lavoura Perene (36), que
@@ -848,22 +901,28 @@ const DICA_FILTRO={
   'Contorno da parcela — SIGEF e SNCI separados':
     'Seleciona as próprias áreas cadastradas no SIGEF/SNCI, mesmo onde não há CAR. Para comparar os contornos com um imóvel do CAR, use “Correspondência CAR × SIGEF/SNCI”.',
   'APP e Reserva Legal declaradas':'Áreas de Preservação Permanente (APP) e de Reserva Legal informadas no Cadastro Ambiental Rural (CAR).',
-  'Categorias territoriais':'Grupos e opções alternam entre incluir (✓), excluir (−) e limpar. Use Detalhar para escolher uma a uma. Dentro desta gaveta, as opções selecionadas entram com “ou”.',
+  'Categorias territoriais':'Clique para incluir (✓), excluir (−) ou limpar. A seta abre os detalhes; as opções entram com “ou”.',
   'Categoria da UC (SNUC)':'Classifica as unidades de conservação por categoria. A divisão entre federal, estadual e municipal está em “Tipo de área ou território”.',
   'Sobreposição entre imóveis do CAR':'“Área sobreposta” conta só o trecho comum. “Imóveis inteiros” considera toda a área dos imóveis que têm essa sobreposição.'
 };
 let nSubfiltro=0;
+function organizaOpcoes(p){
+  const nome=e=>(e.classList.contains('subfiltro')?e.querySelector('.subseleciona>span:not(.estadoGrupo)')?.textContent:(e.querySelector('.chip')||e).textContent).replace(/[□✓±−·]/g,'').trim();
+  const itens=[...p.children].filter(e=>e.matches('.subfiltro,.opFiltro,.chip'));
+  itens.sort((a,b)=>Number(b.classList.contains('subfiltro'))-Number(a.classList.contains('subfiltro'))||nome(a).localeCompare(nome(b),'pt-BR',{sensitivity:'base'}));
+  itens.forEach(e=>p.appendChild(e));
+}
 function subgrupoFiltro(nome,filhos,leEstados,marca,exclusao=false){
   const g=document.createElement('div'); g.className='subfiltro';
   const cab=document.createElement('div'); cab.className='subcab';
   const sel=document.createElement('button');sel.type='button';sel.className='subseleciona';
   const check=document.createElement('span');check.className='estadoGrupo';check.setAttribute('aria-hidden','true');sel.appendChild(check);
   const titulo=document.createElement('span'); titulo.textContent=textoClaro(nome);
-  const cont=document.createElement('small');
+  const cont=document.createElement('small');cont.hidden=true;
   sel.append(titulo,cont);
   const abre=document.createElement('button'); abre.type='button'; abre.className='subabre';
   const itens=document.createElement('div'); itens.className='subitens'; itens.id='subfiltro-'+(++nSubfiltro);
-  itens.hidden=true; itens.append(...filhos);
+  itens.hidden=true; itens.append(...filhos);organizaOpcoes(itens);
   abre.setAttribute('aria-controls',itens.id); abre.setAttribute('aria-expanded','false');
   const pinta=()=>{
     const es=leEstados(), n=es.filter(e=>e===1).length, neg=es.filter(e=>e===2).length;
@@ -872,7 +931,8 @@ function subgrupoFiltro(nome,filhos,leEstados,marca,exclusao=false){
     sel.title=(todos?(exclusao?'Excluir todas as opções de ':'Desmarcar todas as opções de '):todosNeg?'Limpar exclusão de ':'Incluir todas as opções de ')+textoClaro(nome);
     sel.setAttribute('aria-label',sel.title);
     cont.textContent=todosNeg?`${neg} de ${es.length} excluídas`:n||neg?`${n} de ${es.length} selecionadas`+(neg?` · ${neg} excluídas`:''):`${es.length} opções`;
-    abre.textContent=itens.hidden?'Detalhar ▾':'Recolher ▴';
+    sel.setAttribute('aria-description',cont.textContent);
+    abre.textContent=itens.hidden?'▸':'▾';abre.title=(itens.hidden?'Detalhar ':'Recolher ')+textoClaro(nome);
     abre.setAttribute('aria-label',(itens.hidden?'Detalhar ':'Recolher ')+nome);
   };
   sel.onclick=()=>{const es=leEstados();marca(exclusao?(es.every(e=>e===1)?2:es.every(e=>e===2)?0:1):!es.every(e=>e===1));pinta();};
@@ -894,10 +954,7 @@ function montaFiltros(){
       s.innerHTML=`<span class="m">·</span>${escH(nomeOpcao(b,rot))}`;
       s.onclick=()=>{estado[b]=((estado[b]||0)+1)%3;fonteEstado='det';sincChips();agenda();};
       const item=document.createElement('span');item.className='opFiltro';
-      const excluir=document.createElement('button');excluir.type='button';excluir.className='excluirOpcao';excluir.dataset.bitExcluir=b;excluir.textContent='Excluir';
-      excluir.setAttribute('aria-label','Excluir '+nomeOpcao(b,rot));
-      excluir.onclick=()=>{estado[b]=estado[b]===2?0:2;fonteEstado='det';sincChips();agenda();};
-      item.append(s,excluir);chips.set(b,item);
+      item.append(s);chips.set(b,item);
     }
     const grupos=GRUPOS_FILTRO[g]||[], vistos=new Set();
     for(const [b] of bits){
@@ -910,7 +967,7 @@ function montaFiltros(){
     }
     const h=d.querySelector('h3'); h.onclick=()=>d.classList.toggle('aberta');
     if(EXPLICA[g]) h.appendChild(info(EXPLICA[g],NOME_GAVETA[g]||g));
-    c.appendChild(d);
+    organizaOpcoes(d);c.appendChild(d);
   }
   sincChips();
 }
@@ -920,7 +977,6 @@ function sincChips(){
     c.querySelector('.m').textContent=e===0?'□':e===1?'✓':'−';
     c.setAttribute('aria-pressed',e===1?'true':e===2?'mixed':'false');
     c.title=e===1?'Incluído; clique para excluir':e===2?'Excluído; clique para limpar':'Clique para incluir';
-    c.closest('.opFiltro').querySelector('.excluirOpcao').setAttribute('aria-pressed',String(e===2));
   });
   document.querySelectorAll('#painelFiltros .gaveta[data-grupo] .subfiltro').forEach(g=>g._pinta());
   marcaGavetas();
@@ -931,6 +987,7 @@ function montaClasses(){
   { const {V,U,n}=colunas(universo); for(let i=0;i<n;i++) if(passaUF(U[i])) usadas.add(V[i]&127); }
   usosPresentes=usadas;
   for(const c of [...classesSel]) if(!usadas.has(c)) classesSel.delete(c);
+  for(const c of [...classesNeg]) if(!usadas.has(c)) classesNeg.delete(c);
   // O filtro guarda sempre códigos: o chip de grupo marca ou desmarca todos os
   // códigos dele. Assim trocar de nível nunca muda a conta, só o desenho.
   // Sem bolinha de cor: o chip é filtro, não legenda, e uma cor aqui fazia
@@ -952,15 +1009,13 @@ function montaClasses(){
     if(it.cods.length>1) s.title=it.cods.map(nomeClasse).join(', ');
     s.innerHTML=`<span class="m"></span>${textoClaro(it.nome)}`;
     const pinta=()=>{
-      const n=it.cods.filter(c=>classesSel.has(c)).length;
-      const e=!n?0:(n===it.cods.length?1:3); s.dataset.e=e;
-      s.querySelector('.m').textContent=e===0?'□':(e===1?'✓':'±');
+      const es=it.cods.map(estadoClasse),e=es.every(e=>e===1)?1:es.every(e=>e===2)?2:es.some(Boolean)?3:0; s.dataset.e=e;
+      s.querySelector('.m').textContent=e===0?'□':e===1?'✓':e===2?'−':'±';
     };
-    s._pinta=()=>{pinta();s.setAttribute('aria-pressed',s.dataset.e==='1'?'true':s.dataset.e==='3'?'mixed':'false');};
+    s._pinta=()=>{pinta();s.setAttribute('aria-pressed',s.dataset.e==='1'?'true':['2','3'].includes(s.dataset.e)?'mixed':'false');};
     s._pinta();
     s.onclick=()=>{
-      const todos=it.cods.every(c=>classesSel.has(c));
-      it.cods.forEach(c=>todos?classesSel.delete(c):classesSel.add(c));
+      const es=it.cods.map(estadoClasse),e=es.every(e=>e===1)?2:es.every(e=>e===2)?0:1;marcaClasses(it.cods,e);
       sincClasses(); agenda();
     };
     if(nivelUso==='agr') fc.appendChild(s); else chips.set(it.cods[0],s);
@@ -971,11 +1026,12 @@ function montaClasses(){
       const cs=cods.filter(c=>chips.has(c)); if(!cs.length) continue;
       cs.forEach(c=>vistos.add(c));
       if(cs.length===1){fc.appendChild(chips.get(cs[0])); continue;}
-      fc.appendChild(subgrupoFiltro(nome,cs.map(c=>chips.get(c)),()=>cs.map(c=>classesSel.has(c)?1:0),
-        on=>{cs.forEach(c=>on?classesSel.add(c):classesSel.delete(c));sincClasses();agenda();}));
+      fc.appendChild(subgrupoFiltro(nome,cs.map(c=>chips.get(c)),()=>cs.map(estadoClasse),
+        e=>{marcaClasses(cs,e);sincClasses();agenda();},true));
     }
     for(const [c,chip] of chips) if(!vistos.has(c)) fc.appendChild(chip);
   }
+  organizaOpcoes(fc);
 }
 function sincClasses(){
   document.querySelectorAll('#fclasses .chip').forEach(c=>c._pinta());
@@ -1056,7 +1112,7 @@ function filtro(uni=universo){
     const o=porg[g]||(porg[g]={v:0,u:0}); o.v|=mv; o.u|=mu;
   }
   const req=Object.values(porg);
-  const cls=classesSel.size?new Set(classesSel):null;
+  const cls=classesSel.size?new Set(classesSel):null,negCls=new Set(classesNeg);
   const fg=compilaFiltrosG();     // cliques no gráfico, no modo Filtrar
   return (v,u,idx)=>{
     const rv=modo==='det'||idx===undefined?v:C.RV[idx],ru=modo==='det'||idx===undefined?u:C.RU[idx];
@@ -1064,7 +1120,7 @@ function filtro(uni=universo){
     const fv=origem==='det'?rv:sv,fu=origem==='det'?ru:su;
     for(let i=0;i<req.length;i++) if(!(fv&req[i].v)&&!(fu&req[i].u)) return false;
     if((fv&nv)||(fu&nu)) return false;
-    if(cls&&!cls.has(v&127)) return false;
+    if(cls&&!cls.has(v&127)||negCls.has(v&127)) return false;
     return !fg||fg(v,u,rv,ru,sv,su);
   };
 }
@@ -1251,6 +1307,7 @@ function frase(area){
     partes.push('<span class="ou">uso do solo</span> '+(ns.length===1?`<b>${ns[0]}</b>`
       : `<b>${ns[0]}</b>`+ns.slice(1).map(x=>` <span class="ou">ou</span> <b>${x}</b>`).join('')));
   }
+  if(classesNeg.size)partes.push('<span class="ou">sem uso do solo</span> '+[...classesNeg].map(c=>escH(nomeClasse(c))).join(' ou '));
   const uf = (typeof ufSel!=='undefined' && ufSel)
     ? ` em <b>${ufSel===99?'área sem UF':D.ufs[ufSel-1]}</b>` : '';
   const uni = universo==='recorte' ? 'desmatamento de '+anosTxt() : 'Brasil inteiro';
@@ -1266,7 +1323,7 @@ function frase(area){
     ? `. Nas comparações <b>somadas</b> o pixel entra em todas as classes a que pertence, então a soma passa do total.`
     : '.';
   document.getElementById('frase').innerHTML=t;resumoFiltros();
-  const nf=Object.values(estado).filter(Boolean).length+classesSel.size+filtrosG.filter(f=>f.d!=='mapbiomas').length;
+  const nf=Object.values(estado).filter(Boolean).length+classesSel.size+classesNeg.size+filtrosG.filter(f=>f.d!=='mapbiomas').length;
   const ab=document.getElementById('abreFiltros').getAttribute('aria-expanded')==='true';
   document.getElementById('nFiltros').textContent=
     (nf?`${nf} ativo${nf>1?'s':''}`:'nenhum ativo')+(ab?' ▴':' ▾');
@@ -1286,6 +1343,7 @@ function marcaGavetas(){
     const ct=g.querySelector('.cont');
     if(ct) ct.textContent=`· ${cs.length} ${cs.length===1?'opção':'opções'}`+(on?` · ${on} no filtro`:'');
     g.classList.toggle('temFiltro',on>0);
+    if(g._pintaSeletor)g._pintaSeletor();
     const b=g._botao; if(!b) return;
     b.querySelector('.gavN').textContent=on?String(on):'';
     b.classList.toggle('temFiltro',on>0);
@@ -1420,14 +1478,14 @@ function limpaCaches(){
 const EIXO_PARA={sobrep_imovel:'sobrep_area',categoria_uc:'territorial'};
 function mudaModo(m){
   if(m===modo||!DIMS[m])return;
-  fechaGavetas();const anterior=modo;fonteEstado=fonteEstado||anterior;
+  fechaGavetas();guardaFoco();const anterior=modo;fonteEstado=fonteEstado||anterior;
   filtrosG.forEach(f=>{if(!f.q)f.q=anterior;});pilhaFG.forEach(p=>p.fg.forEach(f=>{if(!f.q)f.q=anterior;}));
   modo=m;D.dimensoes=DIMS[m];limpaCaches();
-  foco.clear();focoPrevia=null;escolhaFiltro=null;
+  focoPrevia=null;escolhaFiltro=null;
   const adaptadas=[];
   eixos=eixos.map(e=>{const d=D.dimensoes[e.d]?e.d:(EIXO_PARA[e.d]||'territorial');if(d!==e.d)adaptadas.push(D.dimensoes[d].rotulo);return {d,m:soUmaClasse(d)?'sep':e.m};});
   const a=document.getElementById('avisoModo');a.hidden=false;
-  a.textContent='Filtros preservados. '+(adaptadas.length?'Comparações adaptadas ao modo simplificado: '+adaptadas.join(', ')+'. ':'')+'A seleção temporária no gráfico foi limpa.';
+  a.textContent='Filtros preservados. '+(adaptadas.length?'Comparações adaptadas ao modo simplificado: '+adaptadas.join(', ')+'. ':'')+(foco.size?'A seleção no gráfico foi preservada com sua definição de origem.':'');
   marcaModo();marcaU();montaEixos();montaClasses();sincChips();agenda();
 }
 function marcaModo(){
@@ -1439,7 +1497,7 @@ function marcaModo(){
   document.getElementById('modoTxt').innerHTML='Categorias detalhadas.';
   const b=document.getElementById('modoBtn');
   b.textContent='voltar às simplificadas';
-  b.title='volta às classes da versão simplificada; destaque e filtros do gráfico recomeçam';
+  b.title='volta às classes da versão simplificada; a seleção e os filtros são preservados';
 }
 // Grupos de linhas por dimensão: linhas com os mesmos bits da dimensão têm o
 // mesmo rótulo. Numerados uma vez por universo e dimensão, deixam o laço da
@@ -2419,7 +2477,7 @@ function upset(){
 let taxaCache=null;
 function dadosTaxa(){
   const d1=dim(0);
-  const chave=JSON.stringify([estado,[...classesSel].sort(),ufSel,d1,nivelUso,filtrosG]);
+  const chave=JSON.stringify([estado,[...classesSel],[...classesNeg].sort(),ufSel,d1,nivelUso,filtrosG]);
   if(taxaCache&&taxaCache.chave===chave) return taxaCache;
   const e7=estado[7]; delete estado[7];
   const ok=filtro('mestre');
@@ -2648,6 +2706,65 @@ function resolveNome(k,col){
 // Foco em vários nomes: OU dentro da mesma comparação (Pastagem ou Mosaico),
 // E entre comparações (Sem parcela E Pastagem) — a mesma regra dos filtros da
 // esquerda. Assim destacar acumula, e a conta é a do caminho escolhido.
+// A seleção mantém a definição original, mesmo que o outro modo agregue suas classes.
+let focoMantido=null,cacheFocoMantido=null;
+function guardaFoco(){
+  if(focoMantido||!foco.size)return;
+  const itens=[...foco].map(k=>{const r=resolveNome(k);if(!r)return null;
+    return {k,rot:nomeExibido(k),d:r.d,i:r.i,m:r.m,labs:[...r.labs],cods:r.d==='mapbiomas'?[...new Set(r.labs.flatMap(codigosUso))]:undefined};
+  }).filter(Boolean);
+  if(itens.length)focoMantido={q:modo,itens};
+}
+function nomeDoFoco(k){return focoMantido?.itens.find(it=>it.k===k)?.rot||nomeExibido(k);}
+function contaFocoMantido(ks){
+  const itens=ks.map(k=>focoMantido.itens.find(it=>it.k===k));if(itens.some(it=>!it))return null;
+  const chave=JSON.stringify([modo,universo,[...anosSel],ufSel,estado,fonteEstado,[...classesSel],[...classesNeg],filtrosG,eixos,nivelUso,vis,focoMantido,ks]);
+  if(cacheFocoMantido?.chave===chave)return cacheFocoMantido.r;
+  const C=colunas(universo),ok=filtro(),q=focoMantido.q;
+  let SV=C.V,SU=C.U;
+  if(q==='simples'&&modo==='det'){SV=C.RV.slice();SU=C.RU.slice();remapSimples(SV,SU,C.n);}
+  const pred=itens.map(it=>{
+    if(it.d==='mapbiomas'){const cs=new Set(it.cods||[]);return(v,u)=>cs.has(v&127);}
+    const d=DIMS[q][it.d],labs=new Set(it.labs),memo=new Map();
+    const bits=d.bits.map(([b,n])=>({b,n}));let mv=0,mu=0;
+    bits.forEach(({b})=>{const [v,u]=bitMask(b);mv|=v;mu|=u;});
+    const M=2**(32-Math.clz32(mv));
+    return(v,u)=>{const k=((v&mv)>>>0)+((u&mu)>>>0)*M;if(memo.has(k))return memo.get(k);
+      const ac=bits.filter(({b})=>temBit(v,u,b)).map(({n})=>n);
+      const ls=it.m==='som'?(ac.length?ac:[d.vazio||'Nenhum']):[ac.length?(it.m==='agr'&&ac.length>1?'Mais de uma categoria':ac.join(' + ')):d.vazio||'Nenhum'];
+      const passa=ls.some(l=>labs.has(l));memo.set(k,passa);return passa;};
+  });
+  const porEixo=new Map();itens.forEach((it,x)=>{if(!porEixo.has(it.i))porEixo.set(it.i,[]);porEixo.get(it.i).push(x);});
+  const grupos=[...porEixo.values()],tot=itens.map(()=>0),so=itens.map(()=>0),gU=grupos.map(()=>0),gS=grupos.map(()=>0);
+  const nos=eixos.map(()=>new Map()),lig=eixos.slice(1).map(()=>new Map());
+  const leitoresAtuais=eixos.map(e=>leitor(e.d).lista[['taxa','upset'].includes(vis)?'som':e.m]);
+  let uniao=0,soma=0,res=0;
+  for(let i=0;i<C.n;i++){
+    const v=C.V[i],u=C.U[i],a=C.A[i];if(!passaUF(u)||!ok(v,u,i))continue;
+    const rv=q==='det'?C.RV[i]:SV[i],ru=q==='det'?C.RU[i]:SU[i];
+    const flags=pred.map(f=>f(rv,ru)),n=flags.filter(Boolean).length;if(!n)continue;
+    uniao+=a;soma+=a*n;flags.forEach((on,j)=>{if(on){tot[j]+=a;if(n===1)so[j]+=a;}});
+    let todas=true;
+    grupos.forEach((xs,g)=>{const k=xs.filter(j=>flags[j]).length;if(k){gU[g]+=a;gS[g]+=a*k;}else todas=false;});
+    if(!todas)continue;res+=a;
+    const labs=leitoresAtuais.map(L=>L(v,u));
+    labs.forEach((ls,c)=>ls.forEach(l=>nos[c].set(l,(nos[c].get(l)||0)+a)));
+    for(let c=0;c<lig.length;c++)for(const l of labs[c])for(const r of labs[c+1]){const k=l+'\u0000'+r;lig[c].set(k,(lig[c].get(k)||0)+a);}
+  }
+  const r={tot,so,uniao,soma,res,grupos:grupos.map(xs=>xs.map(j=>ks[j])),gInfo:grupos.map((xs,g)=>({d:itens[xs[0]].d,uniao:gU[g],soma:gS[g],xs})),nos,lig};
+  cacheFocoMantido={chave,r};return r;
+}
+function realcaFocoMantido(svg){
+  const r=contaFocoMantido([...foco]);if(!r)return;
+  svg.querySelectorAll('.it,.leg').forEach(el=>{
+    const ps=partes(el),c=el.dataset.c===undefined?(el.classList.contains('leg')?1:0):+el.dataset.c;
+    const valor=ps.length>1?(r.lig[c]?.get(ps[0]+'\u0000'+ps[1])||0):(r.nos[c]?.get(ps[0])||r.nos.find(n=>n.has(ps[0]))?.get(ps[0])||0);
+    el.classList.toggle('on',valor>0);
+    if(valor>0)el.setAttribute('aria-description',fmt(valor)+' hectares pertencem à seleção preservada.');
+    else el.removeAttribute('aria-description');
+  });
+}
+
 function gruposFoco(ks){
   const R=ks.map(k=>resolveNome(k)); if(R.some(r=>!r)) return null;
   const G=new Map();
@@ -2659,7 +2776,8 @@ function gruposFoco(ks){
 // com cada hectare uma vez e quanto disso está em mais de um.
 let cacheFoco=null;
 function contaFoco(ks){
-  const chave=JSON.stringify([universo,[...anosSel],ufSel,estado,[...classesSel],filtrosG,eixos,nivelUso,vis,ks]);
+  if(focoMantido)return contaFocoMantido(ks);
+  const chave=JSON.stringify([universo,[...anosSel],ufSel,estado,[...classesSel],[...classesNeg],filtrosG,eixos,nivelUso,vis,ks]);
   if(cacheFoco&&cacheFoco.chave===chave) return cacheFoco.r;
   let r=null; const gf=vis==='taxa'?null:gruposFoco(ks);
   if(gf){
@@ -2708,7 +2826,7 @@ function fluxosFoco(K){
   const N=S.cols.length, req=new Map();
   for(const k of K){ const r=resolveNome(k); if(!r) continue; if(!req.has(r.i)) req.set(r.i,new Set()); req.get(r.i).add(k); }
   if(!req.size) return null;
-  const chave=JSON.stringify([universo,[...anosSel],ufSel,estado,[...classesSel],filtrosG,eixos,nivelUso,[...req].map(([c,s])=>[c,[...s].sort()])]);
+  const chave=JSON.stringify([universo,[...anosSel],ufSel,estado,[...classesSel],[...classesNeg],filtrosG,eixos,nivelUso,[...req].map(([c,s])=>[c,[...s].sort()])]);
   if(cacheFluxo&&cacheFluxo.chave===chave) return cacheFluxo.r;
   const {V,U:Uc,A,n}=colunas(universo), ok=filtro();
   const E=eixos.slice(0,N), L=E.map(e=>leitor(e.d).um[e.m==='agr'?'agr':'sep']), GD=E.map(e=>gruposDim(universo,e.d));
@@ -2746,7 +2864,7 @@ function textosFoco(){
   const sobreposicao=(xs,uniao,soma)=>{ const S=xs.reduce((s,x)=>s+R(c.tot[x]),0);
     if(soma-uniao<0.5) return {J:S,O:0,S};
     const J=R(uniao); return {J,O:Math.max(0,S-J),S}; };
-  const gNome=g=>g.length>1?'('+g.map(n=>nomeExibido(n)).join(' ou ')+')':nomeExibido(g[0]);
+  const gNome=g=>g.length>1?'('+g.map(nomeDoFoco).join(' ou ')+')':nomeDoFoco(g[0]);
   const poeItens=()=>grupos.forEach(g=>g.nomes.forEach(k=>{ const x=ks.indexOf(k);
     tab.push({tipo:'item',nome:k,sub:g.rot,v:R(c.tot[x]),pc:pcN(c.tot[x]),k}); }));
   let res;
@@ -2786,18 +2904,20 @@ function resumoChave(k){
   return `${fmt(t.v)} ha${U&&U.area?' · '+pcBR(100*t.v/U.area,1)+' '+contextoPc():''}`;
 }
 function aplicaFoco(){
+  if(!foco.size){focoMantido=null;cacheFocoMantido=null;}
   const svg=document.getElementById('g');
   // Some do foco o nome que deixou de existir (outra comparação, outro filtro).
   const els=[...svg.querySelectorAll('.it,.leg')], U=window.__ult;
   const nomesArr=new Set(); if(U) for(const it of U.arr){ nomesArr.add(it.nome); for(const f of it.filhos||[]) nomesArr.add(f.nome); }
   if(U) for(const it of U.bruto||[]) nomesArr.add(it.nome);   // linhas da tabela
-  for(const k of [...foco]) if(!nomesArr.has(k)&&!els.some(el=>casaFoco(el,new Set([k])))) foco.delete(k);
+  for(const k of [...foco]) if(!focoMantido&&!nomesArr.has(k)&&!els.some(el=>casaFoco(el,new Set([k])))) foco.delete(k);
   const K=new Set(foco); if(focoPrevia) K.add(focoPrevia);
   svg.classList.toggle('foco',K.size>0);
   svg.querySelectorAll('.fxs').forEach(g=>g.remove());
   for(const el of els) el.classList.remove('on');
   if(K.size){
-    if(vis==='upset'||vis==='taxa'){
+    if(focoMantido){realcaFocoMantido(svg);}
+    else if(vis==='upset'||vis==='taxa'){
       // Uma comparação só: OU entre os nomes.
       for(const el of els) el.classList.toggle('on',casaFoco(el,K));
     } else if(vis==='sank'&&window.__sankeyN){
@@ -2866,18 +2986,19 @@ function painelFoco(){
      '<button type="button" class="flimpa" data-limpa-foco>limpar</button></span>';
   if(T.res&&T.res.desc) h+=`<span class="fdesc">${escH(T.res.desc)}</span>`;
   h+='</div>';
+  if(focoMantido)h+='<p class="fnota">Seleção preservada do modo '+(focoMantido.q==='det'?'Detalhado':'Simplificado')+'. O destaque indica as categorias que contêm essa seleção; a área acima mantém o recorte exato.</p>';
   if(T.tab.length){
     h+=`<table class="ftab"><thead><tr><th></th><th class="n">Área (ha)</th>`+
        `<th class="n">% ${escH(T.ctx)}</th></tr></thead><tbody>`+
       T.tab.map(l=>`<tr class="ft-${l.tipo}"><td>`+
-        (l.tipo==='item'?`${l.sub?`<span class="fgr">${escH(l.sub)}</span>`:''}<b>${escH(nomeExibido(l.nome))}</b>${tira(l.k)}`
+        (l.tipo==='item'?`${l.sub?`<span class="fgr">${escH(l.sub)}</span>`:''}<b>${escH(nomeDoFoco(l.nome))}</b>${tira(l.k)}`
                         :escH(nomeExibido(l.nome)))+
         `</td><td class="n">${fmt(l.v)}</td><td class="n">${escH(l.pc)}</td></tr>`).join('')+
       '</tbody></table>';
   } else {
     const g=T.grupos[0]||{rot:''};
     h+=`<div class="flin">${g.rot?`<span class="fgr">${escH(g.rot)}</span>`:''}`+
-       ks.map(k=>`<span class="fch"><b>${escH(nomeExibido(k))}</b>`+
+       ks.map(k=>`<span class="fch"><b>${escH(nomeDoFoco(k))}</b>`+
          `<button type="button" data-tira-foco="${escAttr(k)}" aria-label="tirar ${escAttr(k)} do foco">×</button></span>`)
        .join('<span class="fou">ou</span>')+'</div>';
   }
@@ -2886,7 +3007,7 @@ function painelFoco(){
   { const amb=[];
     for(const k of ks){ const r=resolveNome(k); if(!r||!ambiguo(k,r)) continue;
       const so=totalChave(k), tudo=totalComCombinacoes(r,k);
-      if(so&&so.v!=null&&tudo-so.v>=0.5) amb.push(`“${escH(nomeExibido(k))}” no gráfico é só a parte sem outra `+
+      if(so&&so.v!=null&&tudo-so.v>=0.5) amb.push(`“${escH(nomeDoFoco(k))}” no gráfico é só a parte sem outra `+
         `categoria (${fmt(so.v)} ha). Com as combinações em que aparece`+
         `${(()=>{ const ex=exemploCombo(r.d,[k]); return ex?`, como “${escH(ex)}”`:''; })()}: `+
         `<b>${fmt(tudo)} ha</b>.`); }
@@ -2898,7 +3019,7 @@ function painelFoco(){
   p.querySelector('[data-limpa-foco]').onclick=()=>{ foco.clear(); focoPrevia=null; aplicaFoco(); };
   p.querySelector('[data-filtra-foco]').onclick=filtraFoco;
 }
-function alternaFoco(k){ if(!k) return; escolhaFiltro=null; foco.has(k)?foco.delete(k):foco.add(k); focoPrevia=null; aplicaFoco(); }
+function alternaFoco(k){ if(!k) return; if(focoMantido&&foco.has(k)){foco.delete(k);aplicaFoco();return;}if(focoMantido){focoMantido=null;cacheFocoMantido=null;foco.clear();} escolhaFiltro=null; foco.has(k)?foco.delete(k):foco.add(k); focoPrevia=null; aplicaFoco(); }
 
 // ---- filtrar e o caminho -----------------------------------------------------
 // Dois conceitos, cada um com lugar e cara próprios:
@@ -2921,13 +3042,13 @@ let pilhaFG=[];   // um item por passo: o estado de antes dele e o nome dele
 const descreveGrupos=gs=>gs.map(g=>g.length>1?'('+g.join(' ou ')+')':g[0]).join(' e ');
 function aplicaPasso(itens,rot,zoom){
   // foco: o destaque de antes de filtrar, para o voltar devolvê-lo.
-  const antes={fg:JSON.parse(JSON.stringify(filtrosG)),cls:[...classesSel],rot,nomes:itens.map(x=>x.nome),foco:[...foco]};
+  const antes={fg:JSON.parse(JSON.stringify(filtrosG)),cls:[...classesSel],rot,nomes:itens.map(x=>x.nome),foco:[...foco],cneg:[...classesNeg],fs:focoMantido?JSON.parse(JSON.stringify(focoMantido)):null};
   const passo=pilhaFG.length+1, usos=new Set();
   let novo=false, mudouUso=false;
   for(const {nome,r} of itens){
-    if(r.d==='mapbiomas'){ codigosUso(nome).forEach(c=>usos.add(c)); continue; }
+    if(r.d==='mapbiomas'){ (r.cods||codigosUso(nome)).forEach(c=>usos.add(c)); continue; }
     if(filtrosG.some(f=>f.d===r.d&&f.m===r.m&&f.nome===nome)) continue;
-    filtrosG.push({d:r.d,m:r.m,labs:r.labs,nome,p:passo,como:r.como,q:modo}); novo=true;
+    filtrosG.push({d:r.d,m:r.m,labs:r.labs,nome,p:passo,como:r.como,q:r.q||modo}); novo=true;
   }
   if(usos.size){
     const alvo=classesSel.size?[...classesSel].filter(c=>usos.has(c)):[...usos];
@@ -2937,7 +3058,7 @@ function aplicaPasso(itens,rot,zoom){
   }
   if(!novo) return false;
   pilhaFG.push(antes);
-  foco.clear(); focoPrevia=null; taxaCache=null; zoomPend=zoom||null;
+  foco.clear();focoMantido=null;cacheFocoMantido=null; focoPrevia=null; taxaCache=null; zoomPend=zoom||null;
   if(mudouUso) montaClasses();
   agenda(); return true;
 }
@@ -2956,6 +3077,7 @@ function filtraPor(el){
 }
 // "Aplicar seleção como filtro": o que está em destaque vira o próximo passo da trilha.
 function filtraFoco(){
+  if(focoMantido){const q=focoMantido.q,itens=[...foco].map(k=>focoMantido.itens.find(it=>it.k===k)).filter(Boolean).map(it=>({nome:it.k,r:{...it,q}}));if(itens.length)aplicaPasso(itens,itens.map(it=>nomeDoFoco(it.nome)).join(' e '),null);return;}
   const ks=[...foco]; if(!ks.length) return;
   const itens=ks.map(k=>({nome:k,r:resolveNome(k)})).filter(x=>x.r); if(!itens.length) return;
   const gs=new Map(); itens.forEach(({nome,r})=>{ if(!gs.has(r.i)) gs.set(r.i,[]); gs.get(r.i).push(nome); });
@@ -3027,7 +3149,7 @@ function pedeFiltro(itens,agrupa,zoom){
 // foco dizer as duas contas lado a lado.
 const cacheAmb=new Map();
 function totalComCombinacoes(r,k){
-  const ch=JSON.stringify([modo,universo,[...anosSel],ufSel,estado,[...classesSel],filtrosG,r.d,k]);
+  const ch=JSON.stringify([modo,universo,[...anosSel],ufSel,estado,[...classesSel],[...classesNeg],filtrosG,r.d,k]);
   if(!cacheAmb.has(ch)){ if(cacheAmb.size>200) cacheAmb.clear();
     cacheAmb.set(ch,areaFiltrada([{d:r.d,m:'som',labs:[k],nome:k,p:0}],null)); }
   return cacheAmb.get(ch);
@@ -3051,12 +3173,13 @@ function irPara(i){
   escolhaFiltro=null;
   if(i>=pilhaFG.length-1) return;
   const s=pilhaFG[i+1], removidos=pilhaFG.slice(i+1).flatMap(x=>x.nomes||[]);
-  const mudouUso=s.cls.length!==classesSel.size||s.cls.some(c=>!classesSel.has(c));
-  filtrosG=s.fg; classesSel.clear(); s.cls.forEach(c=>classesSel.add(c));
+  const mudouUso=s.cls.length!==classesSel.size||s.cls.some(c=>!classesSel.has(c))||(s.cneg||[]).length!==classesNeg.size||(s.cneg||[]).some(c=>!classesNeg.has(c));
+  filtrosG=s.fg;classesSel.clear();s.cls.forEach(c=>classesSel.add(c));classesNeg.clear();(s.cneg||[]).forEach(c=>classesNeg.add(c));
   pilhaFG=pilhaFG.slice(0,i+1);
   // A tela volta como estava: com o destaque de antes de filtrar. Se não havia
   // (filtrou com duplo clique), acende o que foi filtrado — mostra de onde se veio.
   foco.clear(); ((s.foco&&s.foco.length)?s.foco:(s.nomes||[])).forEach(k=>foco.add(k));
+  focoMantido=s.fs||null;cacheFocoMantido=null;
   zoomPend={tipo:'sai',nomes:removidos}; focoPrevia=null; taxaCache=null;
   if(mudouUso) montaClasses();
   agenda();
@@ -3158,12 +3281,14 @@ function estadoParaURL(){
   if(mais.length) p.set('m',mais.join(','));
   if(menos.length) p.set('n',menos.join(','));
   if(classesSel.size) p.set('c',[...classesSel].join(','));
+  if(classesNeg.size)p.set('cn',[...classesNeg].join(','));
   p.set('e',eixos.map(x=>x.d+':'+x.m).join(','));
   p.set('us',nivelUso);
   if(vis!=='tree') p.set('g',vis);
   if(vis==='barra'&&barraModo==='pct') p.set('bm','pct');
   if(calcSel.size) p.set('k',[...calcSel].join(','));
   if(foco.size) p.set('f',[...foco].join('|'));
+  if(focoMantido&&foco.size)p.set('fs',JSON.stringify(focoMantido));
   if(filtrosG.length) p.set('fg',JSON.stringify(filtrosG.map(f=>[f.d,f.m,f.labs,f.nome,f.p||1,f.como||0,f.q||modo])));
   // O uso do solo de antes de cada passo, para o voltar de quem abre o link
   // restaurar exatamente o que havia (inclusive um uso marcado à esquerda).
@@ -3188,6 +3313,7 @@ function aplicaURL(){
     for(const b of (p.get(chave)||'').split(',').filter(Boolean)) estado[b]=val;
   if(universo==='mestre'&&estado[7]===1){ delete estado[7]; universo='recorte'; }
   for(const c of (p.get('c')||'').split(',').filter(Boolean)) classesSel.add(+c);
+  for(const c of (p.get('cn')||'').split(',').filter(Boolean))if(Number.isInteger(+c)&&+c>=0&&+c<128)classesNeg.add(+c);
   for(const b of (p.get('k')||'').split(',').filter(Boolean)) calcSel.add(+b);
   const e=(p.get('e')||'').split(',').filter(Boolean)
     .map(x=>({d:x.split(':')[0], m:MODOS.includes(x.split(':')[1])?x.split(':')[1]:'sep'}))
@@ -3196,6 +3322,7 @@ function aplicaURL(){
   if(VIS.some(([,v])=>v===p.get('g'))) vis=p.get('g');
   if(p.get('bm')==='pct') barraModo='pct';
   for(const k of (p.get('f')||'').split('|').filter(Boolean)) foco.add(k);
+  try{const fs=JSON.parse(p.get('fs')||'null');if(fs&&['det','simples'].includes(fs.q)&&Array.isArray(fs.itens)){fs.itens=fs.itens.filter(it=>typeof it.k==='string'&&typeof it.rot==='string'&&DIMS[fs.q][it.d]&&['sep','agr','som'].includes(it.m)&&Number.isInteger(it.i)&&Array.isArray(it.labs)&&it.labs.every(l=>typeof l==='string')&&(it.d!=='mapbiomas'||Array.isArray(it.cods)&&it.cods.every(c=>Number.isInteger(c)&&c>=0&&c<128)));if(fs.itens.length)focoMantido=fs;}}catch(e){focoMantido=null;}
   try{ filtrosG=JSON.parse(p.get('fg')||'[]').filter(f=>DD[f[0]]||DIM_SIM[f[0]]).map(([d,m,labs,nome,ps,como,q])=>({d,m,labs,nome,p:ps||1,como:como||undefined,q:['simples','det'].includes(q)?q:modo})); }catch(e){ filtrosG=[]; }
   // A trilha volta junto: um passo por grupo do link, na ordem em que foi feito.
   { const ps=[...new Set(filtrosG.map(f=>f.p))].sort((a,b)=>a-b);
@@ -3495,7 +3622,7 @@ function tabela(arr,area){
 
 const VIS=[['vTree','tree'],['vBarra','barra'],['vSun','sun'],['vAnel','anel'],['vSank','sank'],['vUpset','upset'],['vTaxa','taxa']];
 for(const [id,v] of VIS)
-  document.getElementById(id).onclick=()=>{vis=v;document.getElementById('maisGraficos').open=false;sincV();};
+  document.getElementById(id).onclick=()=>{vis=v;document.getElementById('maisGraficos').open=!matchMedia('(max-width:700px)').matches;sincV();};
 document.querySelectorAll('[data-bm]').forEach(b=>b.onclick=()=>{
   barraModo=b.dataset.bm; marcaV();
   if(window.__ult&&!agendado){ animar=true; desenha(window.__ult.arr,window.__ult.area); }
@@ -3549,10 +3676,10 @@ function marcaAnos(){
     b.setAttribute('aria-pressed',anosSel.has(+b.dataset.ano)));
 }
 function sincU(){
-  marcaU(); marcaAnos(); montaEixos(); classesSel.clear(); sincUF(); agenda();
+  marcaU(); marcaAnos(); montaEixos(); classesSel.clear();classesNeg.clear(); sincUF(); agenda();
 }
 document.getElementById('limpar').onclick=()=>{
-  for(const k in estado) delete estado[k];fonteEstado=null;document.getElementById('avisoModo').hidden=true; classesSel.clear(); filtrosG=[]; pilhaFG=[]; taxaCache=null;
+  for(const k in estado) delete estado[k];fonteEstado=null;document.getElementById('avisoModo').hidden=true; classesSel.clear();classesNeg.clear(); filtrosG=[]; pilhaFG=[]; taxaCache=null;
   sincChips();
   sincClasses();
   agenda();};
@@ -3592,7 +3719,7 @@ function montaUF(){
   if(sv>0) sel.insertAdjacentHTML('beforeend',
     `<option value="99">sem UF (costa) — ${fmt(sv)} ha</option>`);
   sel.value=String(ufSel);
-  sel.onchange=()=>{ ufSel=+sel.value; classesSel.clear(); sincUF(); agenda(); };
+  sel.onchange=()=>{ ufSel=+sel.value; classesSel.clear();classesNeg.clear(); sincUF(); agenda(); };
 }
 function sincUF(){
   const info=document.getElementById('ufInfo');
@@ -3710,7 +3837,7 @@ function aplicaTema(t){
     'Os anos não se sobrepõem: o PRODES marca cada pixel uma vez só.','Área analisada');
   põe('iUF','Recorta tudo para um estado. Com um estado escolhido, os percentuais passam '+
     'a ser dele, e um cartão à parte mostra o peso daquele recorte no Brasil.','Estado');
-  põe('iFiltrar','Define o que ENTRA na conta. Marque as opções para incluí-las. O botão Excluir remove essas áreas do resultado. Dentro de um mesmo grupo os filtros somam '+
+  põe('iFiltrar','Define o que ENTRA na conta. Marque as opções para incluí-las. Clique novamente para excluir (−) e uma terceira vez para limpar. Dentro de um mesmo grupo os filtros somam '+
     'com <b>ou</b>; entre gavetas, com <b>e</b>. Selecione um subgrupo, como '+
     'Unidades de conservação, para selecionar todas as opções; use Detalhar para escolher uma a uma.','Filtrar');
   põe('iSeparar','Define em que categorias o resultado é separado no gráfico. O ⓘ ao lado '+
@@ -3738,7 +3865,7 @@ function posicionaGaveta(g){
   if(!g||!g.classList.contains('aberta'))return;
   if(matchMedia('(max-width:700px)').matches){g.style.left='';g.style.top='';g.style.maxHeight='';return;}
   const b=g._botao,r=b.getBoundingClientRect(),p=b.parentElement.getBoundingClientRect();
-  const largura=Math.min(680,innerWidth-24),x=Math.max(12,Math.min(r.left,innerWidth-largura-12));
+  const largura=Math.min(560,innerWidth-24),x=Math.max(12,Math.min(r.left,innerWidth-largura-12));
   g.style.width=largura+'px';g.style.left=(x-p.left)+'px';g.style.top=(r.bottom-p.top+8)+'px';
   g.style.setProperty('--seta-x',Math.max(20,Math.min(r.left+r.width/2-x,largura-20))+'px');
   g.style.maxHeight=Math.max(180,innerHeight-r.bottom-24)+'px';
@@ -3770,8 +3897,18 @@ function montaBarraGavetas(){
       b.onclick=()=>{const abrir=!g.classList.contains('aberta');fechaGavetas();if(abrir){g.classList.add('aberta');marcaGavetas();posicionaGaveta(g);g.focus({preventScroll:true});}};
       g._botao=b;
       const h=g.querySelector('h3');if(h)h.onclick=null;
-      const fechar=document.createElement('button');fechar.type='button';fechar.className='fechaPainel';fechar.textContent='Fechar ×';fechar.setAttribute('aria-label','Fechar '+(NOME_GAVETA[nome]||nome));fechar.onclick=()=>fechaGavetas(true);g.prepend(fechar);
-      item.append(b,g);bloco.appendChild(item);
+      const fechar=document.createElement('button');fechar.type='button';fechar.className='fechaPainel';fechar.textContent='Fechar ×';fechar.setAttribute('aria-label','Fechar '+(NOME_GAVETA[nome]||nome));fechar.onclick=()=>fechaGavetas(true);const cab=document.createElement('div');cab.className='cabPainel';if(h)cab.appendChild(h);cab.appendChild(fechar);g.prepend(cab);
+      const seleciona=document.createElement('button');seleciona.type='button';seleciona.className='gavSeleciona';
+      const estados=()=>nome==='Uso do solo'?[...usosPresentes].map(estadoClasse):[...g.querySelectorAll('.chip[data-bit]')].map(c=>estado[c.dataset.bit]||0);
+      g._pintaSeletor=()=>{const es=estados(),e=es.length&&es.every(e=>e===1)?1:es.length&&es.every(e=>e===2)?2:es.some(Boolean)?3:0;
+        seleciona.dataset.e=e;b.dataset.grupoEstado=e;seleciona.textContent=e===1?'✓':e===2?'−':e===3?'±':'□';
+        const acao=e===1?'Excluir':e===2?'Limpar':'Incluir';seleciona.title=acao+' todas as opções de '+(BOTOES_FILTRO[nome]||nome);
+        seleciona.setAttribute('aria-label',seleciona.title);seleciona.setAttribute('aria-pressed',e===1?'true':e===2||e===3?'mixed':'false');};
+      seleciona.onclick=()=>{const es=estados(),e=es.every(e=>e===1)?2:es.every(e=>e===2)?0:1;
+        if(nome==='Uso do solo'){marcaClasses([...usosPresentes],e);sincClasses();}
+        else{g.querySelectorAll('.chip[data-bit]').forEach(c=>{const bit=c.dataset.bit;if(e)estado[bit]=e;else delete estado[bit];});fonteEstado='det';sincChips();}
+        agenda();};
+      item.append(seleciona,b,g);bloco.appendChild(item);
     }barra.appendChild(bloco);
   }
   const lp=document.getElementById('limpar');if(lp){const cx=lp.closest('.cx');lp.className='gavLimpa';barra.appendChild(lp);if(cx)cx.remove();}
@@ -3788,6 +3925,7 @@ function resumoFiltros(){
   for(const [b,e] of Object.entries(estado)){if(!e||ditos.has(b))continue;
     const raw=D.grupos.flatMap(([,bs])=>bs).find(([bit])=>bit==b);if(!raw)continue;
     tag((e===2?'Excluir: ':'')+nomeOpcao(b,raw[1]),()=>{delete estado[b];atualiza();});}
+  if(classesNeg.size)tag('Excluir uso do solo: '+classesNeg.size+' classes',()=>{classesNeg.clear();atualiza();});
   if(classesSel.size)tag('Uso do solo: '+classesSel.size+' classe'+(classesSel.size>1?'s':''),()=>{classesSel.clear();filtrosG=filtrosG.filter(f=>f.d!=='mapbiomas');pilhaFG=[];atualiza();});
   filtrosG.filter(f=>f.d!=='mapbiomas').forEach(f=>tag(textoClaro(f.nome),()=>{filtrosG=filtrosG.filter(x=>x!==f);pilhaFG=[];atualiza();}));
   r.hidden=!r.childElementCount;
@@ -3805,7 +3943,10 @@ function iniciaInterface(){
   const exporta=document.getElementById('link').closest('.pgrupo'),ponto=document.createComment('exportação no desktop');
   exporta.before(ponto);const celular=matchMedia('(max-width:700px)');
   const moveExportacao=()=>{if(celular.matches){document.getElementById('gWrap').after(exporta);exporta.classList.add('exportMobile');}else{ponto.after(exporta);exporta.classList.remove('exportMobile');}};
-  celular.addEventListener('change',moveExportacao);moveExportacao();
+  const ajustaGraficos=()=>{const mais=document.getElementById('maisGraficos'),extra=mais.querySelector('.seg'),principal=document.querySelector('.escolhaGraficos>.seg');
+    if(celular.matches){for(const id of ['vSun','vAnel','vSank','vUpset','vTaxa'])extra.appendChild(document.getElementById(id));}
+    else [...extra.children].forEach(b=>principal.appendChild(b));mais.open=!celular.matches;};
+  celular.addEventListener('change',()=>{moveExportacao();ajustaGraficos();});moveExportacao();ajustaGraficos();
   document.addEventListener('pointerdown',e=>{if(document.querySelector('.gaveta.aberta')&&!e.target.closest('.gavItem,.balao'))fechaGavetas();});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.querySelector('.gaveta.aberta')){e.preventDefault();e.stopPropagation();fechaGavetas(true);}});
   addEventListener('resize',()=>{const g=document.querySelector('.gaveta.aberta');if(g){g.style.width='';posicionaGaveta(g);}});
@@ -3821,14 +3962,14 @@ atualizaDimProdes(); marcaModo(); montaFiltros(); montaBarraGavetas(); montaAnos
 // Autoconferencia: abra o arquivo com ?validar no fim do endereco.
 // Refaz em JavaScript as combinacoes calculadas em pandas e compara.
 if(location.search.includes('validar')){
-  const guarda={e:{...estado},c:[...classesSel],u:universo,a:[...anosSel]};
+  const guarda={e:{...estado},c:[...classesSel],cn:[...classesNeg],u:universo,a:[...anosSel]};
   const modoAntes=modo,fonteAntes=fonteEstado;fonteEstado=null;
   if(modo!=='det'){ modo='det'; D.dimensoes=DD; limpaCaches(); }
   const poeAnos=as=>{ const k=[...as].sort().join(',');
     if(k!==[...anosSel].sort().join(',')){ anosSel=new Set(as); mudaAnos(); } };
   let okC=0, okA=0, pior=0; const ruins=[];
   for(const t of D.testes){
-    for(const k in estado) delete estado[k]; classesSel.clear();
+    for(const k in estado) delete estado[k]; classesSel.clear();classesNeg.clear();
     for(const b of t.req) estado[b]=1;
     for(const b of t.neg) estado[b]=2;
     for(const x of t.cls) classesSel.add(x);
@@ -3848,7 +3989,7 @@ if(location.search.includes('validar')){
   let okCons=0, nCons=0;
   const dims=Object.keys(D.dimensoes);
   for(let i=0;i<60;i++){
-    for(const k in estado) delete estado[k]; classesSel.clear();
+    for(const k in estado) delete estado[k]; classesSel.clear();classesNeg.clear();
     const bs=[7,8,9,11,13,16,24,28];
     for(let j=0;j<i%3;j++) estado[bs[(i+j)%bs.length]]=1;
     universo=(i%3===0)?'recorte':'mestre';
@@ -3872,7 +4013,7 @@ if(location.search.includes('validar')){
   // Object.assign nao remove as chaves que o teste criou: sem limpar antes, a
   // pagina ficava filtrada enquanto os chips mostravam "indiferente".
   for(const k in estado) delete estado[k];
-  classesSel.clear();
+  classesSel.clear();classesNeg.clear();
   Object.assign(estado,guarda.e); guarda.c.forEach(x=>classesSel.add(x));
   universo=guarda.u; poeAnos(guarda.a); marcaAnos();
   sincChips();
@@ -3941,7 +4082,7 @@ if(location.search.includes('validar')){
   for(const k in estado) delete estado[k]; Object.assign(estado,guarda.e);
   document.getElementById('uMestre').setAttribute('aria-pressed',universo==='mestre');
   document.getElementById('uRecorte').setAttribute('aria-pressed',universo==='recorte');
-  fonteEstado=fonteAntes;calcula();sincChips();
+  guarda.cn.forEach(c=>classesNeg.add(c));fonteEstado=fonteAntes;calcula();sincChips();
   const tudoOk = okC===D.testes.length && okA===D.testes.length && okCons===nCons && okF===nF;
   const d=document.createElement('div'); d.id='painelValidacao';
   d.style.cssText='position:fixed;right:14px;bottom:14px;z-index:99;max-width:330px;'+

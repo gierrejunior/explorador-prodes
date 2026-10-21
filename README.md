@@ -14,6 +14,38 @@ página antiga.
 Acrescente `?validar` ao endereço para a página conferir a si mesma: ela refaz
 em JavaScript as combinações calculadas em pandas e mostra o placar.
 
+## Seleção rápida e painéis compactos de 21/10/2026
+
+- Cada filtro da barra tem uma caixa para **incluir todas → excluir todas →
+  limpar**; a seta separada abre o painel sem alterar a seleção. Seleção parcial
+  aparece com ±; exclusão, com − em laranja. Os botões extras “Excluir” saíram.
+- O mesmo ciclo vale para grupos e classes de uso do solo; as exclusões entram
+  nos cálculos, nos caches, na troca de modo e no link compartilhado (`cn`).
+- Opções em lista vertical: grupos primeiro, depois itens isolados; ambos em
+  ordem alfabética em português, inclusive as opções dentro de cada grupo.
+- Painéis mais estreitos, menos preenchimento e bordas internas removidas.
+  Os detalhes usam só o triângulo; no celular os alvos de toque continuam maiores.
+  A contagem de opções não ocupa espaço nos títulos dos grupos e “Fechar” fica
+  centralizado verticalmente com o título do painel.
+- No computador os sete tipos de gráfico ficam numa única barra contínua,
+  sem a divisão visual entre opções principais e adicionais. No celular as
+  opções adicionais permanecem em “Mais gráficos”.
+
+## Correção de foco e acesso aos gráficos de 21/10/2026
+
+- Alternar entre **Simplificado** e **Detalhado** preserva a seleção no gráfico,
+  incluindo seleções de múltiplas comparações e categorias que só existem no
+  Detalhado. A seleção guarda a definição e o modo em que foi feita; uma UC
+  federal selecionada não se transforma no total de todas as UCs ao simplificar.
+- O painel mantém a área exata e identifica a origem da seleção. O gráfico
+  destaca as categorias atuais que contêm a seleção preservada. Limpar ou
+  escolher uma nova seleção continua disponível normalmente.
+- **Aplicar seleção como filtro** usa o recorte original. A seleção preservada
+  também entra no link copiado (`fs`), permitindo reabrir a mesma análise.
+- Todos os tipos de gráfico aparecem diretamente no computador. O controle
+  **Mais gráficos** só aparece até 700 px de largura; redimensionar a janela
+  atualiza o comportamento e escolher um gráfico no computador não oculta os demais.
+
 ## Revisão da experiência de análise de 21/10/2026
 
 - **Simplificado / Detalhado** substituem Simplificada / Completa. A abertura
@@ -25,16 +57,15 @@ em JavaScript as combinações calculadas em pandas e mostra o placar.
   No celular, o painel abre imediatamente abaixo do respectivo botão.
 - Grupos de opções territoriais, categorias de UC e sobreposição seguem o mesmo
   ciclo das suas opções: **incluir → excluir → limpar**. Exclusão aparece em
-  laranja com **−**. O botão **Excluir** também permite chegar diretamente a
-  esse estado. Abrir os detalhes não altera a seleção. Os grupos de cobertura
-  do solo mantêm a seleção por classes, sem exclusão implícita.
+  laranja com **−**. Os botões separados de exclusão foram removidos. Abrir os detalhes não altera
+  a seleção. Grupos e classes de uso do solo também seguem os três estados.
 - **Filtros aplicados** apresenta etiquetas removíveis, inclusive quando o painel
   está fechado ou o usuário muda para o modo Simplificado.
 - A troca de modo preserva os filtros e a área selecionada. Os filtros guardam
   sua origem (`q` nos filtros pelo gráfico e `eb` para as opções), permitindo
   consultar os bits detalhados ou as classes agrupadas sem alargar o recorte.
   Os links compartilham essa origem. Comparações indisponíveis no Simplificado
-  são adaptadas com uma mensagem; a seleção temporária no gráfico é limpa.
+  são adaptadas com uma mensagem; a seleção no gráfico mantém seu recorte de origem.
 - A leitura de combinações usa um seletor com explicação. Os rótulos distinguem
   **Somente imóvel no CAR** de **Imóvel no CAR (inclui combinações)**. Os nomes
   de apresentação foram revisados também nas tabelas, legendas e exportações;
@@ -45,7 +76,8 @@ em JavaScript as combinações calculadas em pandas e mostra o placar.
   posição para manter os identificadores da calculadora.
 - Marcas dos gráficos e linhas da tabela podem ser selecionadas pelo teclado.
   Enter/Espaço selecionam; Shift+Enter aplica como filtro no gráfico. Controles
-  de ajuda têm alvos maiores. Os tipos adicionais ficam em **Mais gráficos**.
+  de ajuda têm alvos maiores. Todos os tipos de gráfico ficam visíveis no computador;
+  **Mais gráficos** reúne as opções adicionais apenas no celular.
 
 Validação: 472/472 contagens e áreas, 60/60 conservações e 78/78 verificações
 existentes de classes e nomes. Testes de navegador cobriram os três estados do
