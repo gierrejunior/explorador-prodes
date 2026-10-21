@@ -67,7 +67,9 @@ em JavaScript as combinações calculadas em pandas e mostra o placar.
   sua origem (`q` nos filtros pelo gráfico e `eb` para as opções), permitindo
   consultar os bits detalhados ou as classes agrupadas sem alargar o recorte.
   Os links compartilham essa origem. Comparações indisponíveis no Simplificado
-  são adaptadas com uma mensagem; a seleção no gráfico mantém seu recorte de origem.
+  são adaptadas com uma mensagem apenas quando há mudança de comparação.
+  A confirmação genérica de preservação não ocupa uma faixa; a origem da seleção
+  fica nos detalhes do relatório, e seu recorte é mantido.
 - A leitura de combinações usa um seletor com explicação. Os rótulos distinguem
   **Somente imóvel no CAR** de **Imóvel no CAR (inclui combinações)**. Os nomes
   de apresentação foram revisados também nas tabelas, legendas e exportações;
@@ -76,6 +78,10 @@ em JavaScript as combinações calculadas em pandas e mostra o placar.
   vegetação herbácea passa a **Formações campestres, arbustivas e áreas úmidas**;
   **Afloramentos rochosos** ficam separados. O restante dos grupos conserva sua
   posição para manter os identificadores da calculadora.
+- A área analisada tem um cartão compacto com borda verde, rótulo e número
+  maior; os demais indicadores têm largura conforme o conteúdo. Configuração, gráficos e
+  exportação ficam sem uma moldura larga; as ações da seleção aparecem junto
+  do resultado, reduzindo espaços vazios sem esconder controles.
 - O relatório da seleção começa recolhido. A área total e as ações de aplicar
   ou limpar continuam visíveis; **Ver relatório da seleção** abre a tabela,
   as condições e as explicações. A escolha de abrir é mantida durante a análise.
