@@ -84,9 +84,9 @@ em JavaScript as combinações calculadas em pandas e mostra o placar.
 - O tema usa um ícone compacto no cabeçalho e uma lista de três opções:
   Automático, Claro e Escuro. A escolha continua salva no navegador; Escape
   e clique fora fecham a lista.
-- No desktop, o resumo da análise ocupa a coluna à direita da área e das
-  configurações. O texto cresce sem corte; em telas menores fica abaixo dos
-  controles, antes das opções de gráfico.
+- O resumo da análise fica acima dos indicadores e das configurações, com
+  largura inteira para o texto crescer sem apertar os controles. A barra de
+  filtros e as etiquetas de filtros aplicados usam espaçamento compacto.
 - A área analisada tem um cartão compacto com borda verde, rótulo e número
   maior; os demais indicadores têm largura conforme o conteúdo. Configuração, gráficos e
   exportação ficam sem uma moldura larga; as ações da seleção aparecem junto

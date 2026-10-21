@@ -325,7 +325,7 @@ body[data-modo="det"] .modoLinha b{color:var(--apagado)}
 .fescolha .flimpa{align-self:center}
 .fnota.famb{color:var(--suave)}
 .wrap{max-width:1640px}
-.grade{grid-template-columns:minmax(0,1fr)}
+.grade{grid-template-columns:minmax(0,1fr);gap:10px}
 .cabeca{display:flex;flex-wrap:wrap;align-items:flex-start;gap:4px 28px;margin:0 0 14px}
 .cabeca .intro{flex:1 1 520px;min-width:0}
 .cabeca .sobre{margin-bottom:0}
@@ -367,11 +367,11 @@ body[data-modo="det"] .modoLinha b{color:var(--apagado)}
 body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none !important}
 /* Completa: os filtros numa barra de botões acima do gráfico; cada botão abre a
    gaveta dele embaixo da barra, na largura inteira, uma de cada vez. */
-.lateral{position:static;max-height:none;overflow:visible;padding-right:0;margin:0 0 6px}
+.lateral{position:static;max-height:none;overflow:visible;padding-right:0;margin:0}
 @media(min-width:901px){.painelFiltros{display:block}}
 @media(max-width:900px){.painelFiltros.aberto{display:block}}
 .painelFiltros #filtros{display:contents}
-.gavBarra{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 0 8px}
+.gavBarra{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0}
 .gavBarra .rotulo{margin:0 4px 0 0}
 .gavBtn{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border:1px solid var(--linha);
   border-radius:999px;background:var(--painel);font-size:12.5px;color:var(--tinta);cursor:pointer;white-space:nowrap}
@@ -440,9 +440,9 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
 .menuTema button[aria-pressed="true"]{color:var(--verde);background:color-mix(in srgb,var(--verde) 7%,var(--fundo));box-shadow:none}
 .menuTema button:not([aria-pressed="true"]) .marcaTema{visibility:hidden}
 .exportMobile{margin:12px 0;padding:12px;border:1px solid var(--linha);border-radius:9px;background:var(--painel)}
-.resumoFiltros{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
-.resumoTitulo{font-size:11px;font-weight:600;color:var(--suave);margin-right:5px}
-.filtroAtivo{font-size:12px;border-color:var(--verde);color:var(--verde);padding:5px 9px;max-width:100%;text-align:left}
+.resumoFiltros{display:flex;gap:4px 6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.resumoTitulo{font-size:11px;font-weight:600;color:var(--suave);margin-right:2px}
+.filtroAtivo{font-size:12px;border-color:var(--verde);color:var(--verde);padding:3px 8px;min-height:28px;max-width:100%;text-align:left}
 #avisoModo{padding:10px 12px;margin-bottom:10px;background:var(--painel);border-left:3px solid var(--verde);font-size:12px}
 #g .teclado{outline:3px solid var(--verde);outline-offset:3px}#tab tr[tabindex]:focus-visible{outline:3px solid var(--verde);outline-offset:-3px}
 @media(max-width:700px){
@@ -518,14 +518,10 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
 .kpi .kPrincipal b{font-size:27px}
 .kpi .kPrincipal .krotulo{font-size:10.5px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--verde);margin:0 0 4px}
 .painelAnalise{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;margin-bottom:14px}
-.analiseTopo{display:grid;grid-template-columns:minmax(0,660px) minmax(0,1fr);align-items:start;gap:16px 28px}
-.analiseControles{min-width:0}
-.analiseTopo .frase{margin:0;padding:0 0 0 16px;border:0;border-left:2px solid var(--linha);border-radius:0;background:transparent;font-size:13px}
-@media(max-width:1099px){.analiseTopo{grid-template-columns:minmax(0,1fr);gap:12px}}
 .painelAnalise .plinha{justify-content:flex-start;gap:10px 24px}
 .painelAnalise #configAnalise>summary{margin-bottom:0}
 .painelAnalise #configAnalise[open]>summary{margin-bottom:8px}
-.painelAnalise:has(#configAnalise:not([open])) .plinha{border-top:0;margin-top:8px;padding-top:0}
+.painelAnalise #configAnalise:not([open])+.plinha{border-top:0;margin-top:8px;padding-top:0}
 .foco .fcard{width:fit-content;max-width:100%;border:0;border-left:2px solid var(--linha);border-radius:0;background:transparent;box-shadow:none;padding:2px 0 2px 12px}
 .foco .fres{align-items:center;gap:4px 12px}
 .foco .facoes{flex-wrap:wrap;margin-left:4px}
@@ -578,8 +574,7 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
 </aside>
 <main class="principal">
   <div id="resumoFiltros" class="resumoFiltros" aria-label="Filtros aplicados" hidden></div><div id="avisoModo" role="status" hidden></div>
-  <section class="painel painelAnalise" aria-label="Como mostrar o resultado">
-    <div class="analiseTopo"><div class="analiseControles">
+  <aside id="frase" class="frase" aria-label="Resumo da análise"></aside>
   <div class="kpi">
     <div class="k kPrincipal"><span class="krotulo">Área analisada (ha)</span><b id="kArea">—</b></div>
     <div class="k"><b id="kPct">—</b><span id="kPctL">do universo selecionado</span></div>
@@ -587,11 +582,11 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
     <div class="k" id="kNacBox" style="display:none"><b id="kNac">—</b><span id="kNacL">do Brasil</span></div>
     <div class="k" hidden style="display:none"><b id="kComb">—</b><span>combinações distintas</span></div>
   </div>
+  <section class="painel painelAnalise" aria-label="Como mostrar o resultado">
     <details id="configAnalise" open><summary>Configurar análise</summary><div class="gtit">Comparar por<span id="iSeparar"></span></div>
     <div id="eixos"></div>
     <button id="addEixo" class="add" title="da terceira em diante o gráfico muda para Sankey, que é o único que desenha várias colunas">+ comparação</button>
     <div id="anosAnalise" hidden><div class="gtit">Ano do PRODES na análise</div></div></details>
-    </div><aside id="frase" class="frase" aria-label="Resumo da análise"></aside></div>
     <div class="plinha">
     <div class="pgrupo">
     <div class="gtit">Gráfico</div>
