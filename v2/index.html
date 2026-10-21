@@ -307,6 +307,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
   text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer}
 .modoBtn:hover{text-decoration-style:solid}
 body[data-modo="det"] .modoLinha b{color:var(--apagado)}
+
 .foco .fescolha{width:100%;border:1px solid var(--verde);border-radius:10px;padding:10px 12px;
   background:var(--painel)}
 .fpergunta{font-size:13px;line-height:1.45;margin:0 0 8px;color:var(--tinta)}
@@ -324,6 +325,11 @@ body[data-modo="det"] .modoLinha b{color:var(--apagado)}
 </head><body><div class="wrap">
 <div class="topo">
 <h1>Explorador PRODES — combinações a 10 metros, por estado <span class="v2tag" title="versão simplificada em validação; a versão anterior continua no endereço principal">v2 · em validação</span></h1>
+<div class="tema"><span class="gtit">Classes</span>
+  <span class="seg mini" role="group" aria-label="Nível das classes">
+    <button type="button" data-modo="simples" title="as classes da versão simplificada: base do INCRA, UC por grupo de manejo, RL e APP juntas…">Simplificadas</button>
+    <button type="button" data-modo="det" title="a separação completa (SIGEF e SNCI, esferas das UCs, as três classes de sobreposição entre CARs…), para conferir; destaque e filtros do gráfico recomeçam">Detalhadas</button>
+  </span></div>
 <div class="tema"><span class="gtit">Tema</span>
   <span class="seg mini" role="group" aria-label="Tema da página">
     <button type="button" data-tema="auto" title="segue o modo claro ou escuro do seu computador ou celular">Automático</button>
@@ -336,9 +342,9 @@ desmatamento) e o <b>estado</b>; acima do gráfico, por quais categorias <b>sepa
 gráfico, um <b>clique</b> destaca uma parte e mostra os números dela; <b>Filtrar por isto</b>
 (ou um duplo clique) faz a página inteira passar a ser só aquilo — e ← voltar desfaz. A frase
 acima dos números descreve sempre o que está na tela.</p>
-<p class="modoLinha"><span id="modoTxt"></span> <button type="button" id="modoBtn" class="modoBtn"></button></p>
+<p class="modoLinha" id="modoLinha" hidden><span id="modoTxt"></span> <button type="button" id="modoBtn" class="modoBtn"></button></p>
 <details class="sobre"><summary>O que esta versão tem de diferente</summary>
-<p><b>Versão 2, simplificada (em validação).</b> Feita para quem não acompanhou a construção dos dados: menos classes, nomes que se explicam e um caminho só para filtrar — pelo próprio gráfico. Os dados são os mesmos da versão anterior; o que muda é como eles são agrupados. SIGEF e SNCI viram a <b>base do INCRA</b>, e a aderência fica em duas classes (aderente ou não). Unidades de conservação ficam só em <b>proteção integral</b> e <b>uso sustentável</b>, com as federais, estaduais e municipais juntas; assentamentos e áreas não destinadas também deixam de separar federal e estadual. <b>RL e APP</b> viram uma classe só. A sobreposição entre CARs conta o chão em que dois cadastros se cobrem, e encostos mínimos entre vizinhos contam como sem sobreposição. O botão <b>ver as classes detalhadas</b>, logo abaixo do texto de abertura, mostra a separação completa, para conferir; os nomes das classes do CAR ainda podem mudar.</p>
+<p><b>Versão 2, simplificada (em validação).</b> Feita para quem não acompanhou a construção dos dados: menos classes, nomes que se explicam e um caminho só para filtrar — pelo próprio gráfico. Os dados são os mesmos da versão anterior; o que muda é como eles são agrupados. SIGEF e SNCI viram a <b>base do INCRA</b>, e a aderência fica em duas classes (aderente ou não). Unidades de conservação ficam só em <b>proteção integral</b> e <b>uso sustentável</b>, com as federais, estaduais e municipais juntas; assentamentos e áreas não destinadas também deixam de separar federal e estadual. <b>RL e APP</b> viram uma classe só. A sobreposição entre CARs conta o chão em que dois cadastros se cobrem, e encostos mínimos entre vizinhos contam como sem sobreposição. O seletor <b>Classes</b>, no alto à direita, mostra a separação completa (<b>Detalhadas</b>), para conferir; os nomes das classes do CAR ainda podem mudar.</p>
 <p><b>Atualizado em 21/10/2026.</b> Entraram o PRODES <b>2023</b> e o <b>2025</b> dos seis biomas, ao lado do 2024 — escolha o ano no quadro Universo. Os três anos vêm da mesma versão do INPE, publicada entre julho e outubro de 2026, que revisou o 2024 de 1.957.066 para 1.954.281 ha. A aderência ao fundiário e o tamanho do imóvel passaram a valer para <b>todos os imóveis do CAR filtrado</b>, e não só para os que cruzavam o desmatamento. O PRODES 2026 já saiu para o Cerrado; entra quando os outros biomas saírem.</p>
 <p>Resolução de <b>10 metros</b> — nove
 vezes mais pixels que a de 30 m — com a cobertura do solo vindo da
@@ -1080,18 +1086,15 @@ function mudaModo(m){
 }
 function marcaModo(){
   document.body.dataset.modo=modo;
-  const t=document.getElementById('modoTxt'), b=document.getElementById('modoBtn');
-  if(modo==='simples'){
-    t.innerHTML='Você está vendo as classes <b>simplificadas</b>.';
-    b.textContent='ver as classes detalhadas';
-    b.title='mostra a separação completa (SIGEF e SNCI, esferas das UCs, as três classes de '+
-      'sobreposição entre CARs…), para conferir; destaque e filtros do gráfico recomeçam';
-  } else {
-    t.innerHTML='Você está vendo as classes <b>detalhadas</b>, para conferência: os hectares são '+
-      'os mesmos, separados em mais classes.';
-    b.textContent='voltar às classes simplificadas';
-    b.title='volta às classes da versão simplificada; destaque e filtros do gráfico recomeçam';
-  }
+  document.querySelectorAll('button[data-modo]').forEach(b=>
+    b.setAttribute('aria-pressed',b.dataset.modo===modo));
+  // No detalhado, uma linha avisa que aquilo é para conferência.
+  document.getElementById('modoLinha').hidden=modo==='simples';
+  document.getElementById('modoTxt').innerHTML='Você está vendo as classes <b>detalhadas</b>, para '+
+    'conferência: os hectares são os mesmos, separados em mais classes.';
+  const b=document.getElementById('modoBtn');
+  b.textContent='voltar às simplificadas';
+  b.title='volta às classes da versão simplificada; destaque e filtros do gráfico recomeçam';
 }
 // Grupos de linhas por dimensão: linhas com os mesmos bits da dimensão têm o
 // mesmo rótulo. Numerados uma vez por universo e dimensão, deixam o laço da
@@ -3343,7 +3346,8 @@ function aplicaTema(t){
   const iu=document.getElementById('iUso');
   iu.appendChild(info(EXPLICA['Uso do solo']+'<br><br>'+textoUso(),'Uso do solo'));
   document.getElementById('nivelUsoF').appendChild(seletorNivelUso());
-  document.getElementById('modoBtn').onclick=()=>mudaModo(modo==='simples'?'det':'simples');
+  document.querySelectorAll('button[data-modo]').forEach(b=>b.onclick=()=>mudaModo(b.dataset.modo));
+  document.getElementById('modoBtn').onclick=()=>mudaModo('simples');
 })();
 aplicaURL();
 // Tudo o que o link trouxe (estado, gráfico, classes) é pintado antes da única
