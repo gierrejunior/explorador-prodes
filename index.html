@@ -105,6 +105,7 @@ button[aria-pressed="true"]{background:var(--verde);color:var(--fundo);border-co
 .opBarra{margin-top:6px}
 .calcSub{color:var(--suave);font-size:12.5px;margin:0 0 10px}
 .calcEscolha{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.calcEscolha:last-child{margin-bottom:0}
 .calcEscolha select{max-width:100%;font-weight:600;color:var(--verde)}
 .fichas{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .ficha{display:inline-flex;align-items:center;gap:6px;padding:3px 3px 3px 10px;border:1px solid var(--aceso);
@@ -113,10 +114,6 @@ button[aria-pressed="true"]{background:var(--verde);color:var(--fundo);border-co
 .ficha button{border:0;background:transparent;padding:2px 7px;font-size:14px;line-height:1;color:var(--suave);border-radius:999px}
 .ficha button:hover{color:var(--apagado)}
 .limpaCalc{border:0;background:transparent;color:var(--suave);text-decoration:underline;padding:4px}
-.calcVazio{color:var(--suave);font-size:12.5px;border:1px dashed var(--linha);border-radius:10px;padding:12px 14px;background:var(--fundo)}
-.sugs{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
-.sugs button{font-size:12px;color:var(--tinta)}
-.sugs .x{color:var(--suave)}
 .ccards{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:10px}
 .ccard{border:1px solid var(--linha);border-radius:10px;background:var(--fundo);padding:10px 12px;min-width:0}
 .ccard .t{font-size:12.5px;line-height:1.35;color:var(--tinta);font-weight:600}
@@ -375,9 +372,9 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
 .gavBtn.temFiltro{border-color:var(--aceso);color:var(--aceso)}
 .gavBtn .gavN{background:var(--aceso);color:var(--fundo);border-radius:999px;padding:0 6px;font-size:11px;font-weight:700}
 .gavBtn .gavN:empty{display:none}
-.gavBarra .gavLimpa{margin-left:auto;border:0;background:none;color:var(--suave);font-size:12px;
+.cabFiltros .gavLimpa{margin-left:auto;border:0;background:none;color:var(--suave);font-size:12px;
   text-decoration:underline dotted;text-underline-offset:3px;padding:4px 6px;cursor:pointer}
-.gavBarra .gavLimpa:hover{color:var(--apagado)}
+.cabFiltros .gavLimpa:hover{color:var(--apagado)}
 .painelFiltros .gaveta{display:none;margin:0 0 8px}
 .painelFiltros .gaveta.aberta{display:block}
 .gaveta>h3,.gaveta .cabUso h3{cursor:pointer;user-select:none}
@@ -399,12 +396,14 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
 @media(max-width:600px){.subfiltro{display:block;margin-right:0}.subseleciona{flex:1;min-width:0}.subabre{flex-shrink:0}}
 
 /* Filtros agrupados por assunto, com o painel ligado ao botão de origem. */
-.gavBarra{display:flex;align-items:flex-start;gap:12px 20px;position:relative}
-.gavTema{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start;min-width:0;flex:1 1 300px}
+.cabFiltros{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.cabFiltros .rotulo{display:flex;align-items:center;gap:6px;margin:0}
+.gavBarra{display:flex;align-items:flex-start;gap:10px 14px;position:relative}
+.gavTema{display:flex;flex-direction:column;gap:5px;align-items:flex-start;min-width:0;flex:0 1 auto;width:max-content;max-width:100%}
+.gavOpcoes{display:flex;flex-wrap:wrap;gap:5px;max-width:100%}
 .gavTemaTitulo{width:100%;font-size:10.5px;color:var(--suave);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-.gavTema:nth-child(2){flex:0 1 305px}.gavTema:nth-child(3){flex:0 1 180px}
 .gavItem{position:relative;max-width:100%}
-.gavBtn{white-space:normal;min-height:36px;border-radius:8px;text-align:left}
+.gavBtn{white-space:nowrap;min-height:36px;border-radius:8px;text-align:left;font-size:12px;padding:6px 7px;gap:4px}
 .painelFiltros .gaveta{position:absolute;z-index:15;margin:0;padding:16px;box-shadow:0 10px 35px rgba(0,0,0,.2);overflow:auto;overscroll-behavior:contain;max-width:calc(100vw - 24px)}
 .painelFiltros .gaveta.aberta{display:block;border:2px solid var(--verde)}
 .gaveta:focus{outline:none}.gaveta h3{padding-right:80px;cursor:default}
@@ -436,7 +435,7 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
  .recorteTopo{gap:8px}.recorteTopo>.cx{margin-bottom:0}
  .frase{font-size:12px;padding:8px 10px;margin-bottom:8px}.kpi{margin-bottom:10px}
  .painel{padding:10px}.plinha{margin-top:6px;padding-top:8px;gap:10px}
- .gavBarra,.gavTema{display:flex;flex-direction:column;width:100%;gap:7px}
+ .gavBarra,.gavTema,.gavOpcoes{display:flex;flex-direction:column;width:100%;gap:7px}
  .gavTema,.gavTema:nth-child(2),.gavTema:nth-child(3){flex:initial;width:100%}
  .gavItem{width:100%}.gavItem>.gavBtn{width:100%;justify-content:space-between;min-height:42px}
  .painelFiltros .gaveta{position:static;width:100%!important;max-width:100%;max-height:none!important;margin-top:5px;box-shadow:none;padding:12px}
@@ -455,14 +454,14 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
 
 /* A caixa altera o filtro; só a seta abre o painel. */
 .gavItem{display:inline-flex;align-items:stretch}
-.gavSeleciona{min-width:34px;min-height:36px;padding:4px 8px;border-radius:8px 0 0 8px;border-right:0;background:var(--painel);font-size:17px;color:var(--suave)}
+.gavSeleciona{min-width:27px;min-height:36px;padding:4px 5px;border-radius:8px 0 0 8px;border-right:0;background:var(--painel);font-size:17px;color:var(--suave)}
 .gavItem>.gavBtn{border-radius:0 8px 8px 0}
 .gavSeleciona[data-e="1"]{color:var(--aceso);border-color:var(--aceso);background:color-mix(in srgb,var(--aceso) 10%,var(--painel))}
 .gavSeleciona[data-e="2"],.gavBtn[data-grupo-estado="2"]{color:var(--apagado);border-color:var(--apagado);background:color-mix(in srgb,var(--apagado) 10%,var(--painel))}
 .gavSeleciona[data-e="3"]{color:var(--aceso);outline:1px dashed var(--aceso);outline-offset:-3px}
 .opFiltro{border:0;overflow:visible}.opFiltro .chip{border:1px solid var(--linha);border-radius:8px}
 @media(min-width:701px){.escolhaGraficos{gap:0;max-width:100%}.pgrupo{min-width:0;max-width:100%}.escolhaGraficos>.seg{flex:0 1 auto;max-width:100%}.escolhaGraficos>.seg{display:flex;flex-wrap:wrap}#maisGraficos{display:none}}
-@media(max-width:700px){.gavItem{display:flex;flex-wrap:wrap}.gavItem>.gavSeleciona{min-height:42px;flex:0 0 38px}.gavItem>.gavBtn{width:auto;flex:1}.gavItem>.gaveta{flex-basis:100%}}
+@media(max-width:700px){.gavItem{display:flex;flex-wrap:wrap}.gavItem>.gavSeleciona{min-height:42px;flex:0 0 38px}.gavItem>.gavBtn{width:auto;flex:1;white-space:normal}.gavItem>.gaveta{flex-basis:100%}}
 
 /* Listas de opções: conjuntos antes dos itens isolados, ordenados no DOM em pt-BR. */
 .gaveta .subfiltro{display:block;width:100%;margin:0 0 8px}
@@ -533,8 +532,8 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
 <aside class="lateral">
   <button id="abreFiltros" class="abreFiltros" aria-expanded="false" aria-controls="painelFiltros">
     <span>Filtros</span><span class="n" id="nFiltros">nenhum ativo ▾</span></button>
-  <div id="painelFiltros" class="painelFiltros">
-  <div class="rotulo">Filtrar <span id="iFiltrar"></span></div>
+  <div id="painelFiltros" class="painelFiltros" role="region" aria-labelledby="tituloFiltros">
+  <div class="cabFiltros"><h2 class="rotulo" id="tituloFiltros">Filtros <span id="iFiltrar"></span></h2></div>
   <div id="filtros"></div>
   <div class="cx gaveta" id="gavetaUso"><div class="cabUso"><h3>Uso e cobertura do solo <span class="cont"></span><span id="iUso"></span></h3><span id="nivelUsoF"></span></div>
     <div id="fclasses"></div></div>
@@ -3367,8 +3366,6 @@ function bitsPorRotulo(){
   for(const [id,rot,cods] of usosCalc()) m.set(id,{rot,grupo:USO_CALC,cods});
   return m;
 }
-// Duplas que o time mais pergunta; só aparecem quando nada foi escolhido.
-const CALC_SUGESTOES=[[8,16],[9,10],[28,29],[8,24],[8,2002]];
 const GRUPO_CURTO={'Desmatamento':'Desmatamento','Cadastro':'Cadastro','Categoria da UC (SNUC)':'UC',
   'Aderência do CAR ao fundiário — SIGEF e SNCI separados':'Aderência','Tamanho do imóvel':'Tamanho',
   'Categorias territoriais':'Territorial','Contorno da parcela — SIGEF e SNCI separados':'Parcela',
@@ -3403,10 +3400,6 @@ function montaCalc(){
   h+='</div>';
 
   if(!n){
-    const sug=CALC_SUGESTOES.filter(s=>s.every(b=>cat.has(b)));
-    h+=`<div class="calcVazio">Nenhuma categoria escolhida ainda. Comece por uma destas comparações:`+
-       `<div class="sugs">`+sug.map(s=>`<button type="button" data-sug="${s.join(',')}">`+
-         s.map(nome).join(' <span class="x">×</span> ')+'</button>').join('')+'</div></div>';
     window.__calc=null;
   } else {
     // "Só nestas" é relativo aos GRUPOS tocados pela escolha: estar nestas e em
@@ -3512,8 +3505,6 @@ function montaCalc(){
   const sel=document.getElementById('calcAdd');
   sel.onchange=()=>{ if(sel.value){ calcSel.add(+sel.value); montaCalc(); } };
   c.querySelectorAll('[data-tira]').forEach(el=>el.onclick=()=>{ calcSel.delete(+el.dataset.tira); montaCalc(); });
-  c.querySelectorAll('[data-sug]').forEach(el=>el.onclick=()=>{
-    calcSel.clear(); el.dataset.sug.split(',').forEach(b=>calcSel.add(+b)); montaCalc(); });
   const lp=c.querySelector('[data-limpa]');
   if(lp) lp.onclick=()=>{ calcSel.clear(); montaCalc(); };
 }
@@ -3881,13 +3872,14 @@ const BOTOES_FILTRO={
 function montaBarraGavetas(){
   const p=document.getElementById('painelFiltros');if(!p||p.querySelector('.gavBarra'))return;
   const barra=document.createElement('div');barra.className='gavBarra';
-  const rot=p.querySelector('.rotulo');if(rot)rot.remove();
+  const cabFiltros=p.querySelector('.cabFiltros');
   const assuntos=[['Imóveis e CAR',['Cadastro','Tamanho do imóvel','Aderência do CAR ao fundiário — SIGEF e SNCI separados','Contorno da parcela — SIGEF e SNCI separados','APP e Reserva Legal declaradas','Sobreposição entre imóveis do CAR']],
     ['Territórios e conservação',['Categorias territoriais','Categoria da UC (SNUC)']],['Cobertura do solo',['Uso do solo']]];
   const gs=[...p.querySelectorAll('.gaveta')];
   for(const [assunto,nomes] of assuntos){
     const bloco=document.createElement('section');bloco.className='gavTema';bloco.setAttribute('aria-label',assunto);
     const titulo=document.createElement('div');titulo.className='gavTemaTitulo';titulo.textContent=assunto;bloco.appendChild(titulo);
+    const opcoes=document.createElement('div');opcoes.className='gavOpcoes';bloco.appendChild(opcoes);
     for(const nome of nomes){const g=gs.find(g=>(g.dataset.grupo||'Uso do solo')===nome);if(!g)continue;
       const item=document.createElement('div');item.className='gavItem';
       const b=document.createElement('button');b.type='button';b.className='gavBtn';b.id='abre-'+(g.id||'filtro-'+gs.indexOf(g));
@@ -3908,11 +3900,11 @@ function montaBarraGavetas(){
         if(nome==='Uso do solo'){marcaClasses([...usosPresentes],e);sincClasses();}
         else{g.querySelectorAll('.chip[data-bit]').forEach(c=>{const bit=c.dataset.bit;if(e)estado[bit]=e;else delete estado[bit];});fonteEstado='det';sincChips();}
         agenda();};
-      item.append(seleciona,b,g);bloco.appendChild(item);
+      item.append(seleciona,b,g);opcoes.appendChild(item);
     }barra.appendChild(bloco);
   }
-  const lp=document.getElementById('limpar');if(lp){const cx=lp.closest('.cx');lp.className='gavLimpa';barra.appendChild(lp);if(cx)cx.remove();}
-  p.prepend(barra);marcaGavetas();
+  const lp=document.getElementById('limpar');if(lp){const cx=lp.closest('.cx');lp.className='gavLimpa';cabFiltros.appendChild(lp);if(cx)cx.remove();}
+  cabFiltros.after(barra);marcaGavetas();
 }
 function resumoFiltros(){
   const r=document.getElementById('resumoFiltros');if(!r)return;r.replaceChildren();

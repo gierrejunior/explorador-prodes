@@ -51,7 +51,9 @@ em JavaScript as combinações calculadas em pandas e mostra o placar.
 - **Simplificado / Detalhado** substituem Simplificada / Completa. A abertura
   sem parâmetros usa barras, uma comparação e classes agrupadas. No celular,
   as configurações começam recolhidas e a exportação fica depois do gráfico.
-- Os filtros do Detalhado ficam organizados por assunto. No computador, cada
+- A barra do Detalhado tem o título **Filtros** e mantém os assuntos agrupados.
+  Em telas largas, os nove controles ocupam uma linha; em telas menores,
+  quebram linha sem cortar os nomes. No computador, cada
   painel abre a 8 px do botão que o acionou, com ajuste às bordas da janela,
   fechamento por Escape ou clique fora e relação acessível entre botão e painel.
   No celular, o painel abre imediatamente abaixo do respectivo botão.
@@ -329,7 +331,8 @@ com os nomes escolhidos: a área ocupada por elas juntas (a união, cada hectare
 uma vez — o número para citar), a área que é de todas ao mesmo tempo (a
 interseção), a área que seria contada duas vezes se as áreas fossem somadas
 separadamente, a área só delas sem outra categoria dos mesmos grupos, e como a
-área ocupada se divide.
+área ocupada se divide. A calculadora começa apenas com a instrução e o seletor
+**Adicionar categoria**, sem comparações sugeridas.
 
 **Destacar e filtrar.** São duas coisas, cada uma com seu lugar:
 
