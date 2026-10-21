@@ -685,7 +685,11 @@ function montaFiltros(){
     for(const [b,rot] of bits){
       const s=document.createElement('span'); s.className='chip'; s.dataset.bit=b; s.dataset.e=0;
       s.innerHTML=`<span class="m">·</span>${rot}`;
-      s.onclick=()=>{const e=((+s.dataset.e)+1)%3; s.dataset.e=e; estado[b]=e;
+      s.onclick=()=>{
+        if(+b===7&&universo==='mestre'){   // é o universo Desmatamento PRODES
+          const g=s.closest('.gaveta'); if(g) g.classList.remove('aberta');
+          universo='recorte'; sincU(); return; }
+        const e=((+s.dataset.e)+1)%3; s.dataset.e=e; estado[b]=e;
         s.querySelector('.m').textContent=e===0?'·':(e===1?'+':'−'); agenda();};
       d.appendChild(s);
     }
@@ -1087,6 +1091,10 @@ function montaBarraGavetas(){
   const lp=document.getElementById('limpar');
   if(lp){ const cx=lp.closest('.cx'); lp.className='gavLimpa'; barra.appendChild(lp); if(cx) cx.remove(); }
   p.insertBefore(barra,p.firstChild);
+  // No Brasil inteiro, o chip do desmatamento leva ao universo Desmatamento PRODES.
+  const c7=p.querySelector('.chip[data-bit="7"]');
+  if(c7){ c7.lastChild.textContent='Ir para o desmatamento PRODES';
+    c7.title='leva ao universo Desmatamento PRODES (são os mesmos pixels)'; }
   marcaGavetas();
 }
 
@@ -2958,6 +2966,7 @@ function aplicaURL(){
   if(p.get('uf')) ufSel=+p.get('uf');
   for(const [chave,val] of [['m',1],['n',2]])
     for(const b of (p.get(chave)||'').split(',').filter(Boolean)) estado[b]=val;
+  if(universo==='mestre'&&estado[7]===1){ delete estado[7]; universo='recorte'; }
   for(const c of (p.get('c')||'').split(',').filter(Boolean)) classesSel.add(+c);
   for(const b of (p.get('k')||'').split(',').filter(Boolean)) calcSel.add(+b);
   const e=(p.get('e')||'').split(',').filter(Boolean)
