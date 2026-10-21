@@ -29,8 +29,10 @@ o `/v2/`, onde a versão simplificada foi testada, saiu.
   sobreposto a outro e CAR duplicado. Sem filtros por categoria nem calculadora:
   filtra-se pelo próprio gráfico.
 - **Completa**: a página de antes, com todas as classes, os filtros por
-  categoria — agora em **gavetas** acima do gráfico, que fica com a largura
-  inteira — e a calculadora.
+  categoria — agora numa **barra de gavetas** acima do gráfico: cada botão abre
+  a sua embaixo da barra e mostra quantos filtros dela estão ligados; o gráfico
+  fica com a largura inteira — e a calculadora, agora **calculadora de áreas em
+  comum** ("sobreposição" ficou só para dois CARs no mesmo chão).
 - Os dados são os mesmos nas duas; muda só o agrupamento. Trocar de aplicação
   recomeça filtros e destaque, porque as classes de uma não existem na outra.
 - **Copiar link** leva a aplicação (`modo=simples` ou `modo=det`). Link de antes,
@@ -231,7 +233,7 @@ Além de treemap, sunburst, pizza e Sankey, há três gráficos:
   anos marcados: área desmatada ÷ área total da categoria, sempre sobre o
   Brasil inteiro, com os filtros escolhidos menos o de desmatamento.
 
-A **calculadora de sobreposição** (aplicação Completa) recebe categorias de qualquer grupo — inclusive
+A **calculadora de áreas em comum** (aplicação Completa) recebe categorias de qualquer grupo — inclusive
 o **uso do solo**, no nível escolhido em Agrupado/Detalhado (duas classes de uso
 do solo nunca se sobrepõem: cada pixel tem uma só) e mostra,
 com os nomes escolhidos: a área ocupada por elas juntas (a união, cada hectare

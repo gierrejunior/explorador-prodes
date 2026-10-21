@@ -359,24 +359,30 @@ body[data-modo="det"] .modoLinha b{color:var(--apagado)}
   .ftab th.n{white-space:normal}.ftab td{padding:5px 6px}}
 /* Simplificada: sem faixa de filtros nem calculadora */
 body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none !important}
-/* Completa: os filtros em gavetas, numa faixa acima do gráfico */
+/* Completa: os filtros numa barra de botões acima do gráfico; cada botão abre a
+   gaveta dele embaixo da barra, na largura inteira, uma de cada vez. */
 .lateral{position:static;max-height:none;overflow:visible;padding-right:0;margin:0 0 6px}
-@media(min-width:901px){
-  .painelFiltros{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;align-items:start}
-}
-@media(max-width:900px){.painelFiltros.aberto{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}}
+@media(min-width:901px){.painelFiltros{display:block}}
+@media(max-width:900px){.painelFiltros.aberto{display:block}}
 .painelFiltros #filtros{display:contents}
-.painelFiltros .rotulo{grid-column:1/-1;margin:2px 0 0}
-.painelFiltros .cx{margin:0}
-.gaveta>h3,.gaveta .cabUso h3{cursor:pointer;user-select:none;margin:0}
-.gaveta>h3::before,.gaveta .cabUso h3::before{content:'▸ ';color:var(--suave)}
-.gaveta.aberta>h3::before,.gaveta.aberta .cabUso h3::before{content:'▾ '}
-.gaveta.aberta>h3{margin-bottom:9px}
-.gaveta .cabUso{margin-bottom:0}
-.gaveta.aberta .cabUso{margin-bottom:9px}
-.gaveta:not(.aberta) .chip{display:none}
+.gavBarra{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 0 8px}
+.gavBarra .rotulo{margin:0 4px 0 0}
+.gavBtn{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border:1px solid var(--linha);
+  border-radius:999px;background:var(--painel);font-size:12.5px;color:var(--tinta);cursor:pointer;white-space:nowrap}
+.gavBtn::after{content:'▾';font-size:10px;color:var(--suave)}
+.gavBtn[aria-expanded="true"]{border-color:var(--verde);color:var(--verde);background:color-mix(in srgb,var(--verde) 10%,var(--painel))}
+.gavBtn[aria-expanded="true"]::after{content:'▴'}
+.gavBtn.temFiltro{border-color:var(--aceso);color:var(--aceso)}
+.gavBtn .gavN{background:var(--aceso);color:var(--fundo);border-radius:999px;padding:0 6px;font-size:11px;font-weight:700}
+.gavBtn .gavN:empty{display:none}
+.gavBarra .gavLimpa{margin-left:auto;border:0;background:none;color:var(--suave);font-size:12px;
+  text-decoration:underline dotted;text-underline-offset:3px;padding:4px 6px;cursor:pointer}
+.gavBarra .gavLimpa:hover{color:var(--apagado)}
+.painelFiltros .gaveta{display:none;margin:0 0 8px}
+.painelFiltros .gaveta.aberta{display:block}
+.gaveta>h3,.gaveta .cabUso h3{cursor:pointer;user-select:none}
+.gaveta>h3{margin:0 0 9px}
 .gaveta .cont{font-weight:400;text-transform:none;letter-spacing:0;color:var(--suave);margin-left:4px}
-.gaveta.temFiltro{border-color:var(--aceso)}
 .gaveta.temFiltro .cont{color:var(--aceso);font-weight:600}
 </style>
 <script>try{var t=localStorage.getItem('tema');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
@@ -421,7 +427,7 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
   <div id="filtros"></div>
   <div class="cx gaveta" id="gavetaUso"><div class="cabUso"><h3>Uso do solo <span class="cont"></span><span id="iUso"></span></h3><span id="nivelUsoF"></span></div>
     <div id="fclasses"></div></div>
-  <div class="cx"><button id="limpar">Limpar todos os filtros</button></div>
+  <div class="cx"><button id="limpar">Limpar filtros</button></div>
   </div>
 </aside>
 <main class="principal">
@@ -1035,14 +1041,53 @@ function frase(area){
   });
   marcaGavetas();
 }
-// Cabeçalho de cada gaveta: quantas opções e quantas estão no filtro.
+// Cabeçalho de cada gaveta (quantas opções e quantas estão no filtro) e o botão
+// dela na barra (o número de filtros ligados, aberto ou fechado).
 function marcaGavetas(){
   document.querySelectorAll('#painelFiltros .gaveta').forEach(g=>{
     const cs=[...g.querySelectorAll('.chip')], on=cs.filter(c=>+c.dataset.e>0).length;
     const ct=g.querySelector('.cont');
     if(ct) ct.textContent=`· ${cs.length} ${cs.length===1?'opção':'opções'}`+(on?` · ${on} no filtro`:'');
     g.classList.toggle('temFiltro',on>0);
+    const b=g._botao; if(!b) return;
+    b.querySelector('.gavN').textContent=on?String(on):'';
+    b.classList.toggle('temFiltro',on>0);
+    b.setAttribute('aria-expanded',g.classList.contains('aberta'));
+    b.hidden=g.style.display==='none';   // o desmatamento some no Desmatamento PRODES
   });
+  // "Limpar filtros" só aparece quando há o que limpar.
+  const lp=document.querySelector('#painelFiltros .gavLimpa');
+  if(lp) lp.hidden=!document.querySelector('#painelFiltros .chip[data-e]:not([data-e="0"])');
+}
+// A barra: um botão por gaveta, com nome curto; o nome inteiro fica no título da
+// gaveta aberta. Uma gaveta aberta por vez; o nome no alto dela também fecha.
+const NOME_GAVETA={'Desmatamento PRODES':'Desmatamento','Cadastro':'CAR',
+  'Categoria da UC (SNUC)':'Categoria da UC',
+  'Aderência do CAR ao fundiário — SIGEF e SNCI separados':'Aderência',
+  'Tamanho do imóvel':'Tamanho','Categorias territoriais':'Territorial',
+  'Contorno da parcela — SIGEF e SNCI separados':'Parcela',
+  'APP e Reserva Legal declaradas':'APP e RL',
+  'Sobreposição entre imóveis do CAR':'Sobreposição CAR','Uso do solo':'Uso do solo'};
+function montaBarraGavetas(){
+  const p=document.getElementById('painelFiltros'); if(!p||p.querySelector('.gavBarra')) return;
+  const barra=document.createElement('div'); barra.className='gavBarra';
+  const rot=p.querySelector('.rotulo'); if(rot) barra.appendChild(rot);
+  const gs=[...p.querySelectorAll('.gaveta')];
+  for(const g of gs){
+    const nome=g.dataset.grupo||'Uso do solo';
+    const b=document.createElement('button'); b.type='button'; b.className='gavBtn'; b.title=nome;
+    b.setAttribute('aria-expanded','false');
+    b.innerHTML=`${escH(NOME_GAVETA[nome]||nome)}<span class="gavN"></span>`;
+    b.onclick=()=>{ const abre=!g.classList.contains('aberta');
+      gs.forEach(x=>x.classList.remove('aberta')); if(abre) g.classList.add('aberta'); marcaGavetas(); };
+    g._botao=b; barra.appendChild(b);
+    const h=g.querySelector('h3');
+    if(h) h.onclick=()=>{ g.classList.remove('aberta'); marcaGavetas(); };
+  }
+  const lp=document.getElementById('limpar');
+  if(lp){ const cx=lp.closest('.cx'); lp.className='gavLimpa'; barra.appendChild(lp); if(cx) cx.remove(); }
+  p.insertBefore(barra,p.firstChild);
+  marcaGavetas();
 }
 
 function nomesFiltroUso(){
@@ -2982,9 +3027,9 @@ function montaCalc(){
   const nome=b=>cat.get(b).rot, grupo=b=>cat.get(b).grupo;
   const curto=g=>GRUPO_CURTO[g]||g.split(' — ')[0];
   const bits=[...calcSel], n=bits.length;
-  let h=`<h3>Calculadora de sobreposição <span id="iCalc"></span></h3>`+
-    `<p class="calcSub">Escolha duas ou mais categorias, de qualquer grupo, e veja quanto elas se `+
-    `sobrepõem. A conta respeita os filtros e o estado já escolhidos.</p>`;
+  let h=`<h3>Calculadora de áreas em comum <span id="iCalc"></span></h3>`+
+    `<p class="calcSub">Escolha duas ou mais categorias, de qualquer grupo, e veja quanto elas têm `+
+    `em comum. A conta respeita os filtros e o estado já escolhidos.</p>`;
   h+=`<div class="calcEscolha"><select id="calcAdd" aria-label="adicionar categoria à calculadora">`+
      `<option value="">+ adicionar categoria…</option>`;
   for(const [g,bs] of D.grupos){
@@ -3456,7 +3501,7 @@ function aplicaTema(t){
 aplicaURL();
 // Tudo o que o link trouxe (estado, gráfico, classes) é pintado antes da única
 // conta da abertura.
-atualizaDimProdes(); marcaModo(); montaFiltros(); montaAnos(); marcaU(); marcaV(); marcaNivelUso(); montaUF(); sincLeitura(); sincUF(); calcula();
+atualizaDimProdes(); marcaModo(); montaFiltros(); montaBarraGavetas(); montaAnos(); marcaU(); marcaV(); marcaNivelUso(); montaUF(); sincLeitura(); sincUF(); calcula();
 
 // Autoconferencia: abra o arquivo com ?validar no fim do endereco.
 // Refaz em JavaScript as combinacoes calculadas em pandas e compara.
