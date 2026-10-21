@@ -357,15 +357,36 @@ body[data-modo="det"] .modoLinha b{color:var(--apagado)}
 .fpesos li{margin:2px 0}
 @media(max-width:600px){.ftab{font-size:12px}.ftab .fgr{display:block;margin:0 0 2px}
   .ftab th.n{white-space:normal}.ftab td{padding:5px 6px}}
+/* Simplificada: sem faixa de filtros nem calculadora */
+body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none !important}
+/* Completa: os filtros em gavetas, numa faixa acima do gráfico */
+.lateral{position:static;max-height:none;overflow:visible;padding-right:0;margin:0 0 6px}
+@media(min-width:901px){
+  .painelFiltros{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;align-items:start}
+}
+@media(max-width:900px){.painelFiltros.aberto{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}}
+.painelFiltros #filtros{display:contents}
+.painelFiltros .rotulo{grid-column:1/-1;margin:2px 0 0}
+.painelFiltros .cx{margin:0}
+.gaveta>h3,.gaveta .cabUso h3{cursor:pointer;user-select:none;margin:0}
+.gaveta>h3::before,.gaveta .cabUso h3::before{content:'▸ ';color:var(--suave)}
+.gaveta.aberta>h3::before,.gaveta.aberta .cabUso h3::before{content:'▾ '}
+.gaveta.aberta>h3{margin-bottom:9px}
+.gaveta .cabUso{margin-bottom:0}
+.gaveta.aberta .cabUso{margin-bottom:9px}
+.gaveta:not(.aberta) .chip{display:none}
+.gaveta .cont{font-weight:400;text-transform:none;letter-spacing:0;color:var(--suave);margin-left:4px}
+.gaveta.temFiltro{border-color:var(--aceso)}
+.gaveta.temFiltro .cont{color:var(--aceso);font-weight:600}
 </style>
 <script>try{var t=localStorage.getItem('tema');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 </head><body><div class="wrap">
 <div class="topo">
 <h1>FGV Agro - Plataforma Análise Territorial (v2)</h1>
-<div class="ajustesTopo"><div class="tema"><span class="gtit">Classes</span>
-  <span class="seg mini" role="group" aria-label="Nível das classes">
-    <button type="button" data-modo="simples" title="as classes da versão simplificada: base do INCRA, UC por grupo de manejo, RL e APP juntas…">Simplificadas</button>
-    <button type="button" data-modo="det" title="a separação completa (SIGEF e SNCI, esferas das UCs, as três classes de sobreposição entre CARs…), para conferir; destaque e filtros do gráfico recomeçam">Detalhadas</button>
+<div class="ajustesTopo"><div class="tema"><span class="gtit">Aplicação</span>
+  <span class="seg mini" role="group" aria-label="Aplicação: simplificada ou completa">
+    <button type="button" data-modo="simples" title="classes agrupadas (base do INCRA, UC por grupo de manejo, RL e APP juntas…) e filtro pelo próprio gráfico; ao trocar, filtros e destaque recomeçam">Simplificada</button>
+    <button type="button" data-modo="det" title="todas as classes (SIGEF e SNCI, esferas das UCs, as três classes de sobreposição entre CARs…), filtros em gavetas e calculadora; ao trocar, filtros e destaque recomeçam">Completa</button>
   </span></div>
 <div class="tema"><span class="gtit">Tema</span>
   <span class="seg mini" role="group" aria-label="Tema da página">
@@ -392,13 +413,13 @@ body[data-modo="det"] .modoLinha b{color:var(--apagado)}
   </div>
 </div></div>
 <div class="grade">
-<aside class="lateral" hidden style="display:none">
-  <button id="abreFiltros" class="abreFiltros" hidden style="display:none" aria-expanded="false" aria-controls="painelFiltros">
+<aside class="lateral">
+  <button id="abreFiltros" class="abreFiltros" aria-expanded="false" aria-controls="painelFiltros">
     <span>Filtros</span><span class="n" id="nFiltros">nenhum ativo ▾</span></button>
-  <div id="painelFiltros" class="painelFiltros" hidden style="display:none">
+  <div id="painelFiltros" class="painelFiltros">
   <div class="rotulo">Filtrar <span id="iFiltrar"></span></div>
   <div id="filtros"></div>
-  <div class="cx"><div class="cabUso"><h3>Uso do solo <span id="iUso"></span></h3><span id="nivelUsoF"></span></div>
+  <div class="cx gaveta" id="gavetaUso"><div class="cabUso"><h3>Uso do solo <span class="cont"></span><span id="iUso"></span></h3><span id="nivelUsoF"></span></div>
     <div id="fclasses"></div></div>
   <div class="cx"><button id="limpar">Limpar todos os filtros</button></div>
   </div>
@@ -450,7 +471,7 @@ body[data-modo="det"] .modoLinha b{color:var(--apagado)}
   <div id="foco" class="foco" aria-live="polite"></div>
   <div id="gWrap" class="grafico"><svg id="g" viewBox="0 0 900 560" role="img" aria-label="gráfico da combinação selecionada"></svg></div>
   <div class="tabwrap"><table id="tab"></table></div>
-  <div id="calc" hidden></div>
+  <div id="calc" class="cx" style="margin-top:14px"></div>
 </main>
 </div></div><div id="tip"></div><svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="brilho" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="b"/><feComponentTransfer in="b" result="b2"><feFuncA type="linear" slope="0.9"/></feComponentTransfer><feMerge><feMergeNode in="b2"/><feMergeNode in="SourceGraphic"/></feMerge></filter></svg>
 <script>
@@ -488,6 +509,12 @@ DD.sobrep_area={tipo:'bits',rotulo:'Sobreposição entre CARs — chão sobrepos
 DD.sobrep_imovel={tipo:'bits',rotulo:'Sobreposição entre CARs — imóvel inteiro',vazio:'Fora do CAR',
   bits:[[125,'Imóvel com sobreposição ínfima'],[126,'Imóvel com sobreposição parcial'],
         [127,'Imóvel duplicado'],[130,'Imóvel sem sobreposição']]};
+DD.territorial.vazio='Sem categoria territorial';
+DD.parcela.vazio='Sem parcela SIGEF/SNCI';
+DD.car.vazio='Fora do CAR';
+const FLORESTA_UC='Floresta (Nacional, Estadual ou Municipal)';
+for(const x of DD.categoria_uc.bits) if(x[1]==='Floresta') x[1]=FLORESTA_UC;
+for(const [,bs] of D.grupos) for(const x of bs) if(x[0]===117&&x[1]==='Floresta') x[1]=FLORESTA_UC;
 const DIM_SIM={
   mapbiomas:DD.mapbiomas,
   territorial:{tipo:'bits',rotulo:'Categoria territorial',vazio:'Nenhuma categoria',
@@ -645,7 +672,7 @@ const EXPLICA_DIM={
 function montaFiltros(){
   const c=document.getElementById('filtros'); c.innerHTML='';
   for(const [g,bits] of D.grupos){
-    const d=document.createElement('div'); d.className='cx';
+    const d=document.createElement('div'); d.className='cx gaveta';
     d.dataset.grupo=g;
     d.innerHTML=`<h3>${g} <span class="op" style="color:var(--suave);font-weight:400;
       text-transform:none;letter-spacing:0"></span></h3>`;
@@ -657,6 +684,8 @@ function montaFiltros(){
       d.appendChild(s);
     }
     const h=d.querySelector('h3');
+    h.insertAdjacentHTML('beforeend','<span class="cont"></span>');
+    h.onclick=()=>d.classList.toggle('aberta');
     if(EXPLICA[g]) h.appendChild(info(EXPLICA[g], g));
     c.appendChild(d);
   }
@@ -1004,6 +1033,16 @@ function frase(area){
     const sp=d.querySelector('.op');
     if(sp) sp.textContent = n>1 ? `— qualquer um dos ${n}` : '';
   });
+  marcaGavetas();
+}
+// Cabeçalho de cada gaveta: quantas opções e quantas estão no filtro.
+function marcaGavetas(){
+  document.querySelectorAll('#painelFiltros .gaveta').forEach(g=>{
+    const cs=[...g.querySelectorAll('.chip')], on=cs.filter(c=>+c.dataset.e>0).length;
+    const ct=g.querySelector('.cont');
+    if(ct) ct.textContent=`· ${cs.length} ${cs.length===1?'opção':'opções'}`+(on?` · ${on} no filtro`:'');
+    g.classList.toggle('temFiltro',on>0);
+  });
 }
 
 function nomesFiltroUso(){
@@ -1120,6 +1159,7 @@ function mudaModo(m){
   // Os nomes de um modo não existem no outro: destaque e filtros pelo gráfico
   // recomeçam, para nenhum número ficar valendo com um nome que sumiu.
   filtrosG=[]; pilhaFG=[]; foco.clear(); focoPrevia=null; escolhaFiltro=null; classesSel.clear();
+  for(const k in estado) delete estado[k]; calcSel.clear(); sincChips(); marcaU();
   eixos=eixos.map(e=>({d:D.dimensoes[e.d]?e.d:(EIXO_PARA[e.d]||'territorial'),
                        m:e.m}));
   eixos.forEach(e=>{ if(soUmaClasse(e.d)) e.m='sep'; });
@@ -1130,7 +1170,7 @@ function marcaModo(){
   document.querySelectorAll('button[data-modo]').forEach(b=>
     b.setAttribute('aria-pressed',b.dataset.modo===modo));
   // No detalhado, uma linha avisa que aquilo é para conferência.
-  document.getElementById('modoLinha').hidden=modo==='simples';
+  document.getElementById('modoLinha').hidden=true;   // o seletor no topo já diz a versão
   document.getElementById('modoTxt').innerHTML='Classes <b>detalhadas</b>, para conferência.';
   const b=document.getElementById('modoBtn');
   b.textContent='voltar às simplificadas';
@@ -1904,7 +1944,7 @@ const COR_FIXA={
     'Não Destinada Federal':'#486079','Não Destinada Estadual':'#758faa'},
   categoria_uc:{'Estação Ecológica':'#483c95','Reserva Biológica':'#6359b5','Parque':'#7f78d6',
     'Monumento Natural':'#9993f5','Refúgio de Vida Silvestre':'#b5b0ff',
-    'Área de Proteção Ambiental (APA)':'#dd5b8f','ARIE':'#ae648f','Floresta':'#8e791b',
+    'Área de Proteção Ambiental (APA)':'#dd5b8f','ARIE':'#ae648f','Floresta (Nacional, Estadual ou Municipal)':'#8e791b',
     'Reserva Extrativista':'#249ebd','Reserva de Fauna':'#017e9a',
     'Reserva de Desenv. Sustentável':'#3963a1','RPPN':'#8e4771'},
   tamanho:{'Pequena':'#82baff','Média':'#5188cd','Grande':'#225899'},
@@ -2838,7 +2878,7 @@ document.getElementById('abreFiltros').onclick=()=>{
 function estadoParaURL(){
   const p=new URLSearchParams();
   p.set('u',universo);
-  if(modo!=='simples') p.set('modo','det');
+  p.set('modo',modo==='simples'?'simples':'det');
   p.set('a',[...anosSel].sort().join(','));
   if(ufSel) p.set('uf',ufSel);
   const mais=[], menos=[];
@@ -2863,7 +2903,8 @@ function estadoParaURL(){
 function aplicaURL(){
   const p=new URLSearchParams(location.search);
   if(![...p.keys()].length) return false;
-  if(p.get('modo')==='det'){ modo='det'; D.dimensoes=DD; limpaCaches(); }
+  // Link da v1 (sem 'modo') abre na Completa, que é a v1; só 'modo=simples' abre a Simplificada.
+  if(p.get('modo')!=='simples'){ modo='det'; D.dimensoes=DD; limpaCaches(); }
   nivelUso = p.get('us')==='agr' ? 'agr' : 'det';
   if(p.get('u')==='recorte'||p.get('u')==='mestre') universo=p.get('u');
   // Link de antes de 16/10/2026 não tem 'a': era só o 2024, e é nele que reabre.
@@ -2934,7 +2975,8 @@ const GRUPO_CURTO={'Desmatamento':'Desmatamento','Cadastro':'Cadastro','Categori
 const CORES_K=['#175345','#C9A227','#B36E38','#C0512F','#7E5A9B','#2B6A8F'];
 function montaCalc(){
   const c=document.getElementById('calc'); const U=window.__ult;
-  if(!c||!U||c.hidden) return;   // v2: a calculadora saiu; o Em foco faz a conta
+  if(!c||!U) return;
+  if(modo==='simples'){ c.innerHTML=''; return; }   // na Simplificada o Em foco faz a conta
   const cat=bitsPorRotulo();
   for(const b of [...calcSel]) if(!cat.has(b)) calcSel.delete(b);
   const nome=b=>cat.get(b).rot, grupo=b=>cat.get(b).grupo;
@@ -3409,6 +3451,7 @@ function aplicaTema(t){
   document.getElementById('nivelUsoF').appendChild(seletorNivelUso());
   document.querySelectorAll('button[data-modo]').forEach(b=>b.onclick=()=>mudaModo(b.dataset.modo));
   document.getElementById('modoBtn').onclick=()=>mudaModo('simples');
+  document.querySelector('#gavetaUso h3').onclick=()=>document.getElementById('gavetaUso').classList.toggle('aberta');
 })();
 aplicaURL();
 // Tudo o que o link trouxe (estado, gráfico, classes) é pintado antes da única
@@ -3523,6 +3566,16 @@ if(location.search.includes('validar')){
       }
     }
   }
+  // Nomes únicos entre eixos, nas duas versões (e contra o uso do solo).
+  { const uso=new Set([...GRUPOS_USO.map(g=>g[0]),...Object.values(D.classes).map(c=>c[0])]);
+    for(const [nm,DS] of Object.entries(DIMS)){
+      const onde=new Map();
+      for(const [k,d] of Object.entries(DS)){ if(d.tipo!=='bits') continue;
+        for(const n of [...d.bits.map(b=>b[1]),d.vazio||'Nenhum']){
+          if(!onde.has(n)) onde.set(n,new Set()); onde.get(n).add(k); } }
+      const rep=[...onde].filter(([n,ks])=>(ks.size>1&&n!=='Fora do CAR')||uso.has(n)).map(([n])=>n);
+      nF++; if(!rep.length) okF++; else ruinsF.push(`nomes repetidos (${nm}): ${rep.join(', ')}`);
+    } }
   if(modoAntes!==modo){ modo=modoAntes; D.dimensoes=DIMS[modo]; }
   limpaCaches(); universo=guarda.u; poeAnos(guarda.a); marcaAnos();
   for(const k in estado) delete estado[k]; Object.assign(estado,guarda.e);
@@ -3539,7 +3592,7 @@ if(location.search.includes('validar')){
     `contagem de combinações: ${okC}/${D.testes.length}<br>`+
     `área no hectare cheio: ${okA}/${D.testes.length}<br>`+
     `conservação da quebra: ${okCons}/${nCons}<br>`+
-    `classes simplificadas × bits brutos: ${okF}/${nF}<br>`+
+    `classes simplificadas e nomes únicos: ${okF}/${nF}<br>`+
     `maior diferença: ${pior.toFixed(4)} ha<br>`+
     `<span style="color:var(--suave)">valores de referência calculados em pandas sobre `+
     `a tabulação do mestre e a do recorte, feitas à parte, e embutidos neste arquivo</span>`+
