@@ -505,6 +505,15 @@ const DIM_SIM={
   prodes:DD.prodes,
 };
 const DIMS={simples:DIM_SIM, det:DD};
+// As classes do eixo do ano são os anos marcados; o resto, "Não desmatado em …".
+// (DIM_SIM.prodes e DD.prodes são o mesmo objeto.)
+function atualizaDimProdes(){
+  const d=DD.prodes;
+  d.bits=ANOS.filter(([a])=>anosSel.has(a)).map(([a,b])=>[b,String(a)]);
+  d.vazio='Não desmatado em '+anosTxt();
+  for(const k in leitores) delete leitores[k];
+  for(const k in GRUPOS_LIN) delete GRUPOS_LIN[k];
+}
 // Eixos do simplificado com uma classe por pixel, por construção (remapSimples):
 // neles o botão de leitura não mudaria nada, então não aparece. Nos outros
 // (Categoria territorial, Tamanho, Ano) ele fica, como na v1 -- pedido do
@@ -609,8 +618,9 @@ const EXPLICA_DIM={
       'diferentes declaram o mesmo chão. <b>CAR duplicado</b>: o mesmo imóvel cadastrado duas vezes — '+
       'os contornos cobrem 90% ou mais um do outro. Conta só o chão sobreposto, não o imóvel '+
       'inteiro. Nomes provisórios.',
-    prodes:'O ano em que o PRODES/INPE apontou o desmatamento. O ano PRODES vai de agosto a julho: '+
-      'o PRODES 2025 cobre de agosto de 2024 a julho de 2025.',
+    prodes:'O ano em que o PRODES/INPE apontou o desmatamento. Os anos marcados no quadro Universo '+
+      'viram as classes; o resto aparece como “Não desmatado em …”. O ano PRODES vai de agosto a '+
+      'julho: o PRODES 2025 cobre de agosto de 2024 a julho de 2025.',
   },
   det:{
     territorial:EXPLICA['Categorias territoriais'],
@@ -807,7 +817,6 @@ const DICAMODO = {
 function opcoesDim(sel, val){
   sel.innerHTML='';
   for(const [k,v] of Object.entries(D.dimensoes)){
-    if(k==='prodes' && universo==='recorte' && anosSel.size<2) continue;
     sel.insertAdjacentHTML('beforeend',`<option value="${k}">${v.rotulo}</option>`);
   }
   sel.value=[...sel.options].some(o=>o.value===val)?val:sel.options[0].value;
@@ -933,7 +942,7 @@ document.getElementById('addEixo').onclick=()=>{
   if(eixos.length>=8) return;
   const usados=new Set(eixos.map(e=>e.d));
   const livre=Object.keys(D.dimensoes).find(k=>!usados.has(k)&&
-              !(k==='prodes'&&universo==='recorte'&&anosSel.size<2)) || eixos[eixos.length-1].d;
+              true) || eixos[eixos.length-1].d;
   eixos.push({d:livre, m:'sep'});
   // Só o Sankey desenha da terceira em diante. Recusar seria pior que levar
   // para onde a comparação aparece.
@@ -1095,7 +1104,7 @@ function colunas(uni){
 function mudaAnos(){
   for(const k in COLS) delete COLS[k];
   for(const k in GRUPOS_LIN) delete GRUPOS_LIN[k];
-  TOT_DES=null; taxaCache=null;
+  TOT_DES=null; taxaCache=null; atualizaDimProdes();
 }
 // Trocar de modo refaz as colunas e tudo o que foi guardado com os nomes antigos.
 function limpaCaches(){
@@ -1254,7 +1263,8 @@ function calcula(){
   document.getElementById('kPctL').textContent = nomeTotal();
   // So faz sentido quando a selecao esta dentro do desmatamento: fora disso a
   // conta daria 43.559%, que e a area do Brasil dividida pela do desmatamento.
-  const dentroDes = universo==='recorte' || estado[7]===1;
+  const dentroDes = universo==='recorte' || estado[7]===1 ||
+    filtrosG.some(f=>f.d==='prodes'&&f.labs.length&&f.labs.every(l=>l!==D.dimensoes.prodes.vazio));
   document.getElementById('kDes').textContent =
     (area&&dentroDes)?pcBR(100*area/TOT_DES,2):'—';
   // Com um estado escolhido há dois denominadores possíveis. Mostrar os dois,
@@ -3148,7 +3158,7 @@ function tabela(arr,area){
           return ex?` (como “${escH(ex.nome)}”)`:''; })()}. Cada linha conta só o pixel com `
       +`exatamente aquelas categorias: a de uma categoria sozinha não inclui as combinações.`
       +`</td></tr>`;
-  } else if(U.modo==='sep' && U.combos && !soUmaClasse(U.eixo)){
+  } else if(U.modo==='sep' && U.combos && modo!=='simples'){
     h+=`<tr><td colspan="3" style="color:var(--suave);font-size:12.5px;${nota}">`
       +`<b>Em mais de uma categoria: 0 ha (0,00%)</b> — aqui nenhum pixel está em mais de uma `
       +`categoria deste eixo.</td></tr>`;
@@ -3214,7 +3224,7 @@ function montaAnos(){
 // Brasil inteiro com o filtro de desmatamento ligado ou no % desmatado. Antes
 // ficavam sempre a vista, e no Brasil inteiro clicar nao mudava numero nenhum
 // -- o usuario achou que estava quebrado (17/10/2026).
-const anoVale=()=>universo!=='mestre'||estado[7]===1||vis==='taxa';
+const anoVale=()=>universo!=='mestre'||estado[7]===1||vis==='taxa'||eixos.some(e=>e.d==='prodes');
 function marcaAnos(){
   document.getElementById('anosBox').hidden=!anoVale();
   document.querySelectorAll('#selAnos button').forEach(b=>
@@ -3403,7 +3413,7 @@ function aplicaTema(t){
 aplicaURL();
 // Tudo o que o link trouxe (estado, gráfico, classes) é pintado antes da única
 // conta da abertura.
-marcaModo(); montaFiltros(); montaAnos(); marcaU(); marcaV(); marcaNivelUso(); montaUF(); sincLeitura(); sincUF(); calcula();
+atualizaDimProdes(); marcaModo(); montaFiltros(); montaAnos(); marcaU(); marcaV(); marcaNivelUso(); montaUF(); sincLeitura(); sincUF(); calcula();
 
 // Autoconferencia: abra o arquivo com ?validar no fim do endereco.
 // Refaz em JavaScript as combinacoes calculadas em pandas e compara.
