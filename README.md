@@ -81,6 +81,9 @@ em JavaScript as combinações calculadas em pandas e mostra o placar.
   vegetação herbácea passa a **Formações campestres, arbustivas e áreas úmidas**;
   **Afloramentos rochosos** ficam separados. O restante dos grupos conserva sua
   posição para manter os identificadores da calculadora.
+- No desktop, o resumo da análise ocupa a coluna à direita da área e das
+  configurações. O texto cresce sem corte; em telas menores fica abaixo dos
+  controles, antes das opções de gráfico.
 - A área analisada tem um cartão compacto com borda verde, rótulo e número
   maior; os demais indicadores têm largura conforme o conteúdo. Configuração, gráficos e
   exportação ficam sem uma moldura larga; as ações da seleção aparecem junto

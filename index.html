@@ -508,10 +508,14 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
 .kpi .kPrincipal b{font-size:27px}
 .kpi .kPrincipal .krotulo{font-size:10.5px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--verde);margin:0 0 4px}
 .painelAnalise{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;margin-bottom:14px}
+.analiseTopo{display:grid;grid-template-columns:minmax(0,660px) minmax(0,1fr);align-items:start;gap:16px 28px}
+.analiseControles{min-width:0}
+.analiseTopo .frase{margin:0;padding:0 0 0 16px;border:0;border-left:2px solid var(--linha);border-radius:0;background:transparent;font-size:13px}
+@media(max-width:1099px){.analiseTopo{grid-template-columns:minmax(0,1fr);gap:12px}}
 .painelAnalise .plinha{justify-content:flex-start;gap:10px 24px}
 .painelAnalise #configAnalise>summary{margin-bottom:0}
 .painelAnalise #configAnalise[open]>summary{margin-bottom:8px}
-.painelAnalise #configAnalise:not([open])+.plinha{border-top:0;margin-top:8px;padding-top:0}
+.painelAnalise:has(#configAnalise:not([open])) .plinha{border-top:0;margin-top:8px;padding-top:0}
 .foco .fcard{width:fit-content;max-width:100%;border:0;border-left:2px solid var(--linha);border-radius:0;background:transparent;box-shadow:none;padding:2px 0 2px 12px}
 .foco .fres{align-items:center;gap:4px 12px}
 .foco .facoes{flex-wrap:wrap;margin-left:4px}
@@ -563,7 +567,9 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
   </div>
 </aside>
 <main class="principal">
-  <div id="resumoFiltros" class="resumoFiltros" aria-label="Filtros aplicados" hidden></div><div id="avisoModo" role="status" hidden></div><div id="frase" class="frase"></div>
+  <div id="resumoFiltros" class="resumoFiltros" aria-label="Filtros aplicados" hidden></div><div id="avisoModo" role="status" hidden></div>
+  <section class="painel painelAnalise" aria-label="Como mostrar o resultado">
+    <div class="analiseTopo"><div class="analiseControles">
   <div class="kpi">
     <div class="k kPrincipal"><span class="krotulo">Área analisada (ha)</span><b id="kArea">—</b></div>
     <div class="k"><b id="kPct">—</b><span id="kPctL">do universo selecionado</span></div>
@@ -571,11 +577,11 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
     <div class="k" id="kNacBox" style="display:none"><b id="kNac">—</b><span id="kNacL">do Brasil</span></div>
     <div class="k" hidden style="display:none"><b id="kComb">—</b><span>combinações distintas</span></div>
   </div>
-  <section class="painel painelAnalise" aria-label="Como mostrar o resultado">
     <details id="configAnalise" open><summary>Configurar análise</summary><div class="gtit">Comparar por<span id="iSeparar"></span></div>
     <div id="eixos"></div>
     <button id="addEixo" class="add" title="da terceira em diante o gráfico muda para Sankey, que é o único que desenha várias colunas">+ comparação</button>
     <div id="anosAnalise" hidden><div class="gtit">Ano do PRODES na análise</div></div></details>
+    </div><aside id="frase" class="frase" aria-label="Resumo da análise"></aside></div>
     <div class="plinha">
     <div class="pgrupo">
     <div class="gtit">Gráfico</div>
