@@ -14,6 +14,25 @@ página antiga.
 Acrescente `?validar` ao endereço para a página conferir a si mesma: ela refaz
 em JavaScript as combinações calculadas em pandas e mostra o placar.
 
+## Revisão de filtros de 21/10/2026
+
+- A gaveta redundante de desmatamento saiu. O recorte continua disponível em
+  **Universo → Desmatamento PRODES**.
+- Os títulos explicam o objeto do filtro: **Área do imóvel no CAR**,
+  **Correspondência CAR × SIGEF/SNCI**, **Áreas cadastradas no SIGEF/SNCI**,
+  **Tipo de área ou território** e **Uso e cobertura do solo**. As opções
+  explicitam módulos fiscais, proteção integral, uso sustentável e outras siglas.
+- Nos subgrupos, clicar no **nome** seleciona todas as opções; clicar novamente
+  desmarca todas. **Detalhar** abre as opções sem mudar o filtro. O cabeçalho
+  mostra seleção parcial e exclusões, inclusive quando os detalhes estão fechados.
+- O padrão vale para **Unidades de conservação**, **Assentamentos** e
+  **Florestas públicas não destinadas**; também para os grupos de categorias de
+  UC, as duas leituras da sobreposição CAR e os grupos do uso e cobertura do solo
+  no nível detalhado. As opções individuais continuam disponíveis.
+- O agrupamento só organiza os controles: dentro de uma gaveta as inclusões
+  continuam com **ou**; entre gavetas, com **e**. Links existentes conservam os
+  identificadores dos filtros e os nomes internos das categorias do gráfico.
+
 ## Atualização de 21/10/2026: uma aplicação, duas leituras
 
 No topo da página, **Aplicação: Simplificada | Completa**. É um endereço só —

@@ -384,6 +384,19 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
 .gaveta>h3{margin:0 0 9px}
 .gaveta .cont{font-weight:400;text-transform:none;letter-spacing:0;color:var(--suave);margin-left:4px}
 .gaveta.temFiltro .cont{color:var(--aceso);font-weight:600}
+
+/* Seleção do conjunto e abertura dos detalhes são ações independentes. */
+.dicaFiltro{font-size:12.5px;line-height:1.55;color:var(--suave);margin:0 0 12px;max-width:100ch}
+.subfiltro{display:inline-block;vertical-align:top;max-width:100%;margin:0 8px 8px 0;border:1px solid var(--linha);border-radius:10px}
+.subcab{display:flex;align-items:stretch;flex-wrap:wrap;gap:0}
+.subseleciona{display:flex;align-items:center;gap:10px;flex-wrap:wrap;text-align:left;border:0;border-radius:9px;background:transparent;padding:9px 12px}
+.subseleciona small{font-size:11px;color:var(--suave)}
+.subseleciona[aria-pressed="true"]{background:color-mix(in srgb,var(--aceso) 12%,var(--painel));color:var(--aceso)}
+.subseleciona[aria-pressed="mixed"]{color:var(--aceso);outline:1px dashed var(--aceso);outline-offset:-3px}
+.subabre{font-size:11px;border:0;border-left:1px solid var(--linha);border-radius:0 9px 9px 0;background:transparent;color:var(--suave);padding:9px 12px}
+.subitens{border-top:1px solid var(--linha);padding:10px 12px 4px;max-width:760px}
+.subitens[hidden]{display:none}
+@media(max-width:600px){.subfiltro{display:block;margin-right:0}.subseleciona{flex:1;min-width:0}.subabre{flex-shrink:0}}
 </style>
 <script>try{var t=localStorage.getItem('tema');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 </head><body><div class="wrap">
@@ -425,7 +438,7 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
   <div id="painelFiltros" class="painelFiltros">
   <div class="rotulo">Filtrar <span id="iFiltrar"></span></div>
   <div id="filtros"></div>
-  <div class="cx gaveta" id="gavetaUso"><div class="cabUso"><h3>Uso do solo <span class="cont"></span><span id="iUso"></span></h3><span id="nivelUsoF"></span></div>
+  <div class="cx gaveta" id="gavetaUso"><div class="cabUso"><h3>Uso e cobertura do solo <span class="cont"></span><span id="iUso"></span></h3><span id="nivelUsoF"></span></div>
     <div id="fclasses"></div></div>
   <div class="cx"><button id="limpar">Limpar filtros</button></div>
   </div>
@@ -517,22 +530,30 @@ DD.sobrep_imovel={tipo:'bits',rotulo:'Sobreposição entre CARs — imóvel inte
         [127,'Imóvel duplicado'],[130,'Imóvel sem sobreposição']]};
 DD.territorial.vazio='Sem categoria territorial';
 DD.parcela.vazio='Sem parcela SIGEF/SNCI';
+DD.parcela.rotulo='Áreas cadastradas no SIGEF/SNCI';
+DD.fundiario.rotulo='Correspondência entre o imóvel do CAR e o SIGEF/SNCI';
+DD.territorial.rotulo='Tipo de área ou território';
+DD.categoria_uc.rotulo='Categoria da unidade de conservação';
+DD.app_rl.rotulo='Áreas de preservação e Reserva Legal declaradas no CAR';
+DD.car.rotulo='Imóveis cadastrados no CAR';
+DD.mapbiomas.rotulo='Uso e cobertura do solo (MapBiomas col. 4, 10 m)';
+DD.tamanho.rotulo='Área do imóvel no CAR (módulos fiscais)';
 DD.car.vazio='Fora do CAR';
 const FLORESTA_UC='Floresta (Nacional, Estadual ou Municipal)';
 for(const x of DD.categoria_uc.bits) if(x[1]==='Floresta') x[1]=FLORESTA_UC;
 for(const [,bs] of D.grupos) for(const x of bs) if(x[0]===117&&x[1]==='Floresta') x[1]=FLORESTA_UC;
 const DIM_SIM={
   mapbiomas:DD.mapbiomas,
-  territorial:{tipo:'bits',rotulo:'Categoria territorial',vazio:'Nenhuma categoria',
+  territorial:{tipo:'bits',rotulo:'Tipo de área ou território',vazio:'Nenhuma categoria',
     bits:[[8,'CAR'],[16,'Terra Indígena'],[17,'UC de Proteção Integral'],[18,'UC de Uso Sustentável'],
           [23,'Território Quilombola'],[24,'Assentamentos'],[26,'Áreas Não Destinadas']]},
-  fundiario:{tipo:'bits',rotulo:'Aderência do CAR à base do INCRA',vazio:'Fora do CAR',
+  fundiario:{tipo:'bits',rotulo:'Correspondência entre o imóvel do CAR e o SIGEF/SNCI',vazio:'Fora do CAR',
     bits:[[9,'Aderente ao INCRA (≥90%)'],[11,'Não aderente']]},
   tamanho:DD.tamanho,
-  parcela:{tipo:'bits',rotulo:'Parcela da base do INCRA (SIGEF e SNCI)',vazio:'Fora da base do INCRA',
+  parcela:{tipo:'bits',rotulo:'Áreas cadastradas no SIGEF/SNCI',vazio:'Fora da base do INCRA',
     bits:[[28,'Parcela do INCRA']]},
   car:{tipo:'bits',rotulo:'Imóvel no CAR',vazio:'Fora do CAR',bits:[[8,'Dentro do CAR']]},
-  app_rl:{tipo:'bits',rotulo:'RL e APP declaradas no CAR',vazio:'Fora de RL e APP',bits:[[108,'RL e APP']]},
+  app_rl:{tipo:'bits',rotulo:'Áreas de preservação e Reserva Legal declaradas no CAR',vazio:'Fora de RL e APP',bits:[[108,'RL e APP']]},
   sobrep_area:{tipo:'bits',rotulo:'Sobreposição entre CARs',vazio:'Fora do CAR',
     bits:[[123,'CAR sobreposto a outro'],[124,'CAR duplicado'],[129,'CAR sem sobreposição']]},
   prodes:DD.prodes,
@@ -675,38 +696,123 @@ const EXPLICA_DIM={
       'privada e ocupação; um Parque, não.',
     prodes:EXPLICA['Desmatamento PRODES'],
   }};
+// Rótulos de apresentação: os bits e os nomes usados nos links não mudam.
+const ROTULO_FILTRO={
+  8:'Dentro de imóvel cadastrado no CAR',
+  9:'Contornos correspondentes no SIGEF (≥90% nos dois sentidos)',
+  10:'Contornos correspondentes no SNCI (≥90% nos dois sentidos)',
+  11:'Com área no SIGEF/SNCI, mas correspondência inferior a 90%',
+  12:'Sem área correspondente no SIGEF/SNCI',
+  13:'Imóvel pequeno (até 4 módulos fiscais)',
+  14:'Imóvel médio (mais de 4 e até 15 módulos fiscais)',
+  15:'Imóvel grande (mais de 15 módulos fiscais)',
+  17:'Unidade de conservação federal — proteção integral',18:'Unidade de conservação federal — uso sustentável',
+  19:'Unidade de conservação estadual — proteção integral',20:'Unidade de conservação estadual — uso sustentável',
+  21:'Unidade de conservação municipal — proteção integral',22:'Unidade de conservação municipal — uso sustentável',
+  28:'Área cadastrada no SIGEF',29:'Área privada cadastrada no SNCI',
+  108:'Reserva Legal declarada no CAR',
+  109:'Área de Preservação Permanente (APP) declarada no CAR',
+  116:'Área de Relevante Interesse Ecológico (ARIE)',
+  120:'Reserva de Desenvolvimento Sustentável',
+  121:'Reserva Particular do Patrimônio Natural (RPPN)',
+  122:'Área com sobreposição muito pequena (menos de 1 ha e de 10% do menor imóvel)',
+  123:'Área com sobreposição parcial',
+  124:'Área com contornos coincidentes (≥90% nos dois sentidos)',
+  125:'Imóvel com sobreposição muito pequena',
+  126:'Imóvel com sobreposição parcial',
+  127:'Imóvel com contornos coincidentes com outro CAR (≥90%)'
+};
+const nomeOpcao=(b,rot)=>ROTULO_FILTRO[b]||rot;
+const GRUPOS_FILTRO={
+  'Categorias territoriais':[
+    ['Unidades de conservação',[17,18,19,20,21,22]],
+    ['Assentamentos',[24,25]],
+    ['Florestas públicas não destinadas',[26,27]]],
+  'Categoria da UC (SNUC)':[
+    ['Proteção integral',[110,111,112,113,114]],
+    ['Uso sustentável',[115,116,117,118,119,120,121]]],
+  'Sobreposição entre imóveis do CAR':[
+    ['Área sobreposta entre imóveis',[122,123,124]],
+    ['Imóveis inteiros com sobreposição',[125,126,127]]]
+};
+const DICA_FILTRO={
+  'Cadastro':'CAR significa Cadastro Ambiental Rural. Selecione para considerar apenas áreas dentro de imóveis declarados nesse cadastro.',
+  'Tamanho do imóvel':'Área do imóvel expressa em módulos fiscais. O valor de um módulo fiscal varia por município.',
+  'Aderência do CAR ao fundiário — SIGEF e SNCI separados':
+    'Compara os contornos do imóvel do CAR com os das áreas no SIGEF/SNCI. A correspondência de 90% é verificada nos dois sentidos. O filtro considera a área do imóvel do CAR.',
+  'Contorno da parcela — SIGEF e SNCI separados':
+    'Seleciona as próprias áreas cadastradas no SIGEF/SNCI, mesmo onde não há CAR. Para comparar os contornos com um imóvel do CAR, use “Correspondência CAR × SIGEF/SNCI”.',
+  'APP e Reserva Legal declaradas':'Áreas de Preservação Permanente (APP) e de Reserva Legal informadas no Cadastro Ambiental Rural (CAR).',
+  'Categorias territoriais':'Clique no nome de um grupo para selecionar todas as opções. Use a seta para detalhar. Dentro desta gaveta, as opções selecionadas entram com “ou”.',
+  'Categoria da UC (SNUC)':'Classifica as unidades de conservação por categoria. A divisão entre federal, estadual e municipal está em “Tipo de área ou território”.',
+  'Sobreposição entre imóveis do CAR':'“Área sobreposta” conta só o trecho comum. “Imóveis inteiros” considera toda a área dos imóveis que têm essa sobreposição.'
+};
+let nSubfiltro=0;
+function subgrupoFiltro(nome,filhos,leEstados,marca){
+  const g=document.createElement('div'); g.className='subfiltro';
+  const cab=document.createElement('div'); cab.className='subcab';
+  const sel=document.createElement('button'); sel.type='button'; sel.className='subseleciona';
+  const titulo=document.createElement('span'); titulo.textContent=nome;
+  const cont=document.createElement('small');
+  sel.append(titulo,cont);
+  const abre=document.createElement('button'); abre.type='button'; abre.className='subabre';
+  const itens=document.createElement('div'); itens.className='subitens'; itens.id='subfiltro-'+(++nSubfiltro);
+  itens.hidden=true; itens.append(...filhos);
+  abre.setAttribute('aria-controls',itens.id); abre.setAttribute('aria-expanded','false');
+  const pinta=()=>{
+    const es=leEstados(), n=es.filter(e=>e===1).length, neg=es.filter(e=>e===2).length;
+    const todos=n===es.length;
+    sel.setAttribute('aria-pressed',todos?'true':es.some(Boolean)?'mixed':'false');
+    sel.title=(todos?'Desmarcar todas as opções de ':'Selecionar todas as opções de ')+nome;
+    sel.setAttribute('aria-label',sel.title);
+    cont.textContent=n||neg?`${n} de ${es.length} selecionadas`+(neg?` · ${neg} excluídas`:''):`${es.length} opções`;
+    abre.textContent=itens.hidden?'Detalhar ▾':'Recolher ▴';
+    abre.setAttribute('aria-label',(itens.hidden?'Detalhar ':'Recolher ')+nome);
+  };
+  sel.onclick=()=>{ marca(!leEstados().every(e=>e===1)); pinta(); };
+  abre.onclick=()=>{ itens.hidden=!itens.hidden; abre.setAttribute('aria-expanded',String(!itens.hidden)); pinta(); };
+  g._pinta=pinta; cab.append(sel,abre); g.append(cab,itens); pinta(); return g;
+}
 function montaFiltros(){
   const c=document.getElementById('filtros'); c.innerHTML='';
   for(const [g,bits] of D.grupos){
-    const d=document.createElement('div'); d.className='cx gaveta';
-    d.dataset.grupo=g;
-    d.innerHTML=`<h3>${g} <span class="op" style="color:var(--suave);font-weight:400;
-      text-transform:none;letter-spacing:0"></span></h3>`;
+    // O recorte PRODES já está disponível no Universo.
+    if(g==='Desmatamento PRODES') continue;
+    const d=document.createElement('div'); d.className='cx gaveta'; d.dataset.grupo=g;
+    d.innerHTML=`<h3>${NOME_GAVETA[g]||g} <span class="op" style="color:var(--suave);font-weight:400;
+      text-transform:none;letter-spacing:0"></span><span class="cont"></span></h3>`;
+    if(DICA_FILTRO[g]){const p=document.createElement('p'); p.className='dicaFiltro'; p.textContent=DICA_FILTRO[g]; d.appendChild(p);}
+    const chips=new Map();
     for(const [b,rot] of bits){
-      const s=document.createElement('span'); s.className='chip'; s.dataset.bit=b; s.dataset.e=0;
-      s.innerHTML=`<span class="m">·</span>${rot}`;
-      s.onclick=()=>{
-        if(+b===7&&universo==='mestre'){   // é o universo Desmatamento PRODES
-          const g=s.closest('.gaveta'); if(g) g.classList.remove('aberta');
-          universo='recorte'; sincU(); return; }
-        const e=((+s.dataset.e)+1)%3; s.dataset.e=e; estado[b]=e;
-        s.querySelector('.m').textContent=e===0?'·':(e===1?'+':'−'); agenda();};
-      d.appendChild(s);
+      const s=document.createElement('button'); s.type='button'; s.className='chip'; s.dataset.bit=b; s.dataset.e=0;
+      s.innerHTML=`<span class="m">·</span>${escH(nomeOpcao(b,rot))}`;
+      s.onclick=()=>{ estado[b]=((estado[b]||0)+1)%3; sincChips(); agenda(); };
+      chips.set(b,s);
     }
-    const h=d.querySelector('h3');
-    h.insertAdjacentHTML('beforeend','<span class="cont"></span>');
-    h.onclick=()=>d.classList.toggle('aberta');
-    if(EXPLICA[g]) h.appendChild(info(EXPLICA[g], g));
+    const grupos=GRUPOS_FILTRO[g]||[], vistos=new Set();
+    for(const [b] of bits){
+      if(vistos.has(b)) continue;
+      const gr=grupos.find(([,bs])=>bs.includes(b));
+      if(!gr){ d.appendChild(chips.get(b)); continue; }
+      const [nome,bs]=gr; bs.forEach(x=>vistos.add(x));
+      d.appendChild(subgrupoFiltro(nome,bs.map(x=>chips.get(x)),()=>bs.map(x=>estado[x]||0),
+        on=>{bs.forEach(x=>{if(on) estado[x]=1; else delete estado[x];}); sincChips(); agenda();}));
+    }
+    const h=d.querySelector('h3'); h.onclick=()=>d.classList.toggle('aberta');
+    if(EXPLICA[g]) h.appendChild(info(EXPLICA[g],NOME_GAVETA[g]||g));
     c.appendChild(d);
   }
   sincChips();
 }
 function sincChips(){
-  // Só os chips de filtro: os da calculadora também têm a classe .chip, mas não
-  // têm o marcador .m, e mexer neles quebrava o "Limpar" e o ?validar.
   document.querySelectorAll('#filtros .chip').forEach(c=>{
     const e=estado[c.dataset.bit]||0; c.dataset.e=e;
-    c.querySelector('.m').textContent=e===0?'·':(e===1?'+':'−');});
+    c.querySelector('.m').textContent=e===0?'·':e===1?'+':'−';
+    c.setAttribute('aria-pressed',e===1?'true':e===2?'mixed':'false');
+    c.title=(e===0?'Sem filtro':e===1?'Incluído no filtro':'Excluído do filtro')+' · clique para '+(e===0?'incluir':e===1?'excluir':'limpar');
+  });
+  document.querySelectorAll('#filtros .subfiltro').forEach(g=>g._pinta());
+  marcaGavetas();
 }
 function montaClasses(){
   const fc=document.getElementById('fclasses'); fc.innerHTML='';
@@ -729,8 +835,9 @@ function montaClasses(){
       .forEach(c=>itens.push({nome:nomeClasse(c),cods:[c]}));
   } else [...usadas].sort((a,b)=>a-b)
       .forEach(c=>itens.push({nome:nomeClasse(c),cods:[c]}));
+  const chips=new Map();
   for(const it of itens){
-    const s=document.createElement('span'); s.className='chip';
+    const s=document.createElement('button'); s.type='button'; s.className='chip';
     if(it.cods.length>1) s.title=it.cods.map(nomeClasse).join(', ');
     s.innerHTML=`<span class="m"></span>${it.nome}`;
     const pinta=()=>{
@@ -738,14 +845,31 @@ function montaClasses(){
       const e=!n?0:(n===it.cods.length?1:3); s.dataset.e=e;
       s.querySelector('.m').textContent=e===0?'·':(e===1?'+':'±');
     };
-    pinta();
+    s._pinta=()=>{pinta();s.setAttribute('aria-pressed',s.dataset.e==='1'?'true':s.dataset.e==='3'?'mixed':'false');};
+    s._pinta();
     s.onclick=()=>{
       const todos=it.cods.every(c=>classesSel.has(c));
       it.cods.forEach(c=>todos?classesSel.delete(c):classesSel.add(c));
-      pinta(); agenda();
+      sincClasses(); agenda();
     };
-    fc.appendChild(s);
+    if(nivelUso==='agr') fc.appendChild(s); else chips.set(it.cods[0],s);
   }
+  if(nivelUso==='det'){
+    const vistos=new Set();
+    for(const [nome,,cods] of GRUPOS_USO){
+      const cs=cods.filter(c=>chips.has(c)); if(!cs.length) continue;
+      cs.forEach(c=>vistos.add(c));
+      if(cs.length===1){fc.appendChild(chips.get(cs[0])); continue;}
+      fc.appendChild(subgrupoFiltro(nome,cs.map(c=>chips.get(c)),()=>cs.map(c=>classesSel.has(c)?1:0),
+        on=>{cs.forEach(c=>on?classesSel.add(c):classesSel.delete(c));sincClasses();agenda();}));
+    }
+    for(const [c,chip] of chips) if(!vistos.has(c)) fc.appendChild(chip);
+  }
+}
+function sincClasses(){
+  document.querySelectorAll('#fclasses .chip').forEach(c=>c._pinta());
+  document.querySelectorAll('#fclasses .subfiltro').forEach(g=>g._pinta());
+  marcaGavetas();
 }
 function seletorNivelUso(){
   const g=document.createElement('span'); g.className='seg mini';
@@ -999,7 +1123,7 @@ function frase(area){
     const e=estado[b]; if(!e) continue;
     const g=D.grupo_do_bit[b]||'outros';
     const rot=(D.grupos.find(([n])=>n===g)||[null,[]])[1].find(([bb])=>bb==b);
-    const nome=rot?rot[1]:('bit '+b);
+    const nome=rot?nomeOpcao(b,rot[1]):('bit '+b);
     if(e===1){(porg[g]=porg[g]||[]).push(nome);} else nega.push(nome);
   }
   const partes=[];
@@ -1065,13 +1189,16 @@ function marcaGavetas(){
 }
 // A barra: um botão por gaveta, com nome curto; o nome inteiro fica no título da
 // gaveta aberta. Uma gaveta aberta por vez; o nome no alto dela também fecha.
-const NOME_GAVETA={'Desmatamento PRODES':'Desmatamento','Cadastro':'CAR',
-  'Categoria da UC (SNUC)':'Categoria da UC',
-  'Aderência do CAR ao fundiário — SIGEF e SNCI separados':'Aderência',
-  'Tamanho do imóvel':'Tamanho','Categorias territoriais':'Territorial',
-  'Contorno da parcela — SIGEF e SNCI separados':'Parcela',
-  'APP e Reserva Legal declaradas':'APP e RL',
-  'Sobreposição entre imóveis do CAR':'Sobreposição CAR','Uso do solo':'Uso do solo'};
+const NOME_GAVETA={'Desmatamento PRODES':'Desmatamento',
+  'Cadastro':'Imóveis cadastrados no CAR',
+  'Categoria da UC (SNUC)':'Categoria da unidade de conservação',
+  'Aderência do CAR ao fundiário — SIGEF e SNCI separados':'Correspondência CAR × SIGEF/SNCI',
+  'Tamanho do imóvel':'Área do imóvel no CAR',
+  'Categorias territoriais':'Tipo de área ou território',
+  'Contorno da parcela — SIGEF e SNCI separados':'Áreas cadastradas no SIGEF/SNCI',
+  'APP e Reserva Legal declaradas':'Áreas de preservação e Reserva Legal no CAR',
+  'Sobreposição entre imóveis do CAR':'Sobreposição entre imóveis do CAR',
+  'Uso do solo':'Uso e cobertura do solo'};
 function montaBarraGavetas(){
   const p=document.getElementById('painelFiltros'); if(!p||p.querySelector('.gavBarra')) return;
   const barra=document.createElement('div'); barra.className='gavBarra';
@@ -2881,9 +3008,9 @@ function painelTrilha(){
   p.innerHTML=h;
   p.querySelectorAll('[data-ir]').forEach(b=>b.onclick=()=>irPara(+b.dataset.ir));
 }
-const curtoDim=d=>({territorial:'Territorial',fundiario:'Aderência ao INCRA',tamanho:'Tamanho',parcela:'Parcela do INCRA',car:'CAR',
-  app_rl:'RL e APP',sobrep_area:'Sobreposição entre CARs',sobrep_imovel:'Sobreposição (imóvel inteiro)',categoria_uc:'UC',prodes:'Desmatamento',
-  mapbiomas:'Uso do solo'}[d]||(D.dimensoes[d]||{}).rotulo||d);
+const curtoDim=d=>({territorial:'Tipo de área ou território',fundiario:'Correspondência CAR × SIGEF/SNCI',tamanho:'Área do imóvel no CAR',parcela:'Áreas no SIGEF/SNCI',car:'Imóveis no CAR',
+  app_rl:'Preservação e Reserva Legal',sobrep_area:'Sobreposição entre CARs',sobrep_imovel:'Sobreposição (imóvel inteiro)',categoria_uc:'Categoria da unidade de conservação',prodes:'Desmatamento',
+  mapbiomas:'Uso e cobertura do solo'}[d]||(D.dimensoes[d]||{}).rotulo||d);
 (()=>{
   const svg=document.getElementById('g');
   const alvo=ev=>ev.target.closest('#g .leg, #g .it');
@@ -3016,7 +3143,7 @@ function usosCalc(){
 }
 function bitsPorRotulo(){
   const m=new Map();
-  for(const [g,bits] of D.grupos) for(const [b,rot] of bits) m.set(b,{rot,grupo:g});
+  for(const [g,bits] of D.grupos) for(const [b,rot] of bits) m.set(b,{rot:nomeOpcao(b,rot),grupo:g});
   for(const [id,rot,cods] of usosCalc()) m.set(id,{rot,grupo:USO_CALC,cods});
   return m;
 }
@@ -3034,7 +3161,7 @@ function montaCalc(){
   const cat=bitsPorRotulo();
   for(const b of [...calcSel]) if(!cat.has(b)) calcSel.delete(b);
   const nome=b=>cat.get(b).rot, grupo=b=>cat.get(b).grupo;
-  const curto=g=>GRUPO_CURTO[g]||g.split(' — ')[0];
+  const curto=g=>NOME_GAVETA[g]||GRUPO_CURTO[g]||g.split(' — ')[0];
   const bits=[...calcSel], n=bits.length;
   let h=`<h3>Calculadora de áreas em comum <span id="iCalc"></span></h3>`+
     `<p class="calcSub">Escolha duas ou mais categorias, de qualquer grupo, e veja quanto elas têm `+
@@ -3043,7 +3170,7 @@ function montaCalc(){
      `<option value="">+ adicionar categoria…</option>`;
   for(const [g,bs] of D.grupos){
     const livres=bs.filter(([b])=>!calcSel.has(b)); if(!livres.length) continue;
-    h+=`<optgroup label="${escAttr(g)}">`+livres.map(([b,r])=>`<option value="${b}">${r}</option>`).join('')+'</optgroup>';
+    h+=`<optgroup label="${escAttr(NOME_GAVETA[g]||g)}">`+livres.map(([b,r])=>`<option value="${b}">${escH(nomeOpcao(b,r))}</option>`).join('')+'</optgroup>';
   }
   { const livres=usosCalc().filter(([id])=>!calcSel.has(id));
     if(livres.length) h+=`<optgroup label="${USO_CALC} (${nivelUso==='agr'?'agrupado':'detalhado'})">`+
@@ -3332,7 +3459,7 @@ function sincU(){
 document.getElementById('limpar').onclick=()=>{
   for(const k in estado) delete estado[k]; classesSel.clear(); filtrosG=[]; pilhaFG=[]; taxaCache=null;
   sincChips();
-  document.querySelectorAll('#fclasses .chip').forEach(c=>{c.dataset.e=0;c.querySelector('.m').textContent='·';});
+  sincClasses();
   agenda();};
 document.getElementById('link').onclick=()=>{
   const u=estadoParaURL();
@@ -3490,8 +3617,8 @@ function aplicaTema(t){
     'a ser dele, e um cartão à parte mostra o peso daquele recorte no Brasil.','Estado');
   põe('iFiltrar','Define o que ENTRA na conta. Um clique no chip exige a classe (+), dois '+
     'a proíbem (−), três voltam a indiferente. Dentro de um mesmo grupo os filtros somam '+
-    'com <b>ou</b>; entre grupos, com <b>e</b> — assim "dentro de alguma UC" é um clique '+
-    'em cada UC, não a interseção das seis.','Filtrar');
+    'com <b>ou</b>; entre gavetas, com <b>e</b>. Clique no nome de um subgrupo, como '+
+    'Unidades de conservação, para selecionar todas as opções; use Detalhar para escolher uma a uma.','Filtrar');
   põe('iSeparar','Define em que categorias o resultado é separado no gráfico. O ⓘ ao lado '+
     'de cada comparação explica as classes dela; a de uso do solo tem a escolha entre agrupado '+
     'e detalhado. Onde um pixel pode estar em mais de uma classe (como na Categoria territorial: '+
