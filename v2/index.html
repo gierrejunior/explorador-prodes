@@ -1,6 +1,6 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Explorador PRODES v2</title>
+<title>FGV Agro - Plataforma Análise Territorial (v2)</title>
 <!-- Ícone da aba: grade de pixels de 10 m; os laranjas são o desmatamento. -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23175345'/%3E%3Cg fill='%237FC3AC'%3E%3Crect x='5' y='5' width='6.5' height='6.5' rx='1.2'/%3E%3Crect x='12.75' y='5' width='6.5' height='6.5' rx='1.2'/%3E%3Crect x='20.5' y='5' width='6.5' height='6.5' rx='1.2'/%3E%3Crect x='5' y='12.75' width='6.5' height='6.5' rx='1.2'/%3E%3Crect x='12.75' y='12.75' width='6.5' height='6.5' rx='1.2'/%3E%3Crect x='5' y='20.5' width='6.5' height='6.5' rx='1.2'/%3E%3C/g%3E%3Cg fill='%23F0A35E'%3E%3Crect x='20.5' y='12.75' width='6.5' height='6.5' rx='1.2'/%3E%3Crect x='12.75' y='20.5' width='6.5' height='6.5' rx='1.2'/%3E%3Crect x='20.5' y='20.5' width='6.5' height='6.5' rx='1.2'/%3E%3C/g%3E%3C/svg%3E">
 <style>
@@ -330,11 +330,38 @@ body[data-modo="det"] .modoLinha b{color:var(--apagado)}
 .ajustesTopo{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px 22px;margin-left:auto}
 .ajustesTopo .tema{width:auto}
 @media(max-width:600px){.ajustesTopo{justify-content:flex-start;margin-left:0;width:100%}}
+.cabeca{display:block}
+.recorteTopo{display:flex;flex-wrap:wrap;gap:10px;flex:none;margin-top:4px}
+.recorteTopo .cx{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;flex:0 1 auto;margin:0;padding:10px 14px}
+.recorteTopo .cx h3{margin:0}
+.recorteTopo #anosBox:not([hidden]){display:flex;align-items:center;gap:8px;margin-left:4px}
+.recorteTopo #anosBox .gtit{margin:0 !important}
+.recorteTopo #selUF{width:auto !important;min-width:230px}
+.recorteTopo #ufInfo{margin:0 !important}
+@media(max-width:600px){.recorteTopo .cx{flex:1 1 100%}.recorteTopo #selUF{flex:1 1 100%}}
+.ftab{width:100%;max-width:820px;border-collapse:collapse;font-size:13px;margin:8px 0 2px;
+  font-variant-numeric:tabular-nums}
+.ftab th{font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--suave);
+  font-weight:600;text-align:left;padding:4px 8px;border-bottom:1px solid var(--linha)}
+.ftab td{padding:6px 8px;border-bottom:1px solid var(--linha);color:var(--tinta)}
+.ftab .n{text-align:right;white-space:nowrap}
+.ftab .fgr{font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--suave);
+  font-weight:600;margin-right:6px}
+.ftab b{color:var(--verde)}
+.ftab tr.ft-res td{font-weight:700;color:var(--verde);background:rgba(123,176,122,.14)}
+.ftab tr.ft-uniao td,.ftab tr.ft-comum td{color:var(--suave)}
+.ftab .ftira{border:0;background:transparent;padding:0 4px;color:var(--suave);cursor:pointer;
+  font-size:14px;line-height:1}
+.ftab .ftira:hover{color:var(--apagado)}
+.fpesos{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:var(--tinta)}
+.fpesos li{margin:2px 0}
+@media(max-width:600px){.ftab{font-size:12px}.ftab .fgr{display:block;margin:0 0 2px}
+  .ftab th.n{white-space:normal}.ftab td{padding:5px 6px}}
 </style>
 <script>try{var t=localStorage.getItem('tema');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 </head><body><div class="wrap">
 <div class="topo">
-<h1>Explorador PRODES — combinações a 10 metros, por estado <span class="v2tag" title="versão simplificada em validação; a versão anterior continua no endereço principal">v2 · em validação</span></h1>
+<h1>FGV Agro - Plataforma Análise Territorial (v2)</h1>
 <div class="ajustesTopo"><div class="tema"><span class="gtit">Classes</span>
   <span class="seg mini" role="group" aria-label="Nível das classes">
     <button type="button" data-modo="simples" title="as classes da versão simplificada: base do INCRA, UC por grupo de manejo, RL e APP juntas…">Simplificadas</button>
@@ -348,23 +375,7 @@ body[data-modo="det"] .modoLinha b{color:var(--apagado)}
   </span></div></div>
 </div>
 <div class="cabeca"><div class="intro">
-<p class="sub">Nos quadros <b>Universo</b> e <b>Estado</b> você escolhe se a conta é do
-Brasil inteiro ou só do desmatamento, e de qual estado; acima do gráfico, por quais categorias <b>separar</b>. No
-gráfico, um <b>clique</b> destaca uma parte e mostra os números dela; <b>Filtrar por isto</b>
-(ou um duplo clique) faz a página inteira passar a ser só aquilo — e ← voltar desfaz. A frase
-acima dos números descreve sempre o que está na tela.</p>
 <p class="modoLinha" id="modoLinha" hidden><span id="modoTxt"></span> <button type="button" id="modoBtn" class="modoBtn"></button></p>
-<details class="sobre"><summary>O que esta versão tem de diferente</summary>
-<p><b>Versão 2, simplificada (em validação).</b> Feita para quem não acompanhou a construção dos dados: menos classes, nomes que se explicam e um caminho só para filtrar — pelo próprio gráfico. Os dados são os mesmos da versão anterior; o que muda é como eles são agrupados. SIGEF e SNCI viram a <b>base do INCRA</b>, e a aderência fica em duas classes (aderente ou não). Unidades de conservação ficam só em <b>proteção integral</b> e <b>uso sustentável</b>, com as federais, estaduais e municipais juntas; assentamentos e áreas não destinadas também deixam de separar federal e estadual. <b>RL e APP</b> viram uma classe só. A sobreposição entre CARs conta o chão em que dois cadastros se cobrem, e encostos mínimos entre vizinhos contam como sem sobreposição. O seletor <b>Classes</b>, no alto à direita, mostra a separação completa (<b>Detalhadas</b>), para conferir; os nomes das classes do CAR ainda podem mudar.</p>
-<p><b>Atualizado em 21/10/2026.</b> Entraram o PRODES <b>2023</b> e o <b>2025</b> dos seis biomas, ao lado do 2024 — escolha o ano no quadro Universo. Os três anos vêm da mesma versão do INPE, publicada entre julho e outubro de 2026, que revisou o 2024 de 1.957.066 para 1.954.281 ha. A aderência ao fundiário e o tamanho do imóvel passaram a valer para <b>todos os imóveis do CAR filtrado</b>, e não só para os que cruzavam o desmatamento. O PRODES 2026 já saiu para o Cerrado; entra quando os outros biomas saírem.</p>
-<p>Resolução de <b>10 metros</b> — nove
-vezes mais pixels que a de 30 m — com a cobertura do solo vindo da
-<b>coleção 4</b> do MapBiomas, que é a única disponível nessa resolução. O CAR
-entra <b>filtrado</b>: imóvel rural (IRU), cadastro ativo ou pendente, não
-cancelado — 8.268.132 de 8.349.966 imóveis. A aderência ao SIGEF e ao SNCI é
-medida por <b>imóvel</b>, com as parcelas dissolvidas, e não parcela a parcela.
-As <b>12 categorias de unidade de conservação</b> do SNUC aparecem pela primeira
-vez, ao lado dos seis bits de esfera e grupo.</p></details>
 </div>
 <div class="recorteTopo">
   <div class="cx"><h3>1. Universo <span id="iUni"></span></h3>
@@ -395,11 +406,11 @@ vez, ao lado dos seis bits de esfera e grupo.</p></details>
 <main class="principal">
   <div id="frase" class="frase"></div>
   <div class="kpi">
-    <div class="k"><b id="kArea">—</b><span>hectares na combinação</span></div>
+    <div class="k"><b id="kArea">—</b><span>hectares</span></div>
     <div class="k"><b id="kPct">—</b><span id="kPctL">do universo selecionado</span></div>
-    <div class="k"><b id="kDes">—</b><span id="kDesL">do desmatamento PRODES</span></div>
+    <div class="k" id="kDesBox"><b id="kDes">—</b><span id="kDesL">do desmatamento PRODES</span></div>
     <div class="k" id="kNacBox" style="display:none"><b id="kNac">—</b><span id="kNacL">do Brasil</span></div>
-    <div class="k"><b id="kComb">—</b><span>combinações distintas</span></div>
+    <div class="k" hidden style="display:none"><b id="kComb">—</b><span>combinações distintas</span></div>
   </div>
   <section class="painel" aria-label="Como mostrar o resultado">
     <div class="gtit">Separar por<span id="iSeparar"></span></div>
@@ -972,7 +983,7 @@ function frase(area){
   const alg=eixos.some(e=>e.m==='som');
   t += alg
     ? `. Nas comparações <b>somadas</b> o pixel entra em todas as classes a que pertence, então a soma passa do total.`
-    : `. Em todas, cada pixel entra numa classe só e a soma fecha com o total.`;
+    : '.';
   document.getElementById('frase').innerHTML=t;
   const nf=Object.values(estado).filter(Boolean).length+classesSel.size+filtrosG.filter(f=>f.d!=='mapbiomas').length;
   const ab=document.getElementById('abreFiltros').getAttribute('aria-expanded')==='true';
@@ -1111,8 +1122,7 @@ function marcaModo(){
     b.setAttribute('aria-pressed',b.dataset.modo===modo));
   // No detalhado, uma linha avisa que aquilo é para conferência.
   document.getElementById('modoLinha').hidden=modo==='simples';
-  document.getElementById('modoTxt').innerHTML='Você está vendo as classes <b>detalhadas</b>, para '+
-    'conferência: os hectares são os mesmos, separados em mais classes.';
+  document.getElementById('modoTxt').innerHTML='Classes <b>detalhadas</b>, para conferência.';
   const b=document.getElementById('modoBtn');
   b.textContent='voltar às simplificadas';
   b.title='volta às classes da versão simplificada; destaque e filtros do gráfico recomeçam';
@@ -1241,9 +1251,7 @@ function calcula(){
   avisa();
   document.getElementById('kArea').textContent=fmt(area);
   document.getElementById('kPct').textContent=area?pcBR(100*area/tot,2):'—';
-  document.getElementById('kPctL').textContent =
-    (ufSel? (universo==='mestre'?'do estado':'do desmatamento no estado')
-          : (universo==='mestre'?'do Brasil inteiro':'do desmatamento'));
+  document.getElementById('kPctL').textContent = nomeTotal();
   // So faz sentido quando a selecao esta dentro do desmatamento: fora disso a
   // conta daria 43.559%, que e a area do Brasil dividida pela do desmatamento.
   const dentroDes = universo==='recorte' || estado[7]===1;
@@ -1254,11 +1262,13 @@ function calcula(){
   if(ufSel){
     document.getElementById('kNac').textContent = nac?pcBR(100*area/nac,2):'—';
     document.getElementById('kNacL').textContent =
-      'deste recorte no Brasil está em '+(ufSel===99?'sem UF':D.ufs[ufSel-1]);
+      (universo==='recorte'?'do desmatamento de '+anosTxt()+' do Brasil está em ':'do total do Brasil está em ')+
+      (ufSel===99?'área sem UF':D.ufs[ufSel-1]);
   }
   document.getElementById('kDesL').textContent = dentroDes
     ? 'do desmatamento de '+anosTxt()
-    : 'escolha Desmatamento PRODES no Universo';
+    : '';
+  document.getElementById('kDesBox').style.display=(universo==='mestre'&&dentroDes)?'':'none';
   document.getElementById('kComb').textContent=fmt(comb);
   let arr=[...mapa.entries()].map(([k,o])=>({nome:k,valor:o.total,
     filhos:[...o.filhos.entries()].map(([n,v])=>({nome:n,valor:v})).sort((a,b)=>b.valor-a.valor)}))
@@ -1294,11 +1304,8 @@ function avisa(){
   const av=document.getElementById('aviso');
   if(inclusivo){
     av.style.display='block';
-    av.innerHTML='Há comparação em <b>somado</b>: nela cada pixel entra em '+
-      '<i>todas</i> as classes a que pertence, então "Grande" já inclui '+
-      '"Pequena + Grande" e a soma passa do total — de propósito, é a resposta '+
-      'para “quanto há de grande ao todo”. Para um total que fecha, volte a '+
-      '<b>separado</b> naquela comparação; aí as combinações viram classe própria.';
+    av.innerHTML='Em <b>total por classe</b>, cada pixel conta em todas as categorias a que '+
+      'pertence: a soma das linhas passa do total.';
   } else if(eixos.length>2 && ['tree','sun','anel','barra'].includes(vis)){
     av.style.display='block';
     av.innerHTML='Você tem <b>'+eixos.length+' comparações</b>, e só o <b>Sankey</b> desenha mais de duas. Nos outros '+
@@ -2033,7 +2040,7 @@ function upset(){
   const todos=U.combos.slice().sort((a,b)=>b.valor-a.valor);
   const combos=todos.filter(c=>c.membros.length);
   const fora=todos.filter(c=>!c.membros.length).reduce((s,c)=>s+c.valor,0);
-  if(!combos.length) return mensagemGrafico(`Nenhum pixel da seleção está em alguma categoria de ${dd.rotulo}.`);
+  if(!combos.length) return mensagemGrafico(`Nenhum pixel aqui está em alguma categoria de ${dd.rotulo}.`);
   const estreito=GW<640, colW=estreito?24:28;
   const nomeW=Math.max(96,Math.min(210,GW*(estreito?0.36:0.2)));
   const tamW=estreito?0:Math.max(70,Math.min(150,GW*0.13));
@@ -2127,7 +2134,7 @@ function taxa(){
   if(d1==='prodes') return mensagemGrafico('A comparação 1 é o próprio desmatamento: a taxa seria 100% '+
     'de um lado e 0% do outro. Escolha outra comparação 1, como Categoria territorial.');
   const {linhas,T0,D0}=dadosTaxa();
-  if(!linhas.length||!T0) return mensagemGrafico('Nenhuma área na seleção.');
+  if(!linhas.length||!T0) return mensagemGrafico('Nenhuma área com estes filtros.');
   const media=D0/T0, maxT=Math.max(media,...linhas.map(x=>x.taxa))||1e-9;
   const passo=passoBonito(maxT), topoEsc=Math.ceil(maxT/passo)*passo;
   const estreito=GW<640;
@@ -2162,7 +2169,7 @@ function taxa(){
     if(!estreito) o+=`<text x="${f1(x0+w+6)}" y="${f1(yb+bh/2+4)}" font-size="10.5" fill="var(--suave)" ${HALO}>${val}</text>`;
     o+='</g>';
   });
-  const tm=`média da seleção: ${pcTaxa(media)}`, wm=largura(tm,10,600);
+  const tm=`média geral: ${pcTaxa(media)}`, wm=largura(tm,10,600);
   const ancDir=xm+6+wm>GW-4;
   o+=`<text x="${f1(ancDir?xm-6:xm+6)}" y="${f1(yFim+16)}" text-anchor="${ancDir?'end':'start'}" font-size="10" font-weight="600" fill="var(--tinta)">${tm}</text>`;
   GH=Math.round(yFim+26);
@@ -2408,37 +2415,49 @@ function fluxosFoco(K){
 function textosFoco(){
   const ks=[...foco], U=window.__ult, area=U?U.area:0, ctx=contextoPc();
   const pcs=v=>area?pcBR(100*v/area,1)+' '+ctx:'';
+  const pcN=v=>area?pcBR(100*v/area,1):'';
   const c=ks.length?contaFoco(ks):null;
   const itens=ks.map((k,x)=>({k,t:c?`${fmt(c.tot[x])} ha${area?' · '+pcs(c.tot[x]):''}`:(resumoChave(k)||'não aparece neste gráfico')}));
-  if(!c) return {itens,res:null,grupos:[{rot:'',nomes:ks}],notas:[],detalhes:[]};
-  const R=Math.round, notas=[], detalhes=[];
+  if(!c) return {itens,res:null,grupos:[{rot:'',nomes:ks}],notas:[],detalhes:[],tab:[],pesos:[],ctx};
+  const R=Math.round, notas=[], detalhes=[], tab=[], pesos=[];
   const grupos=c.gInfo.map((g,i)=>({rot:curtoDim(g.d),nomes:c.grupos[i]}));
-  // Sobreposição dentro de uma linha: as contas mostradas fecham com os
-  // números mostrados (soma dos valores arredondados; o resto de casas
-  // decimais nunca inventa sobreposição).
-  // A sobreposição aparece sempre, também quando é zero: sem a linha, "0" e
-  // "não calculado" ficavam iguais na tela.
+  // As contas mostradas fecham com os números mostrados (soma dos valores
+  // arredondados); a parte em comum aparece também quando é zero.
   const sobreposicao=(xs,uniao,soma)=>{ const S=xs.reduce((s,x)=>s+R(c.tot[x]),0);
     if(soma-uniao<0.5) return {J:S,O:0,S};
     const J=R(uniao); return {J,O:Math.max(0,S-J),S}; };
+  const gNome=g=>g.length>1?'('+g.join(' ou ')+')':g[0];
+  const poeItens=()=>grupos.forEach(g=>g.nomes.forEach(k=>{ const x=ks.indexOf(k);
+    tab.push({tipo:'item',nome:k,sub:g.rot,v:R(c.tot[x]),pc:pcN(c.tot[x]),k}); }));
   let res;
   if(c.grupos.length>1){
-    res={v:R(c.res),pc:pcs(c.res),desc:'área que cumpre todas as linhas abaixo ao mesmo tempo'};
+    // "Não aderente e Floresta, ao mesmo tempo", e o peso disso em cada um:
+    // "47,8% de Não aderente também é Floresta".
+    const eN=c.grupos.map(gNome).join(' e '), ouN=c.grupos.map(gNome).join(' ou ');
+    res={v:R(c.res),pc:pcs(c.res),desc:`${eN}, ao mesmo tempo`};
+    poeItens();
+    tab.push({tipo:'res',nome:`${eN} — ao mesmo tempo`,v:R(c.res),pc:pcN(c.res)});
+    tab.push({tipo:'uniao',nome:`${ouN} — pelo menos um`,v:R(c.uniao),pc:pcN(c.uniao)});
+    c.gInfo.forEach((g,i)=>{ if(!g.uniao) return;
+      const outros=c.grupos.filter((_,j)=>j!==i).map(gNome).join(' e ');
+      pesos.push(`${pcBR(100*c.res/g.uniao,1)} de ${gNome(c.grupos[i])} também é ${outros}`); });
     c.gInfo.forEach((g,i)=>{ if(g.xs.length<2) return; const {O}=sobreposicao(g.xs,g.uniao,g.soma);
-      notas.push(O>0?`Em comum em ${grupos[i].rot}: ${fmt(O)} ha estão em mais de um destes — contados uma vez`
-                    :`Em comum em ${grupos[i].rot}: 0 ha — nenhum hectare está em mais de um destes`); });
+      notas.push(O>0?`${fmt(O)} ha estão em mais de um de ${gNome(c.grupos[i])} — contados uma vez`
+                    :`Nenhum hectare está em mais de um de ${gNome(c.grupos[i])}`); });
     itens.forEach(it=>detalhes.push(`${it.k}: ${it.t}`));
-    detalhes.push(`Em qualquer um deles (sem exigir todas as linhas): ${fmt(c.uniao)} ha${area?' · '+pcs(c.uniao):''}`);
+    detalhes.push(`${ouN} (pelo menos um): ${fmt(c.uniao)} ha${area?' · '+pcs(c.uniao):''}`);
   } else if(ks.length>1){
-    const xs=ks.map((k,x)=>x), {J,O,S}=sobreposicao(xs,c.uniao,c.soma);
-    res={v:J,pc:pcs(c.uniao),desc:'área das escolhidas juntas, cada hectare contado uma vez'};
+    const xs=ks.map((k,x)=>x), {J,O,S}=sobreposicao(xs,c.uniao,c.soma), ouN=ks.join(' ou ');
+    res={v:J,pc:pcs(c.uniao),desc:`${ouN}, cada hectare contado uma vez`};
+    poeItens();
+    if(O>0) tab.push({tipo:'comum',nome:'Em comum — em mais de uma delas',v:O,pc:pcN(O)});
+    tab.push({tipo:'res',nome:`${ouN} — juntas, cada hectare uma vez`,v:J,pc:pcN(c.uniao)});
     notas.push(O>0?`Em comum: ${fmt(O)} ha estão em mais de uma — contados uma vez`
                   :'Em comum: 0 ha — nenhum hectare está em mais de uma');
-    detalhes.push(`Soma simples ${fmt(S)} ha − em comum ${fmt(O)} ha = ${fmt(J)} ha`);
-    if(ks.length===2) detalhes.push(`só ${ks[0]}: ${fmt(R(c.tot[0])-O)} ha · nas duas: ${fmt(O)} ha · só ${ks[1]}: ${fmt(R(c.tot[1])-O)} ha`);
-    detalhes.unshift(...itens.map(it=>`${it.k}: ${it.t}`));
+    detalhes.push(...itens.map(it=>`${it.k}: ${it.t}`),
+      `Soma simples ${fmt(S)} ha − em comum ${fmt(O)} ha = ${fmt(J)} ha`);
   } else res={v:R(c.tot[0]),pc:pcs(c.tot[0]),desc:''};
-  return {itens,res,grupos,notas,detalhes};
+  return {itens,res,grupos,notas,detalhes,tab,pesos,ctx};
 }
 function resumoChave(k){
   const t=totalChave(k), U=window.__ult; if(!t) return '';
@@ -2515,26 +2534,35 @@ function painelFoco(){
     return;
   }
   if(!ks.length){
-    p.innerHTML='<span class="fdica"><b>Clique</b> numa parte do gráfico para destacá-la (pode ser mais de uma) · '+
-      '<b>duplo clique</b> para filtrar a página só por ela.</span>';
+    p.innerHTML='<span class="fdica"><b>Clique</b> no gráfico para destacar · <b>duplo clique</b> para filtrar.</span>';
     return;
   }
-  const T=textosFoco(), tot=new Map(T.itens.map(it=>[it.k,it.t]));
-  const chip=k=>`<span class="fch" title="${escAttr(k+': '+(tot.get(k)||''))}"><b>${escH(k)}</b>`+
-    `<button type="button" data-tira-foco="${escAttr(k)}" aria-label="tirar ${escAttr(k)} do foco">×</button></span>`;
+  const T=textosFoco();
+  const tira=k=>`<button type="button" class="ftira" data-tira-foco="${escAttr(k)}" `+
+    `aria-label="tirar ${escAttr(k)} do foco" title="tirar do foco">×</button>`;
   let h='<div class="fcard"><div class="fres"><span class="ftit">Em foco</span>';
   if(T.res) h+=`<span class="fnum"><b>${fmt(T.res.v)} ha</b>${T.res.pc?` <span>${escH(T.res.pc)}</span>`:''}</span>`;
   h+='<span class="facoes"><button type="button" class="fprim" data-filtra-foco title="a página inteira passa a ser só o que está em foco">Filtrar por isto</button>'+
      '<button type="button" class="flimpa" data-limpa-foco>limpar</button></span>';
   if(T.res&&T.res.desc) h+=`<span class="fdesc">${escH(T.res.desc)}</span>`;
-  h+='</div><div class="fconds">';
-  T.grupos.forEach((g,i)=>{
-    if(i) h+='<div class="fe">e</div>';
-    h+=`<div class="flin">${g.rot?`<span class="fgr">${escH(g.rot)}</span>`:''}`+
-       g.nomes.map(chip).join('<span class="fou">ou</span>')+'</div>';
-  });
   h+='</div>';
-  if(T.notas.length) h+='<div class="fnota">'+T.notas.map(escH).join(' · ')+'</div>';
+  if(T.tab.length){
+    h+=`<table class="ftab"><thead><tr><th></th><th class="n">Área (ha)</th>`+
+       `<th class="n">% ${escH(T.ctx)}</th></tr></thead><tbody>`+
+      T.tab.map(l=>`<tr class="ft-${l.tipo}"><td>`+
+        (l.tipo==='item'?`${l.sub?`<span class="fgr">${escH(l.sub)}</span>`:''}<b>${escH(l.nome)}</b>${tira(l.k)}`
+                        :escH(l.nome))+
+        `</td><td class="n">${fmt(l.v)}</td><td class="n">${escH(l.pc)}</td></tr>`).join('')+
+      '</tbody></table>';
+  } else {
+    const g=T.grupos[0]||{rot:''};
+    h+=`<div class="flin">${g.rot?`<span class="fgr">${escH(g.rot)}</span>`:''}`+
+       ks.map(k=>`<span class="fch"><b>${escH(k)}</b>`+
+         `<button type="button" data-tira-foco="${escAttr(k)}" aria-label="tirar ${escAttr(k)} do foco">×</button></span>`)
+       .join('<span class="fou">ou</span>')+'</div>';
+  }
+  if(T.pesos.length) h+='<ul class="fpesos">'+T.pesos.map(t=>`<li>${escH(t)}</li>`).join('')+'</ul>';
+  if(T.grupos.length>1&&T.notas.length) h+='<div class="fnota">'+T.notas.map(escH).join(' · ')+'</div>';
   { const amb=[];
     for(const k of ks){ const r=resolveNome(k); if(!r||!ambiguo(k,r)) continue;
       const so=totalChave(k), tudo=totalComCombinacoes(r,k);
@@ -2544,12 +2572,8 @@ function painelFoco(){
         `<b>${fmt(tudo)} ha</b>.`); }
     if(amb.length) h+='<div class="fnota famb">'+amb.join('<br>')+'</div>'; }
   if(!T.res) h+='<div class="fnota">'+T.itens.map(it=>`${escH(it.k)}: ${escH(it.t)}`).join(' · ')+'</div>';
-  if(T.detalhes.length) h+='<details class="fdet"><summary>ver o total de cada um</summary><ul>'+
-    T.detalhes.map(t=>`<li>${escH(t)}</li>`).join('')+'</ul></details>';
   h+='</div>';
-  const aberto=p.querySelector('details.fdet[open]');
   p.innerHTML=h;
-  if(aberto){ const d=p.querySelector('details.fdet'); if(d) d.open=true; }
   p.querySelectorAll('[data-tira-foco]').forEach(b=>b.onclick=()=>{ foco.delete(b.dataset.tiraFoco); aplicaFoco(); });
   p.querySelector('[data-limpa-foco]').onclick=()=>{ foco.clear(); focoPrevia=null; aplicaFoco(); };
   p.querySelector('[data-filtra-foco]').onclick=filtraFoco;
@@ -2733,7 +2757,11 @@ function compilaFiltrosG(){
 // "de “Em CAR › Floresta”" ou "da seleção": as porcentagens do destaque dizem
 // sobre o quê elas são.
 // Só o último passo: o caminho inteiro já está na trilha, logo acima.
-const contextoPc=()=>pilhaFG.length?`de “${pilhaFG[pilhaFG.length-1].rot}”`:'da seleção';
+// O total de onde sai cada porcentagem, com nome.
+const nomeTotal=()=>{ const uf=ufSel?(ufSel===99?'área sem UF':D.ufs[ufSel-1]):'';
+  if(universo==='recorte') return 'do desmatamento de '+anosTxt()+(uf?' em '+uf:'');
+  return uf?'de '+uf:'do Brasil inteiro'; };
+const contextoPc=()=>pilhaFG.length?`de “${pilhaFG[pilhaFG.length-1].rot}”`:nomeTotal();
 function painelTrilha(){
   const p=document.getElementById('clique'); if(!p) return;
   if(!pilhaFG.length){ p.hidden=true; p.innerHTML=''; return; }
@@ -3070,7 +3098,7 @@ function tabela(arr,area){
     +`<td class="n">${nBR(100*it.valor/area,2)}</td></tr>`;
 
   let h='<tr><th>Categoria</th><th style="text-align:right">Área (ha)</th>'
-       +'<th style="text-align:right">% da seleção</th></tr>';
+       +`<th style="text-align:right">% ${escH(contextoPc())}</th></tr>`;
   if(sel.length) h+=`<tr><td colspan="3" style="padding:0;height:6px;border:0"></td></tr>`;
   for(const it of sel) h+=linha(it,true);
   if(sel.length){
@@ -3115,17 +3143,15 @@ function tabela(arr,area){
   if(U.modo==='sep' && U.multi>0){
     const pc=nBR(100*U.multi/area,2);
     h+=`<tr><td colspan="3" style="color:var(--suave);font-size:12.5px;${nota}">`
-      +`<b>${fmt(U.multi)} ha (${pc}%)</b> da seleção estão em linhas que combinam `
-      +`mais de uma categoria deste eixo${(()=>{ const ex=(U.bruto||arr).find(it=>membrosCombo(U.eixo,it.nome));
-          return ex?` (como “${escH(ex.nome)}”)`:''; })()}. Aqui cada pixel aparece <b>uma vez só</b>: `
-      +`a linha de uma categoria sozinha <b>não</b> inclui as combinações em que ela aparece. Para ver `
-      +`tudo o que tem uma categoria, destaque-a e use <b>Filtrar por isto</b> — a página pergunta se `
-      +`as combinações entram. Somar linhas destacadas conta cada hectare uma vez.`
+      +`<b>${fmt(U.multi)} ha (${pc}% ${escH(contextoPc())})</b> estão em mais de uma categoria `
+      +`deste eixo${(()=>{ const ex=(U.bruto||arr).find(it=>membrosCombo(U.eixo,it.nome));
+          return ex?` (como “${escH(ex.nome)}”)`:''; })()}. Cada linha conta só o pixel com `
+      +`exatamente aquelas categorias: a de uma categoria sozinha não inclui as combinações.`
       +`</td></tr>`;
   } else if(U.modo==='sep' && U.combos && !soUmaClasse(U.eixo)){
     h+=`<tr><td colspan="3" style="color:var(--suave);font-size:12.5px;${nota}">`
-      +`<b>Em mais de uma categoria: 0 ha (0,00%)</b> — nesta seleção nenhuma linha combina mais `
-      +`de uma categoria deste eixo.</td></tr>`;
+      +`<b>Em mais de uma categoria: 0 ha (0,00%)</b> — aqui nenhum pixel está em mais de uma `
+      +`categoria deste eixo.</td></tr>`;
   }
   t.innerHTML=h;
   t.querySelectorAll('tr[data-nome]').forEach(tr=>{
@@ -3216,7 +3242,7 @@ document.getElementById('baixar').onclick=()=>{
   // combinacoes, uma por linha, porque e nela que se faz a soma.
   const {bruto,arr,area}=window.__ult||{bruto:[],arr:[],area:0};
   const fonte=(bruto&&bruto.length)?bruto:arr;
-  let csv='categoria;subcategoria;area_ha;pct_da_selecao\n';
+  let csv='categoria;subcategoria;area_ha;pct_do_total\n';
   for(const it of fonte){ if(it.filhos&&it.filhos.length)
       for(const f of it.filhos) csv+=`"${it.nome}";"${f.nome}";${f.valor.toFixed(2)};${(100*f.valor/area).toFixed(4)}\n`;
     else csv+=`"${it.nome}";;${it.valor.toFixed(2)};${(100*it.valor/area).toFixed(4)}\n`;}
@@ -3279,10 +3305,12 @@ function baixarPNG(){
     const GWp=+svg.getAttribute('viewBox').split(' ')[2], larg=GWp-16;
     const linhas=[], tf=textosFoco(), poe=t=>quebraW(t,12,larg,3).forEach(l=>linhas.push(l));
     if(tf.res) poe(`${fmt(tf.res.v)} ha${tf.res.pc?' · '+tf.res.pc:''}${tf.res.desc?' — '+tf.res.desc:''}`);
-    tf.grupos.forEach((g,i)=>poe(`${i?'e  ':''}${g.rot?g.rot+': ':''}${g.nomes.join(' ou ')}`));
-    tf.notas.forEach(poe);
-    if(tf.res&&tf.detalhes.length) poe('Total de cada um, sozinho:');
-    (tf.res?tf.detalhes:tf.itens.map(it=>`${it.k}: ${it.t}`)).forEach(t=>poe(tf.res?'  '+t:t));
+    if(tf.tab.length) tf.tab.forEach(l=>poe(`${l.nome}${l.sub?' ('+l.sub+')':''}: ${fmt(l.v)} ha`+
+      `${l.pc?' · '+l.pc+' '+tf.ctx:''}`));
+    else tf.grupos.forEach(g=>poe(`${g.rot?g.rot+': ':''}${g.nomes.join(' ou ')}`));
+    tf.pesos.forEach(poe);
+    if(tf.grupos.length>1) tf.notas.forEach(poe);
+    if(!tf.res) tf.itens.forEach(it=>poe(`${it.k}: ${it.t}`));
     const y0=+svg.getAttribute('viewBox').split(' ')[3];
     extra=34+linhas.length*17;
     rodape=`<line x1="8" x2="${GWp-8}" y1="${y0+10}" y2="${y0+10}" stroke="var(--linha)"/>`+
