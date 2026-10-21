@@ -81,6 +81,9 @@ em JavaScript as combinações calculadas em pandas e mostra o placar.
   vegetação herbácea passa a **Formações campestres, arbustivas e áreas úmidas**;
   **Afloramentos rochosos** ficam separados. O restante dos grupos conserva sua
   posição para manter os identificadores da calculadora.
+- O tema usa um ícone compacto no cabeçalho e uma lista de três opções:
+  Automático, Claro e Escuro. A escolha continua salva no navegador; Escape
+  e clique fora fecham a lista.
 - No desktop, o resumo da análise ocupa a coluna à direita da área e das
   configurações. O texto cresce sem corte; em telas menores fica abaixo dos
   controles, antes das opções de gráfico.
@@ -93,7 +96,8 @@ em JavaScript as combinações calculadas em pandas e mostra o placar.
   as condições e as explicações. A escolha de abrir é mantida durante a análise.
 - Marcas dos gráficos e linhas da tabela podem ser selecionadas pelo teclado.
   Enter/Espaço selecionam; Shift+Enter aplica como filtro no gráfico. Controles
-  de ajuda têm alvos maiores. Todos os tipos de gráfico ficam visíveis no computador;
+  de ajuda usam ícones discretos de 14 px junto ao texto, com área de clique
+  de 24 px e foco visível pelo teclado. Todos os tipos de gráfico ficam visíveis no computador;
   **Mais gráficos** reúne as opções adicionais apenas no celular.
 
 Validação: 472/472 contagens e áreas, 60/60 conservações e 78/78 verificações

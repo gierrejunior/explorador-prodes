@@ -34,11 +34,14 @@ h1{font-size:21px;line-height:1.3;margin:0 0 6px;color:var(--verde);text-wrap:ba
 .chip[data-e="1"] .m{color:var(--aceso)}
 .chip[data-e="2"]{border-color:var(--apagado);color:var(--apagado);background:color-mix(in srgb,var(--apagado) 8%,var(--fundo))}
 .chip[data-e="2"] .m{color:var(--apagado)}
-.info{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;
- padding:0;border-radius:50%;border:1px solid var(--linha);background:var(--fundo);
- color:var(--suave);font-size:10.5px;font-style:italic;font-weight:700;cursor:pointer;
- line-height:1;margin-left:5px;vertical-align:middle;flex:none}
-.info:hover{border-color:var(--verde);color:var(--verde)}
+.info{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;
+ padding:0;border:0;border-radius:50%;background:transparent;color:var(--suave);cursor:pointer;
+ line-height:1;margin-left:3px;vertical-align:super;flex:none;position:relative}
+.info::before{content:"";position:absolute;inset:-5px;border-radius:50%}
+.info>svg{display:block;width:14px;height:14px}
+.info:hover{color:var(--verde)}
+.info:focus-visible{outline-offset:4px}
+.eixo>.info{align-self:flex-start;margin-top:3px}
 .balao{position:fixed;z-index:30;max-width:min(320px,calc(100vw - 16px));background:var(--fundo);
  border:1px solid var(--linha);border-left:3px solid var(--verde);border-radius:9px;
  padding:10px 13px;font-size:12.5px;line-height:1.55;color:var(--tinta);
@@ -420,15 +423,22 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
 .excluirOpcao{border:0;border-left:1px solid var(--linha);border-radius:0;font-size:11px;color:var(--suave);flex-shrink:0}
 .excluirOpcao[aria-pressed="true"]{background:var(--apagado);color:var(--fundo)}
 .subseleciona{cursor:pointer;min-height:40px}.estadoGrupo{font-size:18px;width:20px;text-align:center;flex-shrink:0}.subseleciona[data-e="2"]{background:color-mix(in srgb,var(--apagado) 12%,var(--painel));color:var(--apagado);outline:1px solid var(--apagado)}
-.info{width:26px;height:26px;font-size:12px;line-height:1}
 .eixo{flex-wrap:wrap}.eixo select.modo{flex:0 1 auto;max-width:100%;font-size:12px;border:1px solid var(--linha);background:var(--painel)}
 .leituraDica{flex-basis:100%;font-size:11.5px;color:var(--suave);padding:0 4px 3px}
 #configAnalise>summary{cursor:pointer;font-weight:600;color:var(--verde);margin-bottom:8px}
 .escolhaGraficos{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start}
-#maisGraficos{position:relative}#maisGraficos>summary,.aparencia>summary{cursor:pointer;padding:6px 10px;border:1px solid var(--linha);border-radius:7px;font-size:12px}
+#maisGraficos{position:relative}#maisGraficos>summary{cursor:pointer;padding:6px 10px;border:1px solid var(--linha);border-radius:7px;font-size:12px}
 #maisGraficos[open] .seg{display:flex;flex-wrap:wrap;position:absolute;right:0;top:38px;z-index:8;width:300px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.15)}
 #maisGraficos .seg button{border:0;border-radius:5px;flex:1 1 auto;min-height:36px}
-.aparencia{position:relative}.aparencia[open] .tema{position:absolute;right:0;top:34px;z-index:20;padding:12px;border:1px solid var(--linha);background:var(--fundo);border-radius:8px;box-shadow:var(--sombra)}
+.aparencia{position:relative;flex:none}
+.aparencia>summary{display:flex;align-items:center;justify-content:center;width:30px;height:30px;list-style:none;cursor:pointer;border:0;border-radius:6px;background:transparent;color:var(--suave)}
+.aparencia>summary::-webkit-details-marker{display:none}
+.aparencia>summary:hover,.aparencia[open]>summary{color:var(--verde);background:color-mix(in srgb,var(--verde) 7%,var(--fundo))}
+.aparencia>summary>svg{width:18px;height:18px}
+.menuTema{position:absolute;right:0;top:calc(100% + 6px);z-index:20;display:flex;flex-direction:column;width:148px;padding:4px;border:1px solid var(--linha);border-radius:8px;background:var(--fundo);box-shadow:var(--sombra)}
+.menuTema button{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;min-height:32px;padding:5px 8px;border:0;border-radius:4px;background:transparent;text-align:left;font-size:12px}
+.menuTema button[aria-pressed="true"]{color:var(--verde);background:color-mix(in srgb,var(--verde) 7%,var(--fundo));box-shadow:none}
+.menuTema button:not([aria-pressed="true"]) .marcaTema{visibility:hidden}
 .exportMobile{margin:12px 0;padding:12px;border:1px solid var(--linha);border-radius:9px;background:var(--painel)}
 .resumoFiltros{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
 .resumoTitulo{font-size:11px;font-weight:600;color:var(--suave);margin-right:5px}
@@ -530,12 +540,12 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
     <button type="button" data-modo="simples" title="classes agrupadas (base do INCRA, UC por grupo de manejo, RL e APP juntas…) e filtro pelo próprio gráfico; os filtros aplicados são preservados ao trocar">Simplificado</button>
     <button type="button" data-modo="det" title="todas as classes (SIGEF e SNCI, esferas das UCs, as três classes de sobreposição entre CARs…), filtros em gavetas e calculadora; os filtros aplicados são preservados ao trocar">Detalhado</button>
   </span></div>
-<details class="aparencia"><summary>Aparência</summary><div class="tema"><span class="gtit">Tema</span>
-  <span class="seg mini" role="group" aria-label="Tema da página">
-    <button type="button" data-tema="auto" title="segue o modo claro ou escuro do seu computador ou celular">Automático</button>
-    <button type="button" data-tema="light">Claro</button>
-    <button type="button" data-tema="dark">Escuro</button>
-  </span></div></details></div>
+<details class="aparencia"><summary aria-label="Alterar tema da página" title="Alterar tema"><span aria-hidden="true">◐</span></summary>
+  <div class="menuTema" role="group" aria-label="Tema da página">
+    <button type="button" data-tema="auto" title="segue o modo claro ou escuro do seu computador ou celular">Automático <span class="marcaTema" aria-hidden="true">✓</span></button>
+    <button type="button" data-tema="light">Claro <span class="marcaTema" aria-hidden="true">✓</span></button>
+    <button type="button" data-tema="dark">Escuro <span class="marcaTema" aria-hidden="true">✓</span></button>
+  </div></details></div>
 </div>
 <div class="cabeca"><div class="intro">
 <p class="modoLinha" id="modoLinha" hidden><span id="modoTxt"></span> <button type="button" id="modoBtn" class="modoBtn"></button></p>
@@ -2603,8 +2613,9 @@ function info(texto, titulo){
   // Um ⓘ que abre a explicação ali mesmo. Espalhado pelos controles, porque
   // nome curto nenhum carrega sozinho a diferença entre as três leituras.
   const b=document.createElement('button');
-  b.className='info'; b.textContent='i';
-  b.setAttribute('aria-label','o que é isto');
+  b.className='info'; b.type='button';
+  b.innerHTML='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.1"/><path d="M8 7v4" stroke-linecap="round"/><circle cx="8" cy="4.5" r=".7" fill="currentColor" stroke="none"/></svg>';
+  b.setAttribute('aria-label',titulo?'Ajuda sobre '+titulo:'Ajuda sobre esta opção');
   b.onclick=(ev)=>{
     ev.stopPropagation();
     document.querySelectorAll('.balao').forEach(x=>x.remove());
@@ -3838,20 +3849,31 @@ document.getElementById('baixarPNG').onclick=baixarPNG;
 // Automático segue o modo claro/escuro do sistema, que era a única opção: quem
 // usa o computador no escuro via a página sempre escura, sem como trocar. A
 // escolha fica guardada neste navegador.
+const ICONES_TEMA={
+  auto:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',
+  light:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/>',
+  dark:'<path d="M20.8 13A9 9 0 0 1 11 3.2 9 9 0 1 0 20.8 13Z"/>'
+};
 function aplicaTema(t){
   const fixo=t==='light'||t==='dark';
   if(fixo) document.documentElement.setAttribute('data-theme',t);
   else document.documentElement.removeAttribute('data-theme');
   document.querySelectorAll('[data-tema]').forEach(b=>
     b.setAttribute('aria-pressed',b.dataset.tema===(fixo?t:'auto')));
+  const tema=fixo?t:'auto',nome={auto:'Automático',light:'Claro',dark:'Escuro'}[tema],resumo=document.querySelector('.aparencia>summary');
+  resumo.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'+ICONES_TEMA[tema]+'</svg>';
+  resumo.title='Tema: '+nome;resumo.setAttribute('aria-label','Tema: '+nome+'. Alterar tema da página');
 }
 (function(){
   let t='auto'; try{ t=localStorage.getItem('tema')||'auto'; }catch(e){}
   aplicaTema(t);
   document.querySelectorAll('[data-tema]').forEach(b=>b.onclick=()=>{
-    aplicaTema(b.dataset.tema);document.querySelector('.aparencia').open=false;
+    aplicaTema(b.dataset.tema);const painel=document.querySelector('.aparencia');painel.open=false;painel.querySelector('summary').focus({preventScroll:true});
     try{ localStorage.setItem('tema',b.dataset.tema); }catch(e){}
   });
+  const painel=document.querySelector('.aparencia');
+  painel.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&painel.open){ev.preventDefault();ev.stopPropagation();painel.open=false;painel.querySelector('summary').focus({preventScroll:true});}});
+  document.addEventListener('pointerdown',ev=>{if(painel.open&&!painel.contains(ev.target))painel.open=false;});
 })();
 
 (function(){
@@ -3859,8 +3881,8 @@ function aplicaTema(t){
   põe('iUni','<b>Brasil inteiro</b> traz todos os pixels do país, desmatados ou não — '+
     'serve para medir proporções, como "quanto da Terra Indígena foi desmatado". '+
     '<b>Desmatamento PRODES</b> restringe à mancha do PRODES e mostra os anos: um, ou '+
-    'mais de um somados. No Brasil inteiro os anos aparecem no gráfico % desmatado, '+
-    'que é onde entram na conta. '+
+    'mais de um somados. No Brasil inteiro os anos ficam em Configurar análise quando '+
+    'entram numa comparação, num filtro de desmatamento ou no gráfico Percentual desmatado. '+
     'Os anos não se sobrepõem: o PRODES marca cada pixel uma vez só.','Área analisada');
   põe('iUF','Recorta tudo para um estado. Com um estado escolhido, os percentuais passam '+
     'a ser dele, e um cartão à parte mostra o peso daquele recorte no Brasil.','Estado');
