@@ -480,6 +480,12 @@ const DIM_SIM={
   prodes:DD.prodes,
 };
 const DIMS={simples:DIM_SIM, det:DD};
+// Eixos do simplificado com uma classe por pixel, por construção (remapSimples):
+// neles o botão de leitura não mudaria nada, então não aparece. Nos outros
+// (Categoria territorial, Tamanho, Ano) ele fica, como na v1 -- pedido do
+// Eduardo em 21/10/2026, depois de ver a v2 sem ele.
+const EXCLUSIVO_SIM=new Set(['fundiario','parcela','car','app_rl','sobrep_area']);
+const soUmaClasse=d=>modo==='simples'&&EXCLUSIVO_SIM.has(d);
 D.dimensoes=DIM_SIM;
 // Junta os bits das classes simplificadas, nas colunas já copiadas. Cada eixo
 // do CAR fica com uma classe por pixel; onde dois CARs discordam, a regra está
@@ -811,8 +817,8 @@ function montaEixos(){
       e.m='sep';
       w.appendChild(seletorNivelUso());
       w.appendChild(info(textoUso(),'Uso do solo: agrupado ou detalhado'));
-    } else if(modo==='simples'){
-      // Sem botão de leitura: cada combinação aparece com o próprio nome.
+    } else if(soUmaClasse(e.d)){
+      // Uma classe por pixel: os três modos de leitura dariam o mesmo resultado.
       e.m='sep';
     } else {
     const m=document.createElement('button'); m.className='modo';
@@ -947,7 +953,7 @@ function frase(area){
   t += `: <b>${fmt(area)} ha</b>.`;
   t += ' Separado por ' + eixos.map(e=>
         `<b>${D.dimensoes[e.d].rotulo}</b> <span class="ou">(${D.dimensoes[e.d].tipo==='classe'
-          ?(nivelUso==='agr'?'agrupado':'detalhado'):(modo==='simples'?'cada combinação com nome próprio':ROTMODO[e.m])})</span>`
+          ?(nivelUso==='agr'?'agrupado':'detalhado'):(soUmaClasse(e.d)?'uma classe por pixel':ROTMODO[e.m])})</span>`
       ).join(' › ');
   const alg=eixos.some(e=>e.m==='som');
   t += alg
@@ -1081,7 +1087,8 @@ function mudaModo(m){
   // recomeçam, para nenhum número ficar valendo com um nome que sumiu.
   filtrosG=[]; pilhaFG=[]; foco.clear(); focoPrevia=null; escolhaFiltro=null; classesSel.clear();
   eixos=eixos.map(e=>({d:D.dimensoes[e.d]?e.d:(EIXO_PARA[e.d]||'territorial'),
-                       m:modo==='simples'?'sep':e.m}));
+                       m:e.m}));
+  eixos.forEach(e=>{ if(soUmaClasse(e.d)) e.m='sep'; });
   marcaModo(); montaEixos(); montaClasses(); agenda();
 }
 function marcaModo(){
@@ -3101,7 +3108,7 @@ function tabela(arr,area){
       +`tudo o que tem uma categoria, destaque-a e use <b>Filtrar por isto</b> — a página pergunta se `
       +`as combinações entram. Somar linhas destacadas conta cada hectare uma vez.`
       +`</td></tr>`;
-  } else if(U.modo==='sep' && U.combos && modo!=='simples'){
+  } else if(U.modo==='sep' && U.combos && !soUmaClasse(U.eixo)){
     h+=`<tr><td colspan="3" style="color:var(--suave);font-size:12.5px;${nota}">`
       +`<b>Em mais de uma categoria: 0 ha (0,00%)</b> — nesta seleção nenhuma linha combina mais `
       +`de uma categoria deste eixo.</td></tr>`;
@@ -3339,8 +3346,10 @@ function aplicaTema(t){
     'em cada UC, não a interseção das seis.','Filtrar');
   põe('iSeparar','Define em que categorias o resultado é separado no gráfico. O ⓘ ao lado '+
     'de cada comparação explica as classes dela; a de uso do solo tem a escolha entre agrupado '+
-    'e detalhado. Nas classes detalhadas, cada comparação tem também o botão de leitura, que '+
-    'decide como contar um pixel que está em mais de uma classe. Da terceira comparação em '+
+    'e detalhado. Onde um pixel pode estar em mais de uma classe (como na Categoria territorial: '+
+    '“CAR + Assentamentos”), a comparação tem também o botão de leitura, que decide como contá-lo: '+
+    '<b>cada combinação</b> com nome próprio, <b>combinações juntas</b> numa classe só, ou '+
+    '<b>total por classe</b>. Da terceira comparação em '+
     'diante só o Sankey desenha.',
     'Separar por');
   const iu=document.getElementById('iUso');
