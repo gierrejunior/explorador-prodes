@@ -337,6 +337,8 @@ body[data-modo="det"] .modoLinha b{color:var(--apagado)}
 .recorteTopo .cx h3{margin:0}
 .recorteTopo #anosBox:not([hidden]){display:flex;align-items:center;gap:8px;margin-left:4px}
 .recorteTopo #anosBox .gtit{margin:0 !important}
+#anosAnalise:not([hidden]){display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+#anosAnalise .gtit{margin:0}
 .recorteTopo #selUF{width:auto !important;min-width:230px}
 .recorteTopo #ufInfo{margin:0 !important}
 @media(max-width:600px){.recorteTopo .cx{flex:1 1 100%}.recorteTopo #selUF{flex:1 1 100%}}
@@ -572,7 +574,8 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
   <section class="painel painelAnalise" aria-label="Como mostrar o resultado">
     <details id="configAnalise" open><summary>Configurar análise</summary><div class="gtit">Comparar por<span id="iSeparar"></span></div>
     <div id="eixos"></div>
-    <button id="addEixo" class="add" title="da terceira em diante o gráfico muda para Sankey, que é o único que desenha várias colunas">+ comparação</button></details>
+    <button id="addEixo" class="add" title="da terceira em diante o gráfico muda para Sankey, que é o único que desenha várias colunas">+ comparação</button>
+    <div id="anosAnalise" hidden><div class="gtit">Ano do PRODES na análise</div></div></details>
     <div class="plinha">
     <div class="pgrupo">
     <div class="gtit">Gráfico</div>
@@ -3643,6 +3646,7 @@ document.querySelectorAll('[data-bm]').forEach(b=>b.onclick=()=>{
   if(window.__ult&&!agendado){ animar=true; desenha(window.__ult.arr,window.__ult.area); }
 });
 function marcaV(){
+  marcaAnos();
   for(const [id,v] of VIS) document.getElementById(id).setAttribute('aria-pressed',vis===v);
   document.getElementById('opBarra').hidden = vis!=='barra';
   document.querySelectorAll('[data-bm]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.bm===barraModo));
@@ -3680,13 +3684,15 @@ function montaAnos(){
   }
   marcaAnos();
 }
-// Os anos so aparecem onde entram na conta: no Desmatamento PRODES, e no
-// Brasil inteiro com o filtro de desmatamento ligado ou no % desmatado. Antes
-// ficavam sempre a vista, e no Brasil inteiro clicar nao mudava numero nenhum
-// -- o usuario achou que estava quebrado (17/10/2026).
-const anoVale=()=>universo!=='mestre'||estado[7]===1||vis==='taxa'||eixos.some(e=>e.d==='prodes');
+// No topo, o ano acompanha apenas o recorte de desmatamento. No Brasil
+// inteiro, aparece nas configurações quando a análise usa o PRODES.
+const anoVale=()=>universo==='recorte'||!!estado[7]||vis==='taxa'||eixos.some(e=>e.d==='prodes')||filtrosG.some(f=>f.d==='prodes');
 function marcaAnos(){
-  document.getElementById('anosBox').hidden=!anoVale();
+  const topo=document.getElementById('anosBox'),analise=document.getElementById('anosAnalise'),anos=document.getElementById('selAnos');
+  const recorte=universo==='recorte',destino=recorte?topo:analise;
+  if(anos.parentElement!==destino)destino.appendChild(anos);
+  topo.hidden=!recorte;
+  analise.hidden=recorte||!anoVale();
   document.querySelectorAll('#selAnos button').forEach(b=>
     b.setAttribute('aria-pressed',anosSel.has(+b.dataset.ano)));
 }

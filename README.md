@@ -51,6 +51,9 @@ em JavaScript as combinações calculadas em pandas e mostra o placar.
 - **Simplificado / Detalhado** substituem Simplificada / Completa. A abertura
   sem parâmetros usa barras, uma comparação e classes agrupadas. No celular,
   as configurações começam recolhidas e a exportação fica depois do gráfico.
+- O seletor de anos aparece no topo apenas em **Desmatamento PRODES**.
+  Em **Brasil inteiro**, fica em **Configurar análise** quando há uma comparação
+  por ano, filtro de desmatamento ou gráfico de percentual desmatado.
 - A barra do Detalhado tem o título **Filtros** e mantém os assuntos agrupados.
   Em telas largas, os nove controles ocupam uma linha; em telas menores,
   quebram linha sem cortar os nomes. No computador, cada
