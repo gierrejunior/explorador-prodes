@@ -14,6 +14,15 @@ página antiga.
 Acrescente `?validar` ao endereço para a página conferir a si mesma: ela refaz
 em JavaScript as combinações calculadas em pandas e mostra o placar.
 
+## Correção de 21/10/2026: eixo do ano com um ano só
+
+- O eixo **Ano do desmatamento PRODES** fica disponível no Desmatamento PRODES
+  também com um ano só marcado — por exemplo, para o "2023" ser a primeira
+  coluna do Sankey. Antes ele sumia nesse caso, e quem separava por ano com dois
+  anos marcados e desmarcava um via a caixa da comparação mostrar outro eixo
+  enquanto a conta continuava separando por ano. Os números nunca estiveram
+  errados; a tela é que dizia um eixo e mostrava outro.
+
 ## Atualização de 16/10/2026: PRODES 2023, 2024 e 2025
 
 - **Três anos do PRODES.** Clicando em **Desmatamento PRODES**, no quadro

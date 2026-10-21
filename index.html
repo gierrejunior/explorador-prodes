@@ -624,7 +624,6 @@ const DICAMODO = {
 function opcoesDim(sel, val){
   sel.innerHTML='';
   for(const [k,v] of Object.entries(D.dimensoes)){
-    if(k==='prodes' && universo==='recorte' && anosSel.size<2) continue;
     sel.insertAdjacentHTML('beforeend',`<option value="${k}">${v.rotulo}</option>`);
   }
   sel.value=[...sel.options].some(o=>o.value===val)?val:sel.options[0].value;
@@ -746,7 +745,7 @@ document.getElementById('addEixo').onclick=()=>{
   if(eixos.length>=8) return;
   const usados=new Set(eixos.map(e=>e.d));
   const livre=Object.keys(D.dimensoes).find(k=>!usados.has(k)&&
-              !(k==='prodes'&&universo==='recorte'&&anosSel.size<2)) || eixos[eixos.length-1].d;
+              true) || eixos[eixos.length-1].d;
   eixos.push({d:livre, m:'sep'});
   // Só o Sankey desenha da terceira em diante. Recusar seria pior que levar
   // para onde a comparação aparece.
