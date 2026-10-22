@@ -381,9 +381,6 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
 .gavBtn.temFiltro{border-color:var(--aceso);color:var(--aceso)}
 .gavBtn .gavN{background:var(--aceso);color:var(--fundo);border-radius:999px;padding:0 6px;font-size:11px;font-weight:700}
 .gavBtn .gavN:empty{display:none}
-.cabFiltros .gavLimpa{margin-left:auto;border:0;background:none;color:var(--suave);font-size:12px;
-  text-decoration:underline dotted;text-underline-offset:3px;padding:4px 6px;cursor:pointer}
-.cabFiltros .gavLimpa:hover{color:var(--apagado)}
 .painelFiltros .gaveta{display:none;margin:0 0 8px}
 .painelFiltros .gaveta.aberta{display:block}
 .gaveta>h3,.gaveta .cabUso h3{cursor:pointer;user-select:none}
@@ -528,11 +525,15 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
 @media(max-width:700px){.kpi{gap:10px 22px}.foco .fcard{padding-left:8px}.foco .facoes{margin-left:0}}
 #tab tr.tsec td{font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--suave);
   font-weight:600;background:var(--painel);padding-top:9px}
-.fambl{margin:6px 0;padding-left:18px}
-.fambl .fgr{font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--suave);font-weight:600;margin-right:6px}
 .resumoFiltros .filtroLimpaTudo{margin-left:auto;border:0;background:none;color:var(--suave);font-size:12px;
   text-decoration:underline dotted;text-underline-offset:3px;padding:4px 6px;cursor:pointer}
 .resumoFiltros .filtroLimpaTudo:hover{color:var(--apagado)}
+.fopcaoGrupo{display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer}
+.fopcaoGrupo input{accent-color:var(--verde);width:16px;height:16px;flex:none}
+.fopcaoGrupo .fgr{display:block;font-size:10.5px;color:var(--suave);text-transform:uppercase;letter-spacing:.5px}
+.fopcaoGrupo+ .fopcoes{margin-top:8px}
+.mostraMiudas{padding:4px 0;min-height:28px;border:0;background:transparent;color:var(--verde);text-align:left;font-size:12px}
+.gnota .verBarras{padding:0 3px;border:0;background:transparent;color:var(--verde);text-decoration:underline;font-size:inherit}
 </style>
 <script>try{var t=localStorage.getItem('tema');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 </head><body><div class="wrap">
@@ -576,7 +577,6 @@ body[data-modo="simples"] .lateral,body[data-modo="simples"] #calc{display:none 
   <div id="filtros"></div>
   <div class="cx gaveta" id="gavetaUso"><div class="cabUso"><h3>Uso e cobertura do solo <span class="cont"></span><span id="iUso"></span></h3><span id="nivelUsoF"></span></div>
     <div id="fclasses"></div></div>
-  <div class="cx"><button id="limpar">Limpar filtros</button></div>
   </div>
 </aside>
 <main class="principal">
@@ -1236,7 +1236,7 @@ function montaEixos(){
     m.setAttribute('aria-label',`Leitura da comparação ${i+1}`);
     for(const k of MODOS){const o=document.createElement('option');o.value=k;o.textContent=ROTMODO[k];o.disabled=noSankey&&k==='som';m.appendChild(o);}
     m.value=e.m; m.title=DICAMODO[e.m];
-    m.onchange=()=>{e.m=m.value;montaEixos();agenda();};
+    m.onchange=()=>{e.m=m.value;prefereBarras=e.m==='som'&&['tree','sun','anel'].includes(vis);montaEixos();agenda();};
     w.appendChild(m);
     const explicacao=document.createElement('span');explicacao.className='leituraDica';
     explicacao.textContent=e.m==='som'?'Inclui combinações; as categorias podem compartilhar área.':e.m==='agr'?'As combinações ficam em um grupo; a soma fecha com o total.':'Cada combinação é exclusiva; a soma fecha com o total.';
@@ -1390,9 +1390,6 @@ function marcaGavetas(){
     b.setAttribute('aria-expanded',g.classList.contains('aberta'));
     b.hidden=g.style.display==='none';   // o desmatamento some no Desmatamento PRODES
   });
-  // "Limpar filtros" só aparece quando há o que limpar.
-  const lp=document.querySelector('#painelFiltros .gavLimpa');
-  if(lp) lp.hidden=!document.querySelector('#painelFiltros .chip[data-e]:not([data-e="0"])');
 }
 // A barra: um botão por gaveta, com nome curto; o nome inteiro fica no título da
 // gaveta aberta. Uma gaveta aberta por vez; o nome no alto dela também fecha.
@@ -1558,6 +1555,7 @@ function gruposDim(uni,dimn){
   return GRUPOS_LIN[k]={idx,rep,n:rep.length};
 }
 function calcula(){
+  escolhaFiltro=null;
   animar=true; marcaAnos();
   let area=0,comb=0,tot=0,nac=0; const mapa=new Map();
   const d1=dim(0), d2=eixos.length>1?dim(1):'—';
@@ -1715,7 +1713,11 @@ function calcula(){
   }
   // Precisa vir antes de desenhar: a dica do gráfico usa este total para a % da seleção.
   window.__ult={arr,area,bruto,multi,modo:m1,eixo:d1,incl,combos,tot2:new Map(nomes2.map((n,k)=>[n,tot2v[k]||0])),
+                sobrepoePrimeiro:bruto.reduce((s,x)=>s+x.valor,0)>area+0.5,
+                sobrepoeSegundo:bruto.some(x=>(x.filhos||[]).reduce((s,f)=>s+f.valor,0)>x.valor+0.5),
                 rotEixo:(D.dimensoes[d1]||{}).rotulo||d1};
+  if(prefereBarras&&(window.__ult.sobrepoePrimeiro||window.__ult.sobrepoeSegundo)){vis='barra';barraModo='ha';marcaV();}
+  prefereBarras=false;
   desenha(arr,area); tabela(arr,area); montaCalc();
 }
 function avisa(){
@@ -1723,9 +1725,7 @@ function avisa(){
   const inclusivo=eixos.some(e=>e.m==='som');
   const av=document.getElementById('aviso');
   if(inclusivo){
-    av.style.display='block';
-    av.innerHTML='Em <b>Total de cada categoria</b>, cada pixel conta em todas as categorias a que '+
-      'pertence: a soma das linhas passa do total.';
+    av.style.display='none'; // A interpretação acompanha o gráfico na nota abaixo dos controles.
   } else if(eixos.length>2 && ['tree','sun','anel','barra'].includes(vis)){
     av.style.display='block';
     av.innerHTML='Você tem <b>'+eixos.length+' comparações</b>, e só o <b>Sankey</b> desenha mais de duas. Nos outros '+
@@ -2381,7 +2381,7 @@ function corCat(dimn,nome){
 }
 // Texto sobre listra: contorno na cor de base, para continuar legível.
 const haloSobre=c=>c.lista?` paint-order="stroke" stroke="${c.base}" stroke-width="2.6" stroke-linejoin="round"`:'';
-let barraModo='ha';
+let barraModo='ha',prefereBarras=false;
 function barras(arr){
   const tot=window.__ult.area||1, pct=barraModo==='pct', estreito=GW<640;
   const d2=eixos.length>1?dim(1):null;
@@ -2447,7 +2447,7 @@ function barras(arr){
         const w=len*f.valor/sF; if(w<=0) continue;
         const cor=f.outra?COR_OUT:cores.get(f.nome), cf=f.outra?{base:COR_OUT,lista:false}:cc2.get(f.nome);
         o+=`<rect class="it" data-n="${it.nome} › ${f.nome}" data-v="${f.valor}" data-p="${it.valor}" x="${f1(x)}" y="${f1(yb)}" width="${f1(w)}" height="${bh}" fill="${cor}" stroke="var(--fundo)" stroke-width="0.6"/>`;
-        const p=pcBR(100*f.valor/sF,0);
+        const p=pcBR(100*f.valor/it.valor,0);
         if(w>=largura(p,10,600)+8)
           o+=`<text x="${f1(x+w/2)}" y="${f1(yb+bh/2+3.5)}" text-anchor="middle" font-size="10" font-weight="600" fill="${corTexto(cf.base)}" pointer-events="none"${haloSobre(cf)}>${p}</text>`;
         x+=w;
@@ -2611,9 +2611,12 @@ function notaGrafico(){
   const n=document.getElementById('gNota');
   const r1=(D.dimensoes[dim(0)]||{}).rotulo||'', r2=eixos.length>1?D.dimensoes[dim(1)].rotulo:'';
   const so1=eixos.length>1?' Este gráfico usa só a comparação 1.':'';
+  const U=window.__ult||{},sobrepostas=U.sobrepoePrimeiro||U.sobrepoeSegundo;
+  const proporcional=['tree','sun','anel'].includes(vis);
+  if(proporcional&&sobrepostas){n.innerHTML='Categorias sobrepostas: os tamanhos são normalizados pela soma das categorias; os percentuais usam a área analisada. <button type="button" class="verBarras">Ver em barras</button>';n.querySelector('button').onclick=()=>{vis='barra';barraModo='ha';sincV();};return;}
   n.innerHTML = vis==='barra'
       ? (r2?`Cada barra é uma categoria de <b>${r1}</b>, dividida por <b>${r2}</b>`+
-            (barraModo==='pct'?'; cada barra soma 100%, para comparar a composição.':'.')
+            (U.sobrepoeSegundo?'; os segmentos são normalizados pela soma, pois as categorias se sobrepõem.':barraModo==='pct'?'; cada barra soma 100%, para comparar a composição.':'.')
           :`Cada barra é uma categoria de <b>${r1}</b>.`)
     : vis==='upset'
       ? `Cada coluna é uma combinação de categorias de <b>${r1}</b>: as bolinhas mostram quais estão `+
@@ -2624,6 +2627,7 @@ function notaGrafico(){
         `categoria, no Brasil inteiro${ufSel?' (no estado escolhido)':''}, com os filtros escolhidos — `+
         `menos o de desmatamento, que é o que se mede. A linha tracejada é a média.`+so1
     : '';
+  if(vis==='barra'&&sobrepostas)n.innerHTML+=' Os percentuais das barras usam a área analisada'+(r2?'; os dos segmentos, a área de cada barra':'')+'. Categorias sobrepostas podem somar mais de 100%.';
 }
 
 function info(texto, titulo){
@@ -3015,7 +3019,7 @@ function aplicaFoco(){
       }
     }
   }
-  painelFoco();
+  painelFoco();resumoFiltros();
 }
 function painelFoco(){
   painelTrilha();
@@ -3028,6 +3032,7 @@ function painelFoco(){
     rotulosNoDOM(p);p.querySelectorAll('[data-como]').forEach(b=>b.onclick=()=>{
       const c=b.dataset.como, e=escolhaFiltro;
       if(!c){ escolhaFiltro=null; painelFoco(); } else e.vai(c); });
+    p.querySelectorAll('[data-grupo-combo]').forEach(c=>c.onchange=()=>{escolhaFiltro.altera(+c.dataset.grupoCombo,c.checked);p.querySelector('[data-area-combo]').textContent=fmt(escolhaFiltro.atual)+' ha';});
     return;
   }
   if(!ks.length){
@@ -3040,7 +3045,7 @@ function painelFoco(){
   let h='<div class="fcard"><div class="fres"><span class="ftit">Seleção no gráfico</span>';
   if(T.res) h+=`<span class="fnum"><b>${fmt(T.res.v)} ha</b>${T.res.pc?` <span>${escH(T.res.pc)}</span>`:''}</span>`;
   h+='<span class="facoes"><button type="button" class="fprim" data-filtra-foco title="a página inteira passa a ser só o que está em foco">Aplicar seleção como filtro</button>'+
-     '<button type="button" class="flimpa" data-limpa-foco>limpar</button></span>';
+     '<button type="button" class="flimpa" data-limpa-foco>Limpar seleção</button></span>';
   h+='</div><details class="frelatorio"'+(relatorioAberto?' open':'')+'><summary>'+
      (relatorioAberto?'Recolher relatório da seleção':'Ver relatório da seleção')+'</summary>';
   if(T.res&&T.res.desc) h+=`<span class="fdesc">${escH(T.res.desc)}</span>`;
@@ -3184,29 +3189,37 @@ function exemploCombo(d,nomes){
 }
 let escolhaFiltro=null;
 function pedeFiltro(itens,agrupa,zoom){
-  const amb0=itens.filter(x=>ambiguo(x.nome,x.r));
-  let ambs=[];
-  const comComo=como=>itens.map(x=>ambs.includes(x)
-    ?{nome:x.nome,r:{...x.r,m:como==='tudo'?'som':x.r.m,como}}:x);
-  const vai=como=>{ escolhaFiltro=null; const its=como?comComo(como):itens;
-    if(!aplicaPasso(its,agrupa(its),zoom)) painelFoco(); };
-  if(!amb0.length) return vai(null);
-  // As áreas, com tudo o que o passo filtraria (uso do solo inclusive).
-  const usos=new Set(); let temUso=false;
-  for(const x of itens) if(x.r.d==='mapbiomas'){ temUso=true; codigosUso(x.nome).forEach(c=>usos.add(c)); }
-  const u=temUso?(classesSel.size?new Set([...classesSel].filter(c=>usos.has(c))):usos):null;
-  const areaCom=com=>areaFiltrada(itens.filter(x=>x.r.d!=='mapbiomas').map(x=>({d:x.r.d,
-    m:com.has(x)?'som':x.r.m,labs:x.r.labs,nome:x.nome,q:modo,p:pilhaFG.length+1})),u);
-  const so=areaCom(new Set());
-  // Só entra na pergunta a categoria que, sozinha, muda a área.
-  ambs=amb0.filter(x=>Math.abs(areaCom(new Set([x]))-so)>=0.5);
-  if(!ambs.length) return vai(null);
-  const tudo=areaCom(new Set(ambs)), gs=new Map();
-  for(const x of ambs){ if(!gs.has(x.r.i)) gs.set(x.r.i,{d:x.r.d,nomes:[]}); gs.get(x.r.i).nomes.push(x.nome); }
-  const grupos=[...gs.values()].map(g=>({...g,ex:exemploCombo(g.d,g.nomes)}));
-  escolhaFiltro={grupos,nomes:ambs.map(x=>x.nome),tudo,so,vai};
-  painelFoco();
-  const b=document.querySelector('#foco .fop'); if(b) b.focus();
+  const amb0=itens.filter(x=>ambiguo(x.nome,x.r)), grupos0=new Map();
+  for(const x of amb0){if(!grupos0.has(x.r.i))grupos0.set(x.r.i,{d:x.r.d,itens:[]});grupos0.get(x.r.i).itens.push(x);}
+  const usos=new Set();let temUso=false;
+  for(const x of itens)if(x.r.d==='mapbiomas'){temUso=true;codigosUso(x.nome).forEach(c=>usos.add(c));}
+  const u=temUso?(classesSel.size?new Set([...classesSel].filter(c=>usos.has(c))):usos):null,cache=new Map();
+  // Os filtros atuais e o uso do solo são aplicados antes da agregação. As
+  // escolhas seguintes dependem só dos bits das comparações selecionadas.
+  const C=colunas(universo),base=filtro(),linhas=new Map();let mv=0,mu=0;
+  for(const x of itens)if(x.r.d!=='mapbiomas')for(const [b] of D.dimensoes[x.r.d].bits||[]){const [v,u]=bitMask(b);mv|=v;mu|=u;}
+  for(let i=0;i<C.n;i++){const v=C.V[i],uf=C.U[i];if(!passaUF(uf)||!base(v,uf,i)||(u&&!u.has(v&127)))continue;
+    const chave=(v&mv)+'|'+(uf&mu),l=linhas.get(chave);if(l)l.a+=C.A[i];else linhas.set(chave,{v,u:uf,i,a:C.A[i]});}
+  const areaCom=com=>{const chave=amb0.map(x=>com.has(x)?1:0).join('');if(!cache.has(chave)){
+    const extras=itens.filter(x=>x.r.d!=='mapbiomas').map(x=>({d:x.r.d,m:com.has(x)?'som':x.r.m,labs:x.r.labs,nome:x.nome,q:x.r.q||modo,p:pilhaFG.length+1}));
+    const antes=filtrosG;let ok;try{filtrosG=antes.concat(extras);ok=filtro();}finally{filtrosG=antes;}
+    let a=0;for(const l of linhas.values())if(ok(l.v,l.u,l.i))a+=l.a;cache.set(chave,a);
+  }return cache.get(chave);};
+  const todas=new Set(amb0),so=areaCom(new Set()),tudo=areaCom(todas);
+  if(!amb0.length||Math.abs(tudo-so)<0.5){if(!aplicaPasso(itens,agrupa(itens),zoom))painelFoco();return;}
+  // Testar retirando uma comparação do conjunto inclusivo preserva os efeitos
+  // que só aparecem quando duas comparações incluem combinações ao mesmo tempo.
+  const grupos=[...grupos0.values()].filter(g=>{const sem=new Set(todas);g.itens.forEach(x=>sem.delete(x));return Math.abs(tudo-areaCom(sem))>=0.5;})
+    .map(g=>({...g,nomes:g.itens.map(x=>x.nome),ex:exemploCombo(g.d,g.itens.map(x=>x.nome))}));
+  if(!grupos.length||Math.abs(tudo-areaCom(new Set(grupos.flatMap(g=>g.itens))))>=0.5){grupos.splice(0,grupos.length,...[...grupos0.values()].map(g=>({...g,nomes:g.itens.map(x=>x.nome),ex:exemploCombo(g.d,g.itens.map(x=>x.nome))})));}
+  const relevantes=new Set(grupos.flatMap(g=>g.itens)),selecionados=new Set(grupos.map((_,i)=>i));
+  const escolhas=()=>new Set(grupos.flatMap((g,i)=>selecionados.has(i)?g.itens:[]));
+  const vai=como=>{const inclui=como==='tudo'?relevantes:como==='opcoes'?escolhas():new Set();
+    const its=itens.map(x=>relevantes.has(x)?{nome:x.nome,r:{...x.r,m:inclui.has(x)?'som':x.r.m,como:inclui.has(x)?'tudo':'so'}}:x);
+    escolhaFiltro=null;if(!aplicaPasso(its,agrupa(its),zoom))painelFoco();};
+  escolhaFiltro={grupos,nomes:[...relevantes].map(x=>x.nome),tudo,so,atual:tudo,selecionados,vai,
+    altera:(i,incluir)=>{if(incluir)selecionados.add(i);else selecionados.delete(i);escolhaFiltro.atual=areaCom(escolhas());}};
+  painelFoco();const b=document.querySelector('#foco .fop');if(b)b.focus();
 }
 // Total de uma categoria contando as combinações em que ela aparece, para o Em
 // foco dizer as duas contas lado a lado.
@@ -3219,21 +3232,18 @@ function totalComCombinacoes(r,k){
 }
 const listaNomes=a=>a.length>1?a.slice(0,-1).join(', ')+' ou '+a[a.length-1]:a[0];
 function htmlEscolha(){
-  const e=escolhaFiltro, um=e.nomes.length===1, c=n=>escH(textoClaro(n));
-  const lista=a=>a.length>1?a.slice(0,-1).join(', ')+' e '+a[a.length-1]:a[0];
+  const e=escolhaFiltro,c=n=>escH(textoClaro(n)),lista=ns=>listaNomes(ns.map(c));
   const ex=g=>g.ex?`, como em “${escH(nomeExibido(g.ex,g.d))}”`:'';
-  const p=um
-    ? `<b>${c(e.nomes[0])}</b> também aparece junto com outras categorias${ex(e.grupos[0])}. O que entra no filtro?`
-    : 'Algumas categorias escolhidas também aparecem junto com outras:<ul class="fambl">'+
-      e.grupos.map(g=>`<li><span class="fgr">${escH(curtoDim(g.d))}</span> `+
-        `${lista(g.nomes.map(n=>`<b>${c(n)}</b>`))}${ex(g)}</li>`).join('')+'</ul>O que entra no filtro?';
-  const tx=um?c(e.nomes[0]):'';
-  return `<div class="fescolha" role="group" aria-label="o que entra no filtro"><div class="fpergunta">${p}</div>`+
-    `<div class="fopcoes"><button type="button" class="fop" data-como="tudo">`+
-    `<b>${um?`Tudo que tem ${tx}`:'Incluir as combinações'}</b><span>${um?'inclui as combinações · ':''}${fmt(e.tudo)} ha</span></button>`+
-    `<button type="button" class="fop" data-como="so"><b>${um?`Só ${tx}, sem outra categoria`:'Só a parte sem combinação'}</b>`+
-    `<span>${fmt(e.so)} ha</span></button>`+
-    `<button type="button" class="flimpa" data-como="">cancelar</button></div></div>`;
+  const varias=e.grupos.length>1,tx=lista(e.nomes);
+  const corpo=varias
+    ? '<p class="fpergunta">Escolha em quais comparações incluir as combinações.</p>'+e.grupos.map((g,i)=>
+      `<label class="fopcaoGrupo"><input type="checkbox" data-grupo-combo="${i}" ${e.selecionados.has(i)?'checked':''}><span><span class="fgr">${escH(curtoDim(g.d))}</span>Incluir combinações de <b>${lista(g.nomes)}</b></span></label>`).join('')
+    : `<p class="fpergunta"><b>${tx}</b> também aparece junto com outras categorias${ex(e.grupos[0])}. O que entra no filtro?</p>`;
+  return `<div class="fescolha" role="group" aria-label="O que entra no filtro">${corpo}<div class="fopcoes">`+
+    `<button type="button" class="fop" data-como="${varias?'opcoes':'tudo'}"><b>${varias?'Aplicar opções':'Tudo que tem '+tx}</b>`+
+    `<span data-area-combo aria-live="polite">${fmt(varias?e.atual:e.tudo)} ha</span></button>`+
+    `<button type="button" class="fop" data-como="so"><b>Só a parte sem combinação</b><span>${fmt(e.so)} ha</span></button>`+
+    `<button type="button" class="flimpa" data-como="">Cancelar</button></div></div>`;
 }
 // Voltar a um ponto da trilha: i = último passo que fica (-1 = início).
 function irPara(i){
@@ -3581,7 +3591,8 @@ function montaCalc(){
 // põe o nome no "Seleção no gráfico" (e no link), e destacar no gráfico marca a linha.
 // A soma das marcadas é a do Seleção no gráfico — cada hectare uma vez —, não a soma
 // simples, que contaria duas vezes o chão comum quando as linhas se sobrepõem.
-let verIrrelevantes=false, tabFoco=null;
+const secoesMiudas=new Set();
+let tabFoco=null;
 function tabela(arr,area){
   const t=document.getElementById('tab');
   tabFoco=[...foco].join('\u0000');
@@ -3596,6 +3607,9 @@ function tabela(arr,area){
   // lista visivel passa a ter, literalmente, so o que esta acima de 0,00.
   // Elas continuam no CSV, na soma e selecionaveis dentro da gaveta.
   const zerada=it=>(100*it.valor/area)<0.005;
+  const chave=j=>[modo,j,eixos[j].d,eixos[j].m].join('|');
+  const aberta=j=>secoesMiudas.has(chave(j));
+  const expande=(j,n,nota='')=>`<tr><td colspan="3"><button type="button" class="mostraMiudas" data-miudas="${j}" aria-expanded="${aberta(j)}">${aberta(j)?'▾ Ocultar':'▸ Mostrar'} ${n} categorias abaixo de 0,01%${nota}</button></td></tr>`;
   const sel=todas.filter(marcada);
   const naoSel=todas.filter(x=>!marcada(x));
   const resto=naoSel.filter(x=>!zerada(x));
@@ -3641,13 +3655,8 @@ function tabela(arr,area){
   for(const it of resto) h+=linha(it,false);
 
   if(miudas.length){
-    h+=`<tr data-miudas="1" style="cursor:pointer"><td colspan="3" `
-      +`style="color:var(--verde);padding-top:9px">`
-      +(verIrrelevantes?'▾ esconder':'▸ mostrar')+` ${miudas.length} combinações `
-      +`abaixo de 0,01% <span style="color:var(--suave)">— somam `
-      +`${fmt(somaMiudas)} ha (${pcBR(100*somaMiudas/area,3)})`
-      +`</span></td></tr>`;
-    if(verIrrelevantes) for(const it of miudas) h+=linha(it,false);
+    h+=expande(0,miudas.length,` — ${fmt(somaMiudas)} ha`);
+    if(aberta(0))for(const it of miudas)h+=linha(it,false);
   }
 
   // A area que seria contada duas vezes por quem somasse filtros separados.
@@ -3673,13 +3682,13 @@ function tabela(arr,area){
     for(const [j,tot] of outras){
       const e=eixos[j]; if(!e) continue;
       const ls=[...tot].map(([nome,valor])=>({nome,valor})).filter(x=>x.valor>0).sort((a,b)=>b.valor-a.valor);
-      const vistas=ls.filter(x=>!zerada(x)||foco.has(x.nome)), miud=ls.length-vistas.length;
+      const miud=ls.filter(x=>zerada(x)&&!foco.has(x.nome)).length,vistas=ls.filter(x=>aberta(j)||!zerada(x)||foco.has(x.nome));
       h+=`<tr><td colspan="3" style="padding:0;height:10px;border:0"></td></tr>`+secao(j);
       for(const it of vistas){ const on=foco.has(it.nome);
         h+=`<tr data-nome="${esc(it.nome)}" style="cursor:pointer`+(on?';background:rgba(123,176,122,.16)':'')+`">`
           +`<td>${on?'<span style="color:var(--verde)">✓</span> ':''}${escH(nomeExibido(it.nome,e.d,e.m))}</td>`
           +`<td class="n">${fmt(it.valor)}</td><td class="n">${nBR(100*it.valor/area,2)}</td></tr>`; }
-      if(miud) h+=`<tr><td colspan="3" style="color:var(--suave);font-size:12px">+ ${miud} abaixo de 0,01%</td></tr>`;
+      if(miud)h+=expande(j,miud);
     } }
   t.innerHTML=h;
   t.querySelectorAll('tr[data-nome]').forEach(tr=>{
@@ -3691,13 +3700,12 @@ function tabela(arr,area){
   });
   const lp=t.querySelector('tr[data-limpar]');
   if(lp) lp.onclick=()=>{ foco.clear(); focoPrevia=null; aplicaFoco(); };
-  const mi=t.querySelector('tr[data-miudas]');
-  if(mi) mi.onclick=()=>{verIrrelevantes=!verIrrelevantes; tabela(arr,area);};
+  t.querySelectorAll('[data-miudas]').forEach(b=>b.onclick=()=>{const j=+b.dataset.miudas,k=chave(j);if(secoesMiudas.has(k))secoesMiudas.delete(k);else secoesMiudas.add(k);tabela(arr,area);t.querySelector(`[data-miudas="${j}"]`).focus({preventScroll:true});});
 }
 
 const VIS=[['vTree','tree'],['vBarra','barra'],['vSun','sun'],['vAnel','anel'],['vSank','sank'],['vUpset','upset'],['vTaxa','taxa']];
 for(const [id,v] of VIS)
-  document.getElementById(id).onclick=()=>{vis=v;document.getElementById('maisGraficos').open=!matchMedia('(max-width:700px)').matches;sincV();};
+  document.getElementById(id).onclick=()=>{prefereBarras=false;vis=v;document.getElementById('maisGraficos').open=!matchMedia('(max-width:700px)').matches;sincV();};
 document.querySelectorAll('[data-bm]').forEach(b=>b.onclick=()=>{
   barraModo=b.dataset.bm; marcaV();
   if(window.__ult&&!agendado){ animar=true; desenha(window.__ult.arr,window.__ult.area); }
@@ -3756,11 +3764,6 @@ function marcaAnos(){
 function sincU(){
   marcaU(); marcaAnos(); montaEixos(); classesSel.clear();classesNeg.clear(); sincUF(); agenda();
 }
-document.getElementById('limpar').onclick=()=>{
-  for(const k in estado) delete estado[k];fonteEstado=null;document.getElementById('avisoModo').hidden=true; classesSel.clear();classesNeg.clear(); filtrosG=[]; pilhaFG=[]; taxaCache=null;
-  sincChips();
-  sincClasses();
-  agenda();};
 document.getElementById('link').onclick=()=>{
   const u=estadoParaURL();
   const b=document.getElementById('link');
@@ -4001,7 +4004,6 @@ function montaBarraGavetas(){
       item.append(seleciona,b,g);opcoes.appendChild(item);
     }barra.appendChild(bloco);
   }
-  const lp=document.getElementById('limpar');if(lp){const cx=lp.closest('.cx');lp.className='gavLimpa';cabFiltros.appendChild(lp);if(cx)cx.remove();}
   cabFiltros.after(barra);marcaGavetas();
 }
 function limpaTudo(){
@@ -4034,11 +4036,12 @@ function resumoFiltros(){
   if(classesNeg.size)tag('Excluir uso do solo: '+classesNeg.size+' classes',()=>{classesNeg.clear();atualiza();});
   if(classesSel.size)tag('Uso do solo: '+classesSel.size+' classe'+(classesSel.size>1?'s':''),()=>{classesSel.clear();filtrosG=filtrosG.filter(f=>f.d!=='mapbiomas');pilhaFG=[];atualiza();});
   filtrosG.filter(f=>f.d!=='mapbiomas').forEach(f=>tag(textoClaro(f.nome),()=>{filtrosG=filtrosG.filter(x=>x!==f);pilhaFG=[];atualiza();}));
-  if(r.childElementCount){ const b=document.createElement('button'); b.type='button'; b.className='filtroLimpaTudo';
-    b.textContent='Limpar tudo'; b.title='tira todos os filtros, o estado escolhido e o destaque'; b.onclick=limpaTudo;
+  const temFiltros=!!r.childElementCount;
+  if(temFiltros||foco.size){ const b=document.createElement('button'); b.type='button'; b.className='filtroLimpaTudo';
+    b.textContent='Limpar filtros e seleção'; b.title='Remove filtros, estado escolhido e seleção. Mantém a área analisada e os anos.'; b.onclick=limpaTudo;
     r.appendChild(b); }
   r.hidden=!r.childElementCount;
-  if(!r.hidden){const t=document.createElement('span');t.className='resumoTitulo';t.textContent='Filtros aplicados';r.prepend(t);}
+  if(!r.hidden){const t=document.createElement('span');t.className='resumoTitulo';t.textContent=temFiltros?'Filtros aplicados':'Seleção no gráfico';r.prepend(t);}
 }
 function acessibilidadeGrafico(svg){
   svg.setAttribute('role','group');svg.setAttribute('aria-label','Gráfico interativo. Enter seleciona uma categoria; Shift mais Enter aplica como filtro.');

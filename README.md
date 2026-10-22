@@ -124,6 +124,49 @@ links antigos, teclado, CSV/PNG e celular sem rolagem horizontal da página.
   continuam com **ou**; entre gavetas, com **e**. Links existentes conservam os
   identificadores dos filtros e os nomes internos das categorias do gráfico.
 
+## Fontes e geração reproduzível
+
+A fonte da interface é `src/explorador_prodes_template.html`. Edite esse arquivo
+para mudar a interface e gere a página publicada com:
+
+```sh
+python3 scripts/build.py
+python3 scripts/build.py --check
+```
+
+O gerador reutiliza os dados e a nota do `index.html` existente. `--check` compara
+o resultado byte a byte sem escrever arquivos. Para um novo conjunto de dados,
+use `--data dados.json --note nota.txt` juntos, ou `--payload-from outra.html`.
+O arquivo `index.html` é a saída autocontida usada pelo GitHub Pages.
+
+O gerador de dados também está versionado: `scripts/gerar_explorador_prodes.py`,
+com o esquema em `scripts/schema.py`. Ele conserva os cálculos anteriores e recebe
+as tabulações CSV pelos argumentos `--mestre` e `--recorte`, e os arquivos de
+legenda e flags por `--legenda` e `--flags`. Usa NumPy e pandas
+(`scripts/requirements-data.txt`); os rasters, tabulações e legendas externos não
+são copiados para o repositório. O template padrão é o canônico acima.
+
+Para ferramentas que ainda esperam um arquivo de template externo:
+
+```sh
+python3 scripts/montar_template_explorador_prodes_oficial.py --saida /caminho/template.html
+```
+
+Esse comando exporta a fonte atual; não reaplica patches de um commit antigo.
+
+Os testes de geração e interação ficam em `tests/`:
+
+```sh
+npm install
+npx playwright install chromium
+npm test
+```
+
+As interações verificam combinações dependentes, escolhas por comparação, tabelas
+com duas/três colunas, categorias pequenas e teclado, limpeza global, gráficos,
+celular e a autoconferência dos dados. `PLAYWRIGHT_MODULE` permite usar uma
+instalação existente; `PRODES_BASE` permite conferir uma página já servida.
+
 ## Ajustes de 22/10/2026
 
 - **Porcentagens iguais no gráfico e no balão.** Em "total de cada categoria" um
@@ -137,10 +180,19 @@ links antigos, teclado, CSV/PNG e celular sem rolagem horizontal da página.
   primeiro lugar, as categorias territoriais não apareciam, e não havia onde
   clicar numa faixa fina do Sankey, como "Imóvel no CAR + UC de proteção
   integral". Clicar numa linha seleciona, como no gráfico.
-- **A pergunta do "Aplicar seleção como filtro"** (se as combinações entram) só
-  inclui as categorias que, sozinhas, mudam a área, e separa por comparação.
-- **Limpar tudo**, na barra "Filtros aplicados": tira os filtros, o estado
-  escolhido, a trilha e a seleção (o universo e os anos ficam).
+- **A pergunta do "Aplicar seleção como filtro"** considera as combinações em
+  conjunto. Quando há mais de uma comparação relevante, permite escolher em
+  quais incluir combinações e atualiza a área antes de aplicar. Categorias da
+  mesma comparação continuam com **ou**, e comparações diferentes com **e**.
+- **Limpar filtros e seleção** é o único comando global: remove filtros, UF,
+  trilha e seleção, mantendo universo e anos. Também aparece com apenas uma
+  seleção no gráfico. A limpeza local do relatório se chama **Limpar seleção**.
+- Cada seção da tabela tem **Mostrar/Ocultar categorias abaixo de 0,01%**, com
+  seleção pelo teclado e preservação das categorias selecionadas ao recolher.
+- Ao mudar uma comparação para **Total de cada categoria**, se há áreas
+  sobrepostas, gráficos de partes dão lugar a **Barras**. Todos os tipos continuam disponíveis. Quando há áreas
+  sobrepostas, a nota informa a normalização geométrica; os números usam a área
+  real. Há um atalho **Ver em barras** nos gráficos proporcionais.
 - **Cartão "% da área do Brasil"** no Desmatamento PRODES (0,40% em 2024 e 2025),
   ou do estado escolhido.
 - Sem os textos embaixo de cada comparação; a explicação fica no ⓘ.
