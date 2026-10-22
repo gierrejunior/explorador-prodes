@@ -63,3 +63,15 @@ test('Áreas das opções conferem com cálculo direto após filtros e uma troca
 test('Autoconferência independente dos dados permanece aprovada',async()=>{
  const p=await browser.newPage();p.on('pageerror',e=>errors.push(e.message));await p.goto(base+'?modo=det&validar',{timeout:120000});const v=await p.locator('#painelValidacao').innerText({timeout:120000});assert.match(v,/Autoconferência aprovada/);for(const total of ['472/472','60/60','78/78'])assert.ok(v.includes(total));await p.close();
 });
+
+test('Sankey com o total de cada categoria: combinações à esquerda, totais à direita',async()=>{
+ const p=await page('?modo=simples&e=territorial:som&g=sank');
+ assert.deepEqual(await p.evaluate(()=>[vis,eixos[0].m]),['sank','som']);
+ assert.match(await p.locator('#gNota').innerText(),/contados mais de uma vez/);
+ const [esq,dir,area]=await p.evaluate(()=>[[...document.querySelectorAll('#g rect[data-c="0"]')].reduce((s,r)=>s+ +r.dataset.v,0),[...document.querySelectorAll('#g rect[data-c="1"]')].reduce((s,r)=>s+ +r.dataset.v,0),window.__ult.area]);
+ assert.ok(Math.abs(esq-area)<1,'as combinações somam a área'); assert.ok(dir>area,'os totais passam da área');
+ await p.close();
+ const q=await page('?modo=det&e=car:sep,territorial:sep&g=sank');
+ assert.equal(await q.locator('#eixos select.modo').first().locator('option[value="som"]').isDisabled(),true);
+ await q.close();
+});

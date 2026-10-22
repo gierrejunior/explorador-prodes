@@ -1234,7 +1234,7 @@ function montaEixos(){
     } else {
     const m=document.createElement('select'); m.className='modo';
     m.setAttribute('aria-label',`Leitura da comparação ${i+1}`);
-    for(const k of MODOS){const o=document.createElement('option');o.value=k;o.textContent=ROTMODO[k];o.disabled=noSankey&&k==='som';m.appendChild(o);}
+    for(const k of MODOS){const o=document.createElement('option');o.value=k;o.textContent=ROTMODO[k];o.disabled=noSankey&&k==='som'&&eixos.length>1;if(o.disabled)o.title='No Sankey com mais de uma comparação, a área das combinações seria contada duas vezes nas fitas';m.appendChild(o);}
     m.value=e.m; m.title=DICAMODO[e.m];
     m.onchange=()=>{e.m=m.value;prefereBarras=e.m==='som'&&['tree','sun','anel'].includes(vis);montaEixos();agenda();};
     w.appendChild(m);
@@ -1302,7 +1302,8 @@ function sincLeitura(){
   // No Sankey toda comparação volta a separada, pela mesma razão geométrica.
   // Devolve se alguma mudou: só então os números precisam ser refeitos.
   let mudou=false;
-  if(vis==='sank') eixos.forEach(e=>{ if(e.m==='som'){ e.m='sep'; mudou=true; } });
+  // Com uma comparação só, o Sankey mostra o total de cada categoria numa coluna à parte (sankeyTotais).
+  if(vis==='sank'&&eixos.length>1) eixos.forEach(e=>{ if(e.m==='som'){ e.m='sep'; mudou=true; } });
   montaEixos();
   return mudou;
 }
@@ -2180,8 +2181,50 @@ function posColuna(lista,esc,sup,vao){
   for(const n of lista){ const h=Math.max(n.valor*esc,1.2); p[n.nome]=[y,h]; y+=h+vao; }
   return p;
 }
+const sankTotais=()=>vis==='sank'&&!window.__sankeyN&&eixos.length===1&&eixos[0].m==='som'&&!!(window.__ult&&window.__ult.combos&&window.__ult.combos.length);
+// "Total de cada categoria" no Sankey (pedido do operacional, 22/10/2026). Num Sankey cada hectare aparece uma vez
+// por coluna; o total de cada categoria conta a área das combinações em todas as categorias dela, então não fecha
+// com a área. As duas coisas ficam lado a lado: à esquerda as combinações (somam a área analisada), à direita o
+// total de cada categoria. Cada combinação liga-se inteira a cada categoria que a compõe: a fita sai fina (a
+// combinação dividida entre as suas categorias) e chega com a área inteira, e a coluna da direita fica mais alta
+// que a da esquerda exatamente pela área contada mais de uma vez.
+function sankeyTotais(){
+  const U=window.__ult, area=U.area, d0=dim(0), vazio=(D.dimensoes[d0]||{}).vazio||'Nenhum', CORTE=0.004;
+  const NL=12, SUP=30, INF=8, lab=Math.max(92,Math.min(210,GW*0.25)), X0=lab+10, X1=GW-lab-10-NL;
+  // esquerda: as combinações (a de uma categoria só leva "Somente", como no gráfico de combinações)
+  let esq=U.combos.filter(c=>c.valor>0).map(c=>{ const ms=c.membros.length?c.membros:[vazio];
+    return {nome:c.membros.length===1?'Somente '+c.nome:c.nome, valor:c.valor, fl:new Map(ms.map(m=>[m,c.valor]))}; }).sort((a,b)=>b.valor-a.valor);
+  if(esq.length>14){ const gd=esq.filter(x=>x.valor>=CORTE*area), pq=esq.filter(x=>x.valor<CORTE*area);
+    if(pq.length>1){ const fl=new Map(); for(const x of pq) for(const [m,v] of x.fl) fl.set(m,(fl.get(m)||0)+v);
+      gd.push({nome:`Outras ${pq.length} combinações (cada uma <0,4%)`,valor:pq.reduce((s,x)=>s+x.valor,0),fl,itens:pq}); esq=gd.sort((a,b)=>b.valor-a.valor); } }
+  // direita: o total de cada categoria, contando as combinações em que ela aparece
+  const dir=(U.bruto||U.arr).map(x=>({nome:x.nome,valor:x.valor})).filter(x=>x.valor>0).sort((a,b)=>b.valor-a.valor);
+  const totD=dir.reduce((s,x)=>s+x.valor,0); if(!area||!totD) return '';
+  const ALT=GH-SUP-INF, VAO=Math.min(6,ALT*0.3/Math.max(1,Math.max(esq.length,dir.length)-1));
+  const esc=Math.min((ALT-VAO*(dir.length-1))/totD,(ALT-VAO*(esq.length-1))/area);
+  const PE=posColuna(esq,esc,SUP,VAO), PD=posColuna(dir,esc,SUP,VAO), ordD=new Map(dir.map((x,i)=>[x.nome,i]));
+  let o=`<text x="${f1(X0+NL)}" y="14" text-anchor="end" font-size="8.5" font-weight="600" letter-spacing=".6" fill="var(--suave)">COMBINAÇÕES (SOMAM A ÁREA)</text>`+
+        `<text x="${f1(X1)}" y="14" font-size="8.5" font-weight="600" letter-spacing=".6" fill="var(--suave)">TOTAL DE CADA CATEGORIA</text>`;
+  const od={}, xm=(X0+NL+X1)/2;
+  for(const L of esq){ const fs=[...L.fl].filter(([m])=>ordD.has(m)).sort((a,b)=>ordD.get(a[0])-ordD.get(b[0])), somaF=fs.reduce((s,[,v])=>s+v,0);
+    const [yL,hL]=PE[L.nome]; let os=0; const cor=corCat(d0,L.nome.startsWith('Somente ')?L.nome.slice(8):L.nome).base;
+    for(const [m,v] of fs){ const hs=hL*v/somaF, hd=v*esc, y0=yL+os, y1=PD[m][0]+(od[m]||0); os+=hs; od[m]=(od[m]||0)+hd;
+      o+=`<path class="it k0" data-n="${escAttr(L.nome)} › ${escAttr(m)}" data-v="${v}" data-p="${L.valor}" `+
+         `d="M${X0+NL},${f1(y0)} C${f1(xm)},${f1(y0)} ${f1(xm)},${f1(y1)} ${f1(X1)},${f1(y1)} L${f1(X1)},${f1(y1+hd)} `+
+         `C${f1(xm)},${f1(y1+hd)} ${f1(xm)},${f1(y0+hs)} ${X0+NL},${f1(y0+hs)} Z" fill="${cor}" fill-opacity="0.42"/>`; } }
+  esq.forEach(n=>{ const [y,h]=PE[n.nome];
+    o+=`<rect class="it k0" data-c="0" data-n="${escAttr(n.nome)}" data-v="${n.valor}" x="${f1(X0)}" y="${f1(y)}" width="${NL}" height="${f1(h)}" fill="${corCat(d0,n.nome.startsWith('Somente ')?n.nome.slice(8):n.nome).fill}" rx="2"/>`; });
+  dir.forEach(n=>{ const [y,h]=PD[n.nome];
+    o+=`<rect class="it k1" data-c="1" data-n="${escAttr(n.nome)}" data-v="${n.valor}" x="${f1(X1)}" y="${f1(y)}" width="${NL}" height="${f1(h)}" fill="${corCat(d0,n.nome).fill}" rx="2"/>`; });
+  const px=GW<640?10:10.5; colunasSank=2;
+  o+=rotulosColuna(esq,PE,X0,'esq',lab-8,px,true,area,SUP-2);
+  o+=rotulosColuna(dir,PD,X1+NL,'dir',lab-8,px,true,area,SUP-2);
+  window.__sankTot={area,totD};
+  return o;
+}
 function sankey(arr){
   if(window.__sankeyN) return sankeyN(window.__sankeyN);
+  if(sankTotais()) return sankeyTotais();
   const NL=12, SUP=8, INF=8;
   const lab=Math.max(92,Math.min(210,GW*0.25));
   const X0=lab+10, X1=GW-lab-10-NL;
@@ -2613,6 +2656,8 @@ function notaGrafico(){
   const so1=eixos.length>1?' Este gráfico usa só a comparação 1.':'';
   const U=window.__ult||{},sobrepostas=U.sobrepoePrimeiro||U.sobrepoeSegundo;
   const proporcional=['tree','sun','anel'].includes(vis);
+  if(sankTotais()&&window.__sankTot){ const {area,totD}=window.__sankTot;
+    n.innerHTML=`À esquerda, as combinações de <b>${r1}</b>, que somam a área analisada (${fmt(area)} ha). À direita, o total de cada categoria, contando as combinações em que ela aparece: cada combinação entra inteira em cada categoria dela, por isso a coluna da direita soma <b>${fmt(totD)} ha</b> (${pcBR(100*totD/area,1)} da área) — <b>${fmt(totD-area)} ha</b> contados mais de uma vez. Os percentuais usam a área analisada.`; return; }
   if(proporcional&&sobrepostas){n.innerHTML='Categorias sobrepostas: os tamanhos são normalizados pela soma das categorias; os percentuais usam a área analisada. <button type="button" class="verBarras">Ver em barras</button>';n.querySelector('button').onclick=()=>{vis='barra';barraModo='ha';sincV();};return;}
   n.innerHTML = vis==='barra'
       ? (r2?`Cada barra é uma categoria de <b>${r1}</b>, dividida por <b>${r2}</b>`+
@@ -2742,6 +2787,12 @@ function resolveNome(k,col){
     if(k.startsWith('Somente ')&&(U.combos||[]).some(c=>c.nome===k.slice(8)&&c.membros.length===1))return {i:0,d:dim(0),m:'sep',labs:[k.slice(8)]};
     if(U.incl&&U.incl.has(k)) return {i:0,d:dim(0),m:'som',labs:[k]};
     if((U.combos||[]).some(c=>c.nome===k)) return {i:0,d:dim(0),m:'sep',labs:[k]};
+    return null;
+  }
+  if(sankTotais()){
+    if(k.startsWith('Somente ')&&(U.combos||[]).some(c=>c.nome===k.slice(8)&&c.membros.length===1))return {i:0,d:dim(0),m:'sep',labs:[k.slice(8)]};
+    if(col!==1&&(U.combos||[]).some(c=>c.nome===k)) return {i:0,d:dim(0),m:'sep',labs:[k]};
+    if(col!==0&&((U.incl&&U.incl.has(k))||(U.bruto||[]).some(it=>it.nome===k))) return {i:0,d:dim(0),m:'som',labs:[k]};
     return null;
   }
   if(vis==='sank'&&S){
