@@ -124,6 +124,29 @@ links antigos, teclado, CSV/PNG e celular sem rolagem horizontal da página.
   continuam com **ou**; entre gavetas, com **e**. Links existentes conservam os
   identificadores dos filtros e os nomes internos das categorias do gráfico.
 
+## Ajustes de 22/10/2026
+
+- **Porcentagens iguais no gráfico e no balão.** Em "total de cada categoria" um
+  pixel conta em todas as categorias a que pertence, e a soma dos blocos passa da
+  área analisada. O treemap, os anéis e a pizza dividiam pela soma dos blocos
+  (Imóvel no CAR: 50,0%) e o balão pela área analisada (56,07%); agora todos
+  dividem pela área analisada, e o centro dos anéis e da pizza mostra a área
+  analisada, não a soma.
+- **A tabela embaixo do gráfico lista todas as comparações**, uma seção para
+  cada (no Sankey, uma por coluna). Antes ela listava só a primeira: com o ano em
+  primeiro lugar, as categorias territoriais não apareciam, e não havia onde
+  clicar numa faixa fina do Sankey, como "Imóvel no CAR + UC de proteção
+  integral". Clicar numa linha seleciona, como no gráfico.
+- **A pergunta do "Aplicar seleção como filtro"** (se as combinações entram) só
+  inclui as categorias que, sozinhas, mudam a área, e separa por comparação.
+- **Limpar tudo**, na barra "Filtros aplicados": tira os filtros, o estado
+  escolhido, a trilha e a seleção (o universo e os anos ficam).
+- **Cartão "% da área do Brasil"** no Desmatamento PRODES (0,40% em 2024 e 2025),
+  ou do estado escolhido.
+- Sem os textos embaixo de cada comparação; a explicação fica no ⓘ.
+- Filtros de sobreposição entre CARs: "contornos quase coincidentes", como nas
+  comparações.
+
 ## Atualização de 21/10/2026: uma aplicação, duas leituras
 
 No topo da página, **Aplicação: Simplificada | Completa**. É um endereço só —
