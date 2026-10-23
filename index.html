@@ -3333,7 +3333,13 @@ function compilaFiltrosG(){
 const nomeTotal=()=>{ const uf=ufSel?(ufSel===99?'área sem UF':D.ufs[ufSel-1]):'';
   if(universo==='recorte') return 'do desmatamento de '+anosTxt()+(uf?' em '+uf:'');
   return uf?'de '+uf:'do Brasil inteiro'; };
-const contextoPc=()=>pilhaFG.length?`de “${pilhaFG[pilhaFG.length-1].rot}”`:nomeTotal();
+// O % do foco, do balão e da tabela é da área analisada, que os filtros das gavetas também reduzem: com eles o
+// total é "a área filtrada" (a frase no topo diz quais filtros), não o Brasil inteiro (23/10/2026: com mais de um
+// filtro o quadro dizia "84,6% do Brasil inteiro" para 84,6% da área filtrada).
+const temFiltroGaveta=()=>Object.values(estado).some(Boolean)||classesSel.size>0||classesNeg.size>0;
+const contextoPc=()=>{ const g=temFiltroGaveta();
+  if(pilhaFG.length) return `de “${pilhaFG[pilhaFG.length-1].rot}”`+(g?' (com os filtros escolhidos)':'');
+  return g? 'da área filtrada' : nomeTotal(); };
 function painelTrilha(){
   const p=document.getElementById('clique'); if(!p) return;
   if(!pilhaFG.length){ p.hidden=true; p.innerHTML=''; return; }

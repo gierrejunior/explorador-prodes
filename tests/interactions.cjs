@@ -75,3 +75,18 @@ test('Sankey com o total de cada categoria: combinações à esquerda, totais à
  assert.equal(await q.locator('#eixos select.modo').first().locator('option[value="som"]').isDisabled(),true);
  await q.close();
 });
+
+test('Vários filtros: o foco mantém relatório e "Aplicar seleção como filtro", e o % nomeia a área filtrada',async()=>{
+ const p=await page('?modo=simples&e=fundiario:sep,mapbiomas:sep&g=barra');
+ await p.evaluate(()=>{ const bs=(DIMS.simples.territorial||D.dimensoes.territorial).bits; bs.filter(([b,n])=>/^CAR$|Não Destinadas/.test(n)).forEach(([b])=>estado[b]=1); agenda(); });await ready(p);
+ await p.evaluate(()=>{ const ns=window.__ult.arr.map(x=>x.nome), fs=[...new Set(window.__ult.arr.flatMap(x=>(x.filhos||[]).map(f=>f.nome)))]; foco.add(ns.find(n=>/Não ader/.test(n))); foco.add(fs.find(n=>/Floresta/.test(n))); aplicaFoco(); });
+ const t=await p.locator('#foco').innerText(); assert.match(t,/da área filtrada/); assert.doesNotMatch(t,/do Brasil inteiro/);
+ assert.equal(await p.locator('#foco [data-filtra-foco]').count(),1); assert.equal(await p.locator('#foco details.frelatorio').count(),1);
+ await p.close();
+ const q=await page('?modo=simples&e=territorial:sep,fundiario:sep,tamanho:sep&g=sank');
+ await q.evaluate(()=>{ const C=window.__sankeyN.cols.map(m=>[...m.keys()]); [C[0].find(n=>/CAR \+ Áreas Não Destinadas/.test(n)),C[1].find(n=>/Não ader/.test(n)),C[2].find(n=>/Pequena/.test(n))].forEach(k=>foco.add(k)); aplicaFoco(); });
+ assert.equal(await q.locator('#foco [data-filtra-foco]').count(),1);
+ await q.locator('#foco [data-filtra-foco]').click(); const op=q.locator('#foco .fop').first(); if(await op.count()) await op.click(); await ready(q);
+ assert.equal(await q.evaluate(()=>filtrosG.length),3); assert.match(await q.locator('#clique').innerText(),/Não aderente e Pequena/);
+ await q.close();
+});
