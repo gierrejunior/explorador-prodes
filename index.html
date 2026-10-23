@@ -204,6 +204,9 @@ button[aria-pressed="true"],.chip[data-e="1"]{box-shadow:var(--halo)}
 .flin .fgr{min-width:96px;font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--suave);font-weight:600}
 .fe{font-size:11px;font-weight:700;color:var(--suave);padding-left:2px;text-transform:uppercase;letter-spacing:.8px}
 .fou{color:var(--suave);font-size:12px;font-style:italic}
+.fsel{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin:6px 0 6px}
+.fsel .fe{font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--suave);font-weight:600;padding-left:2px}
+.fsel>.fdesc{flex-basis:auto}
 .fnota{font-size:12.5px;color:var(--tinta)}
 .fdet summary{cursor:pointer;font-size:12px;color:var(--verde);width:max-content}
 .fdet ul{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:var(--tinta);font-variant-numeric:tabular-nums}
@@ -3097,7 +3100,13 @@ function painelFoco(){
   if(T.res) h+=`<span class="fnum"><b>${fmt(T.res.v)} ha</b>${T.res.pc?` <span>${escH(T.res.pc)}</span>`:''}</span>`;
   h+='<span class="facoes"><button type="button" class="fprim" data-filtra-foco title="a página inteira passa a ser só o que está em foco">Aplicar seleção como filtro</button>'+
      '<button type="button" class="flimpa" data-limpa-foco>Limpar seleção</button></span>';
-  h+='</div><details class="frelatorio"'+(relatorioAberto?' open':'')+'><summary>'+
+  h+='</div>';
+  // O que está selecionado fica à vista (o quadro antigo mostrava; no relatório fechado ninguém via): uma linha por
+  // comparação, "ou" dentro dela, "e" entre elas, e o × de cada um.
+  h+='<div class="fsel">'+T.grupos.map(g=>`<div class="flin">${g.rot?`<span class="fgr">${escH(g.rot)}</span>`:''}`+
+      g.nomes.map(k=>`<span class="fch"><b>${escH(nomeDoFoco(k))}</b><button type="button" data-tira-foco="${escAttr(k)}" aria-label="tirar ${escAttr(k)} do foco" title="tirar da seleção">×</button></span>`).join('<span class="fou">ou</span>')+'</div>').join('<span class="fe">e</span>')+
+    (T.grupos.length>1?'<span class="fdesc">a área que cumpre todas as linhas ao mesmo tempo</span>':'')+'</div>';
+  h+='<details class="frelatorio"'+(relatorioAberto?' open':'')+'><summary>'+
      (relatorioAberto?'Recolher relatório da seleção':'Ver relatório da seleção')+'</summary>';
   if(T.res&&T.res.desc) h+=`<span class="fdesc">${escH(T.res.desc)}</span>`;
   if(focoMantido)h+='<p class="fnota">Seleção preservada do modo '+(focoMantido.q==='det'?'Detalhado':'Simplificado')+'. O destaque indica as categorias que contêm essa seleção; a área acima mantém o recorte exato.</p>';
@@ -3109,12 +3118,6 @@ function painelFoco(){
                         :escH(nomeExibido(l.nome)))+
         `</td><td class="n">${fmt(l.v)}</td><td class="n">${escH(l.pc)}</td></tr>`).join('')+
       '</tbody></table>';
-  } else {
-    const g=T.grupos[0]||{rot:''};
-    h+=`<div class="flin">${g.rot?`<span class="fgr">${escH(g.rot)}</span>`:''}`+
-       ks.map(k=>`<span class="fch"><b>${escH(nomeDoFoco(k))}</b>`+
-         `<button type="button" data-tira-foco="${escAttr(k)}" aria-label="tirar ${escAttr(k)} do foco">×</button></span>`)
-       .join('<span class="fou">ou</span>')+'</div>';
   }
   if(T.pesos.length) h+='<ul class="fpesos">'+T.pesos.map(t=>`<li>${escH(t)}</li>`).join('')+'</ul>';
   if(T.grupos.length>1&&T.notas.length) h+='<div class="fnota">'+T.notas.map(escH).join(' · ')+'</div>';
@@ -3135,6 +3138,16 @@ function painelFoco(){
   p.querySelector('[data-limpa-foco]').onclick=()=>{ foco.clear(); focoPrevia=null; aplicaFoco(); };
   p.querySelector('[data-filtra-foco]').onclick=filtraFoco;
 }
+// Parte com duas comparações ("Não aderente › Floresta"): entra a parte inteira, as duas categorias, que somam com
+// "ou" às outras partes da mesma comparação e com "e" entre comparações — como no quadro que o Eduardo usava
+// (23/10/2026: o clique levava só "Floresta", e clicar numa segunda parte de Floresta apagava a seleção). Clicar de
+// novo tira a parte: a categoria da barra e, se nenhuma outra barra ficou, a outra também.
+function alternaParte(ps){ if(focoMantido){focoMantido=null;cacheFocoMantido=null;foco.clear();} escolhaFiltro=null; focoPrevia=null;
+  const [a,b]=[ps[0],ps[ps.length-1]];
+  if(foco.has(a)&&foco.has(b)){ foco.delete(a); const ia=(resolveNome(a,0)||{}).i;
+    if(![...foco].some(k=>(resolveNome(k,0)||{}).i===ia&&ia!==undefined)) foco.delete(b); }
+  else { foco.add(a); foco.add(b); }
+  aplicaFoco(); }
 function alternaFoco(k){ if(!k) return; if(focoMantido&&foco.has(k)){foco.delete(k);aplicaFoco();return;}if(focoMantido){focoMantido=null;cacheFocoMantido=null;foco.clear();} escolhaFiltro=null; foco.has(k)?foco.delete(k):foco.add(k); focoPrevia=null; aplicaFoco(); }
 
 // ---- filtrar e o caminho -----------------------------------------------------
@@ -3368,6 +3381,7 @@ const curtoDim=d=>({territorial:'Tipo de área ou território',fundiario:'Corres
   let espera=0;
   svg.addEventListener('click',ev=>{
     const el=alvo(ev); clearTimeout(espera); if(!el||ev.detail>1) return;
+    if(!el.classList.contains('leg')&&!(vis==='sank'&&el.tagName==='path')&&partes(el).length>1){ const ps=partes(el); espera=setTimeout(()=>alternaParte(ps),240); return; }
     const k=el.classList.contains('leg')?el.dataset.n:chaveDe(el);
     espera=setTimeout(()=>alternaFoco(k),240); });
   svg.addEventListener('dblclick',ev=>{ clearTimeout(espera); const el=alvo(ev); if(el){ ev.preventDefault(); filtraPor(el); } });

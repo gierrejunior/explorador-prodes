@@ -90,3 +90,18 @@ test('Vários filtros: o foco mantém relatório e "Aplicar seleção como filtr
  assert.equal(await q.evaluate(()=>filtrosG.length),3); assert.match(await q.locator('#clique').innerText(),/Não aderente e Pequena/);
  await q.close();
 });
+
+test('Clicar numa parte da barra seleciona as duas categorias; a segunda parte soma em vez de apagar',async()=>{
+ const p=await page('?modo=simples&e=fundiario:sep,mapbiomas:sep&g=barra');
+ const clica=async n=>{ await p.locator(`#g .it[data-n="${n}"]`).first().click({force:true}); await p.waitForTimeout(500); };
+ await clica('Não aderente › Floresta');
+ assert.deepEqual(await p.evaluate(()=>[...foco].sort()),['Floresta','Não aderente']);
+ assert.match(await p.locator('#foco').innerText(),/152\.351\.620 ha[\s\S]*ao mesmo tempo/);
+ assert.equal(await p.locator('#foco .fsel .fch').count(),2);
+ await clica('Fora do CAR › Floresta');
+ assert.deepEqual(await p.evaluate(()=>[...foco].sort()),['Floresta','Fora do CAR','Não aderente']);
+ assert.equal(await p.locator('#foco [data-filtra-foco]').count(),1);
+ await clica('Fora do CAR › Floresta'); await clica('Não aderente › Floresta');
+ assert.equal(await p.evaluate(()=>foco.size),0);
+ await p.close();
+});
